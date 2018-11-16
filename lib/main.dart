@@ -1,3 +1,4 @@
+import 'package:ergani_e8/create_employee.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -10,7 +11,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('ERGANI'),
+        ),
+        body: EmployeeForm(),
+      ),
     );
   }
 }

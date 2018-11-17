@@ -83,7 +83,6 @@ class EmployeeFormState extends State<EmployeeForm> {
             },
             autofocus: true,
             focusNode: name,
-            
             decoration: InputDecoration(labelText: 'Όνομα'),
             validator: (value) {
               if (value.isEmpty) {

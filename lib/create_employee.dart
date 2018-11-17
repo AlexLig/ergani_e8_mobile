@@ -82,6 +82,8 @@ class EmployeeFormState extends State<EmployeeForm> {
               FocusScope.of(context).requestFocus(surname);
             },
             autofocus: true,
+            focusNode: name,
+            
             decoration: InputDecoration(labelText: 'Όνομα'),
             validator: (value) {
               if (value.isEmpty) {

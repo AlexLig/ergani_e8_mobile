@@ -38,7 +38,9 @@ class EmployeeFormState extends State<EmployeeForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          // NAME Textfield
           TextFormField(
+            keyboardType: TextInputType.text,
             textInputAction: TextInputAction.next,
             onFieldSubmitted: (value) {
               FocusScope.of(context).requestFocus(surname);
@@ -51,7 +53,9 @@ class EmployeeFormState extends State<EmployeeForm> {
               }
             },
           ),
+          // SURNAME textfield
           TextFormField(
+            keyboardType:TextInputType.text,
             textInputAction: TextInputAction.next,
             onFieldSubmitted: (value) {
               FocusScope.of(context).requestFocus(vatNumber);
@@ -64,7 +68,9 @@ class EmployeeFormState extends State<EmployeeForm> {
               }
             },
           ),
+          // VATNUMBER textfield
           TextFormField(
+            keyboardType: TextInputType.number,
             focusNode: vatNumber,
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(labelText: 'ΑΦΜ'),

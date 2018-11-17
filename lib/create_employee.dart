@@ -22,6 +22,9 @@ class EmployeeFormState extends State<EmployeeForm> {
 
   var _data = _EmployeeData();
 
+  final nameController = TextEditingController();
+  final surnameController = TextEditingController();
+  final vatNumberController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -36,18 +39,29 @@ class EmployeeFormState extends State<EmployeeForm> {
     name.dispose();
     surname.dispose();
     vatNumber.dispose();
+    nameController.dispose();
+    surnameController.dispose();
+    vatNumberController.dispose();
     super.dispose();
   }
 
   submit() {
     if (this._formKey.currentState.validate()) {
-      _formKey.currentState.save();
+      //_formKey.currentState.save();
+
+      _data.name = nameController.text;
+      _data.surname = surnameController.text;
+      _data.vatNumber = vatNumberController.text;
+
+      nameController.clear();
+      surnameController.clear();
+      vatNumberController.clear();
 
       print('Printing the employee data.');
       print('Name: ${_data.name}');
       print('Surname: ${_data.surname}');
       print('VatNumber: ${_data.vatNumber}');
-      
+
       return Scaffold.of(context)
           .showSnackBar(SnackBar(content: Text('Η καταχώρηση ολοκληρώθηκε')));
     }
@@ -74,36 +88,38 @@ class EmployeeFormState extends State<EmployeeForm> {
                 return 'Προσθέστε όνομα';
               }
             },
-            onSaved: (value) => this._data.name = value.trim(),
+            controller: nameController,
           ),
           // SURNAME textfield
           TextFormField(
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.next,
-              onFieldSubmitted: (value) {
-                FocusScope.of(context).requestFocus(vatNumber);
-              },
-              focusNode: surname,
-              decoration: InputDecoration(labelText: 'Επίθετο'),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Προσθέστε επίθετο';
-                }
-              },
-              onSaved: (value) => this._data.surname = value.trim()),
+            keyboardType: TextInputType.text,
+            textInputAction: TextInputAction.next,
+            onFieldSubmitted: (value) {
+              FocusScope.of(context).requestFocus(vatNumber);
+            },
+            focusNode: surname,
+            decoration: InputDecoration(labelText: 'Επίθετο'),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Προσθέστε επίθετο';
+              }
+            },
+            controller: surnameController,
+          ),
           // VATNUMBER textfield
           TextFormField(
-              keyboardType: TextInputType.number,
-              focusNode: vatNumber,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(labelText: 'ΑΦΜ'),
-              validator: (value) => validateAfm(value),
-              onSaved: (value) => this._data.vatNumber = value.trim()),
+            keyboardType: TextInputType.number,
+            focusNode: vatNumber,
+            textInputAction: TextInputAction.done,
+            decoration: InputDecoration(labelText: 'ΑΦΜ'),
+            validator: (value) => validateAfm(value),
+            controller: vatNumberController,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: RaisedButton(
               onPressed: () {
-                  this.submit();
+                this.submit();
               },
               child: Text('Submit'),
             ),

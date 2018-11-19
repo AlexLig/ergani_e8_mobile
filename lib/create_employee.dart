@@ -69,63 +69,68 @@ class EmployeeFormState extends State<EmployeeForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          // NAME Textfield
-          TextFormField(
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            onFieldSubmitted: (value) {
-              FocusScope.of(context).requestFocus(surname);
-            },
-            autofocus: true,
-            focusNode: name,
-            decoration: InputDecoration(labelText: 'Όνομα'),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Προσθέστε όνομα';
-              }
-            },
-            controller: nameController,
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              // NAME Textfield
+              TextFormField(
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (value) {
+                  FocusScope.of(context).requestFocus(surname);
+                },
+                autofocus: true,
+                focusNode: name,
+                decoration: InputDecoration(labelText: 'Όνομα'),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Προσθέστε όνομα';
+                  }
+                },
+                controller: nameController,
+              ),
+              // SURNAME textfield
+              TextFormField(
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (value) {
+                  FocusScope.of(context).requestFocus(vatNumber);
+                },
+                focusNode: surname,
+                decoration: InputDecoration(labelText: 'Επίθετο'),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Προσθέστε επίθετο';
+                  }
+                },
+                controller: surnameController,
+              ),
+              // VATNUMBER textfield
+              TextFormField(
+                keyboardType: TextInputType.number,
+                focusNode: vatNumber,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(labelText: 'ΑΦΜ'),
+                validator: (value) => validateAfm(value),
+                controller: vatNumberController,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: RaisedButton(
+                  onPressed: () {
+                    this.submit();
+                  },
+                  child: Text('Submit'),
+                ),
+              ),
+            ],
           ),
-          // SURNAME textfield
-          TextFormField(
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            onFieldSubmitted: (value) {
-              FocusScope.of(context).requestFocus(vatNumber);
-            },
-            focusNode: surname,
-            decoration: InputDecoration(labelText: 'Επίθετο'),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Προσθέστε επίθετο';
-              }
-            },
-            controller: surnameController,
-          ),
-          // VATNUMBER textfield
-          TextFormField(
-            keyboardType: TextInputType.number,
-            focusNode: vatNumber,
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(labelText: 'ΑΦΜ'),
-            validator: (value) => validateAfm(value),
-            controller: vatNumberController,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: RaisedButton(
-              onPressed: () {
-                this.submit();
-              },
-              child: Text('Submit'),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -149,9 +154,9 @@ validateAfm(String afm) {
 //   return false;
 // }
 
-bool  isValid(String value, RegExp regex) {
+bool isValid(String value, RegExp regex) {
   final matches = regex.allMatches(value);
-  var x = matches.map((match) => match.start == 0 && match.end == value.length);
-  return x.reduce((currentValue, nextValue) => currentValue && nextValue);
-  // x.fold(initialValue, combine)
+  return matches
+      .map((match) => match.start == 0 && match.end == value.length)
+      .reduce((currentValue, nextValue) => currentValue && nextValue);
 }

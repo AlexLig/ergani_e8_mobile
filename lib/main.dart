@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text('ERGANI'),
         ),
-        body: EmployeeForm(),
+        body: MyHomePage(),
       ),
     );
   }
@@ -28,6 +28,32 @@ class MyHomePage extends StatelessWidget {
     return Container(
       color: Colors.amber,
       height: 300,
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            TestButton('E8', EmployeeForm()),
+            TestButton('Test', EmployeeForm()),
+          ],
+        ),
+      ),
     );
   }
 }
+
+class TestButton extends StatelessWidget {
+  final String title;
+  final Widget route;
+
+  TestButton(this.title, this.route);
+
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton(
+      child: Text(this.title),
+      onPressed: _onPressedTemporary(context, this.route),
+    );
+  }
+}
+
+Function _onPressedTemporary(context, Widget widget) => () =>
+    Navigator.push(context, MaterialPageRoute(builder: (context) => widget));

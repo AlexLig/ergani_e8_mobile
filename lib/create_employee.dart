@@ -144,19 +144,12 @@ validateAfm(String afm) {
   }
 }
 
-// bool isValid(String value, RegExp regex) {
-//   final matches = regex.allMatches(value);
-//   for (Match match in matches) {
-//     if (match.start == 0 && match.end == value.length) {
-//       return true;
-//     }
-//   }
-//   return false;
-// }
-
 bool isValid(String value, RegExp regex) {
-  final matches = regex.allMatches(value);
-  return matches
+  return regex
+      .allMatches(value)
       .map((match) => match.start == 0 && match.end == value.length)
       .reduce((currentValue, nextValue) => currentValue && nextValue);
 }
+
+// bool logicalAnd(currentValue, nextValue) => currentValue && nextValue;
+// Function assertMatchEnds(String value) => (match) => match.start == 0 && match.end == value.length;

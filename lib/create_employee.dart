@@ -139,12 +139,19 @@ validateAfm(String afm) {
   }
 }
 
-bool isValid(String value, RegExp regex) {
+// bool isValid(String value, RegExp regex) {
+//   final matches = regex.allMatches(value);
+//   for (Match match in matches) {
+//     if (match.start == 0 && match.end == value.length) {
+//       return true;
+//     }
+//   }
+//   return false;
+// }
+
+bool  isValid(String value, RegExp regex) {
   final matches = regex.allMatches(value);
-  for (Match match in matches) {
-    if (match.start == 0 && match.end == value.length) {
-      return true;
-    }
-  }
-  return false;
+  var x = matches.map((match) => match.start == 0 && match.end == value.length);
+  return x.reduce((currentValue, nextValue) => currentValue && nextValue);
+  // x.fold(initialValue, combine)
 }

@@ -15,6 +15,7 @@ class _EmployeeData {
 
 class EmployeeFormState extends State<EmployeeForm> {
   final _formKey = GlobalKey<FormState>();
+
   // FocusNode employeeFocusNode;
   FocusNode name;
   FocusNode surname;

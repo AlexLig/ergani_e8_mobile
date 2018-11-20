@@ -149,8 +149,8 @@ bool isValid(String value, RegExp regex) {
   return regex
       .allMatches(value)
       .map((match) => match.start == 0 && match.end == value.length)
-      .reduce((currentValue, nextValue) => currentValue && nextValue);
+      .reduce((sum, nextValue) => sum && nextValue);
 }
 
-// bool logicalAnd(currentValue, nextValue) => currentValue && nextValue;
+// bool logicalAnd(sum, nextValue) => sum && nextValue;
 // Function assertMatchEnds(String value) => (match) => match.start == 0 && match.end == value.length;

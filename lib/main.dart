@@ -1,3 +1,4 @@
+import 'package:ergani_e8/contacts/contacts_route.dart';
 import 'package:ergani_e8/create_employee.dart';
 import 'package:flutter/material.dart';
 
@@ -25,15 +26,17 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Container(
-      color: Colors.amber,
-      height: 300,
-      child: Center(
-        child: Column(
-          children: <Widget>[
-            TestButton('E8', EmployeeForm()),
-            TestButton('Test', EmployeeForm()),
-          ],
+    return Scaffold(
+          body: Container(
+        color: Colors.amber,
+        height: 300,
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              TestButton(title: 'E8', route: EmployeeForm()),
+              TestButton(title: 'Contacts', route: ContactsRoute()),
+            ],
+          ),
         ),
       ),
     );
@@ -41,10 +44,10 @@ class MyHomePage extends StatelessWidget {
 }
 
 class TestButton extends StatelessWidget {
-  final String title;
   final Widget route;
+  final String title;
 
-  TestButton(this.title, this.route);
+  TestButton({@required this.title, this.route});
 
   @override
   Widget build(BuildContext context) {

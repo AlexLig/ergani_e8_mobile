@@ -19,6 +19,8 @@ class Employee extends StatelessWidget {
     overtimeStart,
   }) : super(key: key);
 
+  String _getInitials() =>
+      this.firstName[0].toUpperCase() + this.lastName[0].toUpperCase();
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -31,7 +33,8 @@ class Employee extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            '${this.firstName[0].toUpperCase()}${this.lastName[0].toUpperCase()}',
+            // '${this.firstName[0].toUpperCase()}${this.lastName[0].toUpperCase()}',
+            '${_getInitials()}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.teal,

@@ -106,6 +106,18 @@ class ContactsRouteState extends State<ContactsRoute> {
               ],
             ),
           ),
+          bottomNavigationBar: BottomAppBar(
+            child: Container(
+              // color: Colors.teal,
+              height: 50.0,
+              child: TextField(
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  hintText: 'Αναζήτηση υπαλλήλου...'
+                ),
+              ),
+            ),
+          ),
           // Needed to open a snackbar.
           // This happens because you are using the context of the widget that instantiated Scaffold.
           // Not the context of a child of Scaffold.
@@ -137,6 +149,7 @@ class ContactsRouteState extends State<ContactsRoute> {
               ],
             );
           }),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           floatingActionButton: FloatingActionButton(
             heroTag: 'ftbBot',
             tooltip: 'Increment',
@@ -146,13 +159,18 @@ class ContactsRouteState extends State<ContactsRoute> {
           drawer: ContactsDrawer(),
         ),
         Positioned(
-          right: 16.0,
+          left: 16.0,
           top: _appBarHeight - 5,
-          child: FloatingActionButton(
+          child: FloatingActionButton.extended(
+            isExtended: true,
             heroTag: 'ftbTop',
             tooltip: 'Increment',
-            child: Icon(Icons.add, color: Colors.blue),
-            mini: true,
+            label: Text(
+              'ΠΡΟΣΘΗΚΗ',
+              style: TextStyle(color: Colors.blue),
+            ),
+            icon: Icon(Icons.add, color: Colors.blue),
+            // mini: true,
             backgroundColor: Colors.white,
             onPressed: _incrementCounter,
           ),

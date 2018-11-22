@@ -39,8 +39,21 @@ class Employee extends StatelessWidget {
       title: Text('$firstName $lastName'),
       subtitle: Text('ΑΦΜ: $vatNumber'),
       trailing: PopupMenuButton<ContactActions>(
-        onSelected: (ContactActions selection) =>
-            selection == ContactActions.delete ? _alert(context) : print(selection),
+        onSelected: (ContactActions selection) {
+          switch (selection) {
+            case ContactActions.edit:
+              _handleEdit(context);
+              break;
+            case ContactActions.delete:
+              _handleDelete(context);
+              break;
+            default:
+              print(selection);
+          }
+        },
+        // selection == ContactActions.delete
+        //     ? _handleDelete(context)
+        //     : print(selection),
         itemBuilder: (BuildContext context) => <PopupMenuEntry<ContactActions>>[
               PopupMenuItem<ContactActions>(
                 value: ContactActions.edit,
@@ -55,13 +68,50 @@ class Employee extends StatelessWidget {
     );
   }
 
-  Future<void> _alert(BuildContext context) {
+  Future<void> _handleEdit(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Επεξεργασία Υπαλλήλου'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('This dialog will allow you to edit the employee.'),
+                  Text('That\'s nice! '),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('ΑΚΥΡΟ'),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('ΑΠΟΘΗΚΕΥΣΗ'),
+              )
+            ],
+          );
+        });
+  }
+
+  Future<void> _handleDelete(BuildContext context) {
     return showDialog(
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Διαγραφή υπαλλήλου;'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                      'Ο υπάλληλος ${this.firstName} ${this.lastName} θα αφαιρεθεί από τη συλλογή.'),
+                ],
+              ),
+            ),
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(),

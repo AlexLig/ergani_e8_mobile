@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:ergani_e8/contacts/drawer.dart';
 import 'package:ergani_e8/contacts/employee.dart';
 import 'package:flutter/material.dart';
@@ -7,25 +8,83 @@ class ContactsRoute extends StatefulWidget {
   ContactsRouteState createState() => ContactsRouteState();
 }
 
+class EmployeeDummy {
+  String firstName;
+  String lastName;
+  String vatNumber;
+
+  EmployeeDummy(
+      {@required this.firstName,
+      @required this.lastName,
+      @required this.vatNumber});
+}
+
 class ContactsRouteState extends State<ContactsRoute> {
   int _counter = 0;
-  final double _appBarHeight = 150.0;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final double _appBarHeight = 100.0;
+  var isLoading = false;
+  List employeeList = [
+    EmployeeDummy(
+        firstName: 'Ηλιάννα',
+        lastName: 'Παπαγεωργίου',
+        vatNumber: 'l33tf4bul0us'),
+    EmployeeDummy(
+        firstName: 'Ηλιάννα',
+        lastName: 'Παπαγεωργίου',
+        vatNumber: 'l33tf4bul0us'),
+    EmployeeDummy(
+        firstName: 'Ηλιάννα',
+        lastName: 'Παπαγεωργίου',
+        vatNumber: 'l33tf4bul0us'),
+    EmployeeDummy(
+        firstName: 'Ηλιάννα',
+        lastName: 'Παπαγεωργίου',
+        vatNumber: 'l33tf4bul0us'),
+    EmployeeDummy(
+        firstName: 'Ηλιάννα',
+        lastName: 'Παπαγεωργίου',
+        vatNumber: 'l33tf4bul0us'),
+    EmployeeDummy(
+        firstName: 'Ηλιάννα',
+        lastName: 'Παπαγεωργίου',
+        vatNumber: 'l33tf4bul0us'),
+    EmployeeDummy(
+        firstName: 'Ηλιάννα',
+        lastName: 'Παπαγεωργίου',
+        vatNumber: 'l33tf4bul0us'),
+    EmployeeDummy(
+        firstName: 'Ηλιάννα',
+        lastName: 'Παπαγεωργίου',
+        vatNumber: 'l33tf4bul0us'),
+    EmployeeDummy(
+        firstName: 'Ηλιάννα',
+        lastName: 'Παπαγεωργίου',
+        vatNumber: 'l33tf4bul0us'),
+    EmployeeDummy(
+        firstName: 'Ηλιάννα',
+        lastName: 'Παπαγεωργίου',
+        vatNumber: 'l33tf4bul0us'),
+    EmployeeDummy(
+        firstName: 'Ηλιάννα',
+        lastName: 'Παπαγεωργίου',
+        vatNumber: 'l33tf4bul0us'),
+  ];
 
   void _incrementCounter() => setState(() => _counter++);
   void _resetCounter() => setState(() => _counter = 0);
-  _showSnackBar(context) => () {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Trying to search? o.O'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 5),
-          action: SnackBarAction(
-            textColor: Colors.white,
-            label: 'Not really',
-            onPressed: () => print('Trolled.'),
-          ),
-        ));
-      };
+
+  _showSnackBar(context, String text) {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(text),
+      backgroundColor: Colors.green,
+      duration: Duration(seconds: 5),
+      action: SnackBarAction(
+        textColor: Colors.white,
+        label: 'Not really',
+        onPressed: () => print('Trolled.'),
+      ),
+    ));
+  }
 
   Widget build(BuildContext context) {
     return Stack(
@@ -41,20 +100,9 @@ class ContactsRouteState extends State<ContactsRoute> {
                   icon: Icon(Icons.search),
                   tooltip: 'Αναζήτηση',
                   // SnackBar not working here. Need GlobalKey??
-                  onPressed: _showSnackBar(context),
+                  onPressed: () =>
+                      _showSnackBar(context, 'Trying to search? o.O'),
                 )
-              ],
-            ),
-          ),
-          bottomNavigationBar: BottomAppBar(
-            shape: CircularNotchedRectangle(),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                // TextField(),
-                Icon(Icons.search),
-                Icon(Icons.search),
               ],
             ),
           ),
@@ -63,42 +111,48 @@ class ContactsRouteState extends State<ContactsRoute> {
           // Not the context of a child of Scaffold.
           // You can solve this by simply using a different context :
           body: Builder(builder: (context) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('You have pressed the button this many times $_counter'),
-                  FlatButton(child: Text('Reset'), onPressed: _resetCounter),
-                  FlatButton.icon(
-                    icon: Icon(Icons.search),
-                    label: Text('Search'),
-                    onPressed: _showSnackBar(context),
-                  ),
-                  Employee(
-                    firstName: 'Κώστας',
-                    lastName: 'Γουστουρίδης',
-                    vatNumber: '123456789',
-                  ),
-                ],
-              ),
+            return Column(
+              children: <Widget>[
+                Expanded(
+                  child: isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          // padding: EdgeInsets.all(8.0),
+                          itemCount: employeeList.length,
+                          itemBuilder: (BuildContext context, int i) {
+                            return InkWell(
+                              child: Employee(
+                                firstName: employeeList[i].firstName,
+                                lastName: employeeList[i].lastName,
+                                vatNumber: employeeList[i].vatNumber,
+                                // overtimeStart: overtimeStart,
+                              ),
+                              onTap: () => _showSnackBar(
+                                  context, 'Την Ηλιάννα ρε λιγούρη;'),
+                            );
+                          },
+                        ),
+                ),
+              ],
             );
           }),
           floatingActionButton: FloatingActionButton(
             heroTag: 'ftbBot',
             tooltip: 'Increment',
-            child: Icon(Icons.add),
+            child: Icon(Icons.person_add),
             onPressed: _incrementCounter,
           ),
           drawer: ContactsDrawer(),
         ),
         Positioned(
-          left: 16.0,
+          right: 16.0,
           top: _appBarHeight - 5,
           child: FloatingActionButton(
             heroTag: 'ftbTop',
             tooltip: 'Increment',
             child: Icon(Icons.add, color: Colors.blue),
-            // mini: true,
+            mini: true,
             backgroundColor: Colors.white,
             onPressed: _incrementCounter,
           ),

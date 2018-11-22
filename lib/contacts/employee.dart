@@ -108,7 +108,7 @@ class Employee extends StatelessWidget {
               child: ListBody(
                 children: <Widget>[
                   Text(
-                      'Ο υπάλληλος ${this.firstName} ${this.lastName} θα αφαιρεθεί από τη συλλογή.'),
+                      'Ο/Η υπάλληλος ${this.firstName} ${this.lastName} θα αφαιρεθεί από τη συλλογή.'),
                 ],
               ),
             ),

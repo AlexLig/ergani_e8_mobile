@@ -72,6 +72,69 @@ class ContactsRouteState extends State<ContactsRoute> {
 
   void _incrementCounter() => setState(() => _counter++);
   void _resetCounter() => setState(() => _counter = 0);
+  Future<void> _handleDelete(
+      {BuildContext context, String firstName, String lastName}) {
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Διαγραφή υπαλλήλου;'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Ο/Η $firstName $lastName θα διαγραφεί από τη συλλογή.'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  'ΑΚΥΡΟ',
+                  style: TextStyle(color: Colors.deepPurple),
+                ),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  'ΔΙΑΓΡΑΦΗ',
+                  style: TextStyle(color: Colors.deepPurple),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  Future<void> _handleEdit(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Επεξεργασία Υπαλλήλου'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('This dialog will allow you to edit the employee.'),
+                  Text('That\'s nice! '),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('ΑΚΥΡΟ'),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('ΑΠΟΘΗΚΕΥΣΗ'),
+              )
+            ],
+          );
+        });
+  }
 
   _showSnackBar(context, String text) {
     Scaffold.of(context).showSnackBar(SnackBar(
@@ -112,9 +175,8 @@ class ContactsRouteState extends State<ContactsRoute> {
               height: 50.0,
               child: TextField(
                 decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: 'Αναζήτηση υπαλλήλου...'
-                ),
+                    prefixIcon: Icon(Icons.search),
+                    hintText: 'Αναζήτηση υπαλλήλου...'),
               ),
             ),
           ),
@@ -138,6 +200,12 @@ class ContactsRouteState extends State<ContactsRoute> {
                                 firstName: employeeList[i].firstName,
                                 lastName: employeeList[i].lastName,
                                 vatNumber: employeeList[i].vatNumber,
+                                onDelete: () => _handleDelete(
+                                      context: context,
+                                      firstName: employeeList[i].firstName,
+                                      lastName: employeeList[i].lastName,
+                                    ),
+                                onEdit: () => _handleEdit(context),
                                 // overtimeStart: overtimeStart,
                               ),
                               onTap: () => _showSnackBar(

@@ -67,15 +67,18 @@ class ContactsRouteState extends State<ContactsRoute> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                      'You have pressed the button this many times $_counter'),
+                  Text('You have pressed the button this many times $_counter'),
                   FlatButton(child: Text('Reset'), onPressed: _resetCounter),
                   FlatButton.icon(
                     icon: Icon(Icons.search),
                     label: Text('Search'),
                     onPressed: _showSnackBar(context),
                   ),
-                  Employee(),
+                  Employee(
+                    firstName: 'Κώστας',
+                    lastName: 'Γουστουρίδης',
+                    vatNumber: '123456789',
+                  ),
                 ],
               ),
             );

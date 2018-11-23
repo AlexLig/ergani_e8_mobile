@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 enum ContactActions { edit, delete }
 
-class Employee extends StatelessWidget {
+class EmployeeListTile extends StatelessWidget {
   final String firstName;
   final String lastName;
   final String vatNumber;
@@ -10,7 +10,7 @@ class Employee extends StatelessWidget {
   final Function onEdit;
   final Function onTap;
 
-  Employee({
+  EmployeeListTile({
     Key key,
     @required this.firstName,
     @required this.lastName,
@@ -21,8 +21,11 @@ class Employee extends StatelessWidget {
     overtimeStart,
   }) : super(key: key);
 
-  String _getInitials() =>
-      this.lastName[0].toUpperCase() + this.firstName[0].toUpperCase();
+  String _getInitials() {
+    return this.lastName[0].toUpperCase() + this.firstName[0].toUpperCase();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -34,11 +37,9 @@ class Employee extends StatelessWidget {
           decoration: BoxDecoration(
             color: Color.fromRGBO(244, 244, 244, 1.0),
             shape: BoxShape.circle,
-            // borderRadius: BorderRadius.circular(50.0),
           ),
           child: Center(
             child: Text(
-              // '${this.firstName[0].toUpperCase()}${this.lastName[0].toUpperCase()}',
               '${_getInitials()}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,

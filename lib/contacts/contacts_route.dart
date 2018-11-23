@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:ergani_e8/contacts/delete_dialog.dart';
 import 'package:ergani_e8/contacts/drawer.dart';
+import 'package:ergani_e8/contacts/edit_dialog.dart';
 import 'package:ergani_e8/contacts/employee.dart';
 import 'package:flutter/material.dart';
 
@@ -8,99 +10,64 @@ class ContactsRoute extends StatefulWidget {
   ContactsRouteState createState() => ContactsRouteState();
 }
 
-class EmployeeDummy {
+class Employee {
   String firstName;
   String lastName;
   String vatNumber;
 
-  EmployeeDummy(
-      {@required this.firstName,
-      @required this.lastName,
-      @required this.vatNumber});
+  Employee({
+    @required this.firstName,
+    @required this.lastName,
+    @required this.vatNumber,
+  });
 }
 
 class ContactsRouteState extends State<ContactsRoute> {
-  int _counter = 0;
   final double _appBarHeight = 100.0;
   var isLoading = false;
-  List employeeList = [
-    EmployeeDummy(
-        firstName: 'Ηλιάννα',
-        lastName: 'Παπαγεωργίου',
-        vatNumber: 'l33tf4bul0us'),
-    EmployeeDummy(
-        firstName: 'Ηλιάννα',
-        lastName: 'Παπαγεωργίου',
-        vatNumber: 'l33tf4bul0us'),
-    EmployeeDummy(
-        firstName: 'Ηλιάννα',
-        lastName: 'Παπαγεωργίου',
-        vatNumber: 'l33tf4bul0us'),
-    EmployeeDummy(
-        firstName: 'Ηλιάννα',
-        lastName: 'Παπαγεωργίου',
-        vatNumber: 'l33tf4bul0us'),
-    EmployeeDummy(
-        firstName: 'Ηλιάννα',
-        lastName: 'Παπαγεωργίου',
-        vatNumber: 'l33tf4bul0us'),
-    EmployeeDummy(
-        firstName: 'Ηλιάννα',
-        lastName: 'Παπαγεωργίου',
-        vatNumber: 'l33tf4bul0us'),
-    EmployeeDummy(
-        firstName: 'Ηλιάννα',
-        lastName: 'Παπαγεωργίου',
-        vatNumber: 'l33tf4bul0us'),
-    EmployeeDummy(
-        firstName: 'Ηλιάννα',
-        lastName: 'Παπαγεωργίου',
-        vatNumber: 'l33tf4bul0us'),
-    EmployeeDummy(
-        firstName: 'Ηλιάννα',
-        lastName: 'Παπαγεωργίου',
-        vatNumber: 'l33tf4bul0us'),
-    EmployeeDummy(
-        firstName: 'Ηλιάννα',
-        lastName: 'Παπαγεωργίου',
-        vatNumber: 'l33tf4bul0us'),
-    EmployeeDummy(
-        firstName: 'Ηλιάννα',
-        lastName: 'Παπαγεωργίου',
-        vatNumber: 'l33tf4bul0us'),
+  List<Employee> employeeList = [
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '111111111'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '222222222'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '333333333'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '444444444'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '555555555'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '666666666'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '777777777'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '888888888'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '999999999'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '000000000'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '123456789'),
   ];
 
   Future<void> _handleDelete(
-      {BuildContext context, String firstName, String lastName}) {
+      {scaffoldContext, String firstName, String lastName, String vatNumber}) {
     return showDialog(
-        context: context,
+        context: scaffoldContext,
         barrierDismissible: true,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Διαγραφή υπαλλήλου;'),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text('Ο/Η $firstName $lastName θα διαγραφεί από τη συλλογή.'),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(
-                  'ΑΚΥΡΟ',
-                  style: TextStyle(color: Colors.deepPurple),
-                ),
-              ),
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(
-                  'ΔΙΑΓΡΑΦΗ',
-                  style: TextStyle(color: Colors.deepPurple),
-                ),
-              ),
-            ],
+          return DeleteDialog(
+            firstName: firstName,
+            lastName: lastName,
+            onDelete: () {
+              setState(() {
+                employeeList = employeeList
+                    .where((el) => el.vatNumber != vatNumber)
+                    .toList();
+              });
+              Navigator.of(context).pop();
+              _showSnackBar(scaffoldContext, 'Ο υπάλληλος διαγράφηκε.');
+            },
           );
         });
   }
@@ -110,26 +77,8 @@ class ContactsRouteState extends State<ContactsRoute> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Επεξεργασία Υπαλλήλου'),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text('This dialog will allow you to edit the employee.'),
-                  Text('That\'s nice! '),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('ΑΚΥΡΟ'),
-              ),
-              FlatButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('ΑΠΟΘΗΚΕΥΣΗ'),
-              )
-            ],
+          return EditDialog(
+            onSave: () => Navigator.of(context).pop(),
           );
         });
   }
@@ -157,11 +106,9 @@ class ContactsRouteState extends State<ContactsRoute> {
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: FloatingActionButton(
-              mini: true,
+            child: IconButton(
               tooltip: 'Προσθήκη Υπαλλήλου',
-              child: Icon(Icons.person_add, color: Colors.grey[800]),
-              backgroundColor: Colors.white,
+              icon: Icon(Icons.person_add, color: Colors.white),
               // SnackBar not working here. Need GlobalKey??
               onPressed: () => _showSnackBar(context, 'Trying to search? o.O'),
             ),
@@ -169,20 +116,6 @@ class ContactsRouteState extends State<ContactsRoute> {
         ],
       ),
 
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(top: 0.0),
-        child: BottomAppBar(
-          child: Container(
-            // color: Colors.teal,
-            height: 50.0,
-            child: TextField(
-              decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: 'Αναζήτηση υπαλλήλου...'),
-            ),
-          ),
-        ),
-      ),
       // Needed to open a snackbar.
       // This happens because you are using the context of the widget that instantiated Scaffold.
       // Not the context of a child of Scaffold.
@@ -200,15 +133,18 @@ class ContactsRouteState extends State<ContactsRoute> {
                       itemBuilder: (BuildContext context, int i) {
                         return Column(
                           children: <Widget>[
-                            Employee(
+                            EmployeeListTile(
                               firstName: employeeList[i].firstName,
                               lastName: employeeList[i].lastName,
                               vatNumber: employeeList[i].vatNumber,
-                              onDelete: () => _handleDelete(
-                                    context: context,
-                                    firstName: employeeList[i].firstName,
-                                    lastName: employeeList[i].lastName,
-                                  ),
+                              onDelete: () {
+                                _handleDelete(
+                                  scaffoldContext: context,
+                                  firstName: employeeList[i].firstName,
+                                  lastName: employeeList[i].lastName,
+                                  vatNumber: employeeList[i].vatNumber,
+                                );
+                              },
                               onEdit: () => _handleEdit(context),
                               onTap: () => _showSnackBar(
                                   context, 'Την Ηλιάννα ρε λιγούρη;'),

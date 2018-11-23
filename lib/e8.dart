@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class VatNumbers {
   String afmEmployer;
@@ -27,11 +28,11 @@ class E8formState extends State<E8form> {
   TimeOfDay _overtimeStart;
   TimeOfDay _overtimeFinish;
 
-  Widget _buildEmployee() => ListTile(
+  Widget _buildEmployee(BuildContext context) => ListTile(
         title: Text('Κωστας Γουστουριδης'),
         subtitle: Text('ΑΦΜ: ${widget.vatNumbers.afmEmployer}'),
       );
-  Widget _buildEmployer() => ListTile(
+  Widget _buildEmployer(BuildContext context) => ListTile(
         title: Text('AGFA Αθήνα'),
         subtitle: Row(
           children: <Widget>[
@@ -44,7 +45,7 @@ class E8formState extends State<E8form> {
         ),
       );
   Widget _child;
-  Widget _buildOverTimePicker() {
+  Widget _buildOverTimePicker(BuildContext context) {
     return Column(
       children: <Widget>[
         Text(
@@ -104,22 +105,19 @@ class E8formState extends State<E8form> {
       context: context,
       initialTime: _overtimeFinish,
     );
-    if (picked != null &&
-        picked != _overtimeFinish &&
-        isLater(picked, _overtimeStart)) {
+    if (picked != null && picked != _overtimeFinish) {
+      if (!isLater(picked, _overtimeStart)) {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text('Η ώρα λήξης πρέπει να είναι μεγαλύτερη.'),
+          ),
+        );
+      }
       setState(() {
         _overtimeFinish = picked;
       });
     }
-  }
-  // checks if timeA is later that timeB
-  bool isLater(TimeOfDay timeA, TimeOfDay timeB) {
-    int hourA = timeA.hour;
-    int hourB = timeB.hour;
-    int minutesA = timeA.minute;
-    int minutesB = timeB.minute;
-
-    return hourA > hourB || (hourA == hourB && minutesA > minutesB);
   }
 
   void _handleSliderChange(newSliderValue) {
@@ -149,25 +147,27 @@ class E8formState extends State<E8form> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        children: <Widget>[
-          _buildEmployer(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8.0, 32.0, 8.0, 8.0),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    _buildEmployee(),
-                    Divider(),
-                    _buildOverTimePicker(),
-                  ],
-                ),
-              ),
+      body: Builder(
+        builder: (context) => Column(
+              children: <Widget>[
+                _buildEmployer(context),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 32.0, 8.0, 8.0),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: <Widget>[
+                          _buildEmployee(context),
+                          Divider(),
+                          _buildOverTimePicker(context),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
             ),
-          )
-        ],
       ),
     );
   }
@@ -185,4 +185,14 @@ TimeOfDay addToTimeOfDay(TimeOfDay timeOfDay, {int hour = 0, int minute = 0}) {
     newHours = tempAddedHours;
   }
   return TimeOfDay(hour: newHours, minute: newMins);
+}
+
+// checks if timeA is later that timeB
+bool isLater(TimeOfDay timeA, TimeOfDay timeB) {
+  int hourA = timeA.hour;
+  int hourB = timeB.hour;
+  int minutesA = timeA.minute;
+  int minutesB = timeB.minute;
+
+  return hourA > hourB || (hourA == hourB && minutesA > minutesB);
 }

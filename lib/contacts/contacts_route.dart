@@ -194,30 +194,26 @@ class ContactsRouteState extends State<ContactsRoute> {
               child: isLoading
                   ? Center(child: CircularProgressIndicator())
                   : ListView.builder(
-                      shrinkWrap: true,
+                      shrinkWrap: false,
                       // padding: EdgeInsets.all(8.0),
                       itemCount: employeeList.length,
                       itemBuilder: (BuildContext context, int i) {
                         return Column(
                           children: <Widget>[
-                            // i == 0 ? Container(height: 16.0,) : Container(),
-                            InkWell(
-                              child: Employee(
-                                firstName: employeeList[i].firstName,
-                                lastName: employeeList[i].lastName,
-                                vatNumber: employeeList[i].vatNumber,
-                                onDelete: () => _handleDelete(
-                                      context: context,
-                                      firstName: employeeList[i].firstName,
-                                      lastName: employeeList[i].lastName,
-                                    ),
-                                onEdit: () => _handleEdit(context),
-                                // overtimeStart: overtimeStart,
-                              ),
+                            Employee(
+                              firstName: employeeList[i].firstName,
+                              lastName: employeeList[i].lastName,
+                              vatNumber: employeeList[i].vatNumber,
+                              onDelete: () => _handleDelete(
+                                    context: context,
+                                    firstName: employeeList[i].firstName,
+                                    lastName: employeeList[i].lastName,
+                                  ),
+                              onEdit: () => _handleEdit(context),
                               onTap: () => _showSnackBar(
                                   context, 'Την Ηλιάννα ρε λιγούρη;'),
+                              // overtimeStart: overtimeStart,
                             ),
-                            // Divider(indent: 70.0),
                             i == employeeList.length - 1
                                 ? Container(height: 32.0)
                                 : Container(),

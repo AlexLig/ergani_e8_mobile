@@ -91,6 +91,10 @@ class E8formState extends State<E8form> {
     if (picked != null && picked != _overtimeStart) {
       setState(() {
         _overtimeStart = picked;
+        _overtimeFinish = addToTimeOfDay(
+          _overtimeStart,
+          minute: (_sliderValue * 60).toInt(),
+        );
       });
     }
   }
@@ -100,11 +104,22 @@ class E8formState extends State<E8form> {
       context: context,
       initialTime: _overtimeFinish,
     );
-    if (picked != null && picked != _overtimeFinish) {
+    if (picked != null &&
+        picked != _overtimeFinish &&
+        isLater(picked, _overtimeStart)) {
       setState(() {
         _overtimeFinish = picked;
       });
     }
+  }
+  // checks if timeA is later that timeB
+  bool isLater(TimeOfDay timeA, TimeOfDay timeB) {
+    int hourA = timeA.hour;
+    int hourB = timeB.hour;
+    int minutesA = timeA.minute;
+    int minutesB = timeB.minute;
+
+    return hourA > hourB || (hourA == hourB && minutesA > minutesB);
   }
 
   void _handleSliderChange(newSliderValue) {

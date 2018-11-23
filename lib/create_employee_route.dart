@@ -18,9 +18,9 @@ class EmployeeFormState extends State<EmployeeForm> {
   final _formKey = GlobalKey<FormState>();
 
   // FocusNode employeeFocusNode;
-  FocusNode name;
-  FocusNode surname;
-  FocusNode vatNumber;
+  FocusNode nameFocus;
+  FocusNode surnameFocus;
+  FocusNode vatNumberFocus;
 
   var _data = _EmployeeData();
   // var _data = Employee(
@@ -36,16 +36,16 @@ class EmployeeFormState extends State<EmployeeForm> {
   void initState() {
     super.initState();
 
-    name = FocusNode();
-    surname = FocusNode();
-    vatNumber = FocusNode();
+    nameFocus = FocusNode();
+    surnameFocus = FocusNode();
+    vatNumberFocus = FocusNode();
   }
 
   @override
   void dispose() {
-    name.dispose();
-    surname.dispose();
-    vatNumber.dispose();
+    nameFocus.dispose();
+    surnameFocus.dispose();
+    vatNumberFocus.dispose();
     nameController.dispose();
     surnameController.dispose();
     vatNumberController.dispose();
@@ -95,10 +95,10 @@ class EmployeeFormState extends State<EmployeeForm> {
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) {
-                  FocusScope.of(context).requestFocus(surname);
+                  FocusScope.of(context).requestFocus(surnameFocus);
                 },
                 autofocus: true,
-                focusNode: name,
+                focusNode: nameFocus,
                 decoration: InputDecoration(labelText: 'Όνομα'),
                 validator: (value) {
                   if (value.isEmpty) {
@@ -112,9 +112,9 @@ class EmployeeFormState extends State<EmployeeForm> {
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) {
-                  FocusScope.of(context).requestFocus(vatNumber);
+                  FocusScope.of(context).requestFocus(vatNumberFocus);
                 },
-                focusNode: surname,
+                focusNode: surnameFocus,
                 decoration: InputDecoration(labelText: 'Επίθετο'),
                 validator: (value) {
                   if (value.isEmpty) {
@@ -126,7 +126,7 @@ class EmployeeFormState extends State<EmployeeForm> {
               // VATNUMBER textfield
               TextFormField(
                 keyboardType: TextInputType.number,
-                focusNode: vatNumber,
+                focusNode: vatNumberFocus,
                 textInputAction: TextInputAction.done,
                 decoration: InputDecoration(labelText: 'ΑΦΜ'),
                 validator: (value) => validateAfm(value),

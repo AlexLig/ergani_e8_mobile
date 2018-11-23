@@ -1,5 +1,7 @@
 import 'package:ergani_e8/contacts/contacts_route.dart';
 import 'package:ergani_e8/create_employee_route.dart';
+
+import 'package:ergani_e8/e8home.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -27,7 +29,7 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-          body: Container(
+      body: Container(
         color: Colors.amber,
         height: 300,
         child: Center(

@@ -1,3 +1,4 @@
+import 'package:ergani_e8/contacts/employee.dart';
 import 'package:flutter/material.dart';
 
 class EmployeeForm extends StatefulWidget {
@@ -8,8 +9,8 @@ class EmployeeForm extends StatefulWidget {
 }
 
 class _EmployeeData {
-  String name = '';
-  String surname = '';
+  String firstName = '';
+  String lastName = '';
   String vatNumber = '';
 }
 
@@ -22,6 +23,11 @@ class EmployeeFormState extends State<EmployeeForm> {
   FocusNode vatNumber;
 
   var _data = _EmployeeData();
+  // var _data = Employee(
+  //   firstName: '',
+  //   lastName: '',
+  //   vatNumber: '',
+  // );
 
   final nameController = TextEditingController();
   final surnameController = TextEditingController();
@@ -46,12 +52,12 @@ class EmployeeFormState extends State<EmployeeForm> {
     super.dispose();
   }
 
-  submit() {
+  submit(context) {
     if (this._formKey.currentState.validate()) {
       //_formKey.currentState.save();
 
-      _data.name = nameController.text;
-      _data.surname = surnameController.text;
+      _data.firstName = nameController.text;
+      _data.lastName = surnameController.text;
       _data.vatNumber = vatNumberController.text;
 
       nameController.clear();
@@ -59,12 +65,18 @@ class EmployeeFormState extends State<EmployeeForm> {
       vatNumberController.clear();
 
       print('Printing the employee data.');
-      print('Name: ${_data.name}');
-      print('Surname: ${_data.surname}');
+      print('Name: ${_data.firstName}');
+      print('Surname: ${_data.lastName}');
       print('VatNumber: ${_data.vatNumber}');
 
-      return Scaffold.of(context)
-          .showSnackBar(SnackBar(content: Text('Η καταχώρηση ολοκληρώθηκε')));
+      Navigator.pop(
+        context,
+        Employee(
+          firstName: _data.firstName,
+          lastName: _data.lastName,
+          vatNumber: _data.vatNumber,
+        ),
+      );
     }
   }
 
@@ -120,14 +132,21 @@ class EmployeeFormState extends State<EmployeeForm> {
                 validator: (value) => validateAfm(value),
                 controller: vatNumberController,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: RaisedButton(
-                  onPressed: () {
-                    this.submit();
-                  },
-                  child: Text('Submit'),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: RaisedButton(
+                      color: Colors.teal,
+                      onPressed: () => this.submit(context),
+                      child: Text(
+                        'ΑΠΟΘΗΚΕΥΣΗ',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

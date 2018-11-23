@@ -17,7 +17,7 @@ class DeleteDialog extends StatelessWidget {
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Text('Ο/Η $firstName $lastName θα διαγραφεί από τη συλλογή.'),
+            Text('Ο/Η $lastName $firstName θα διαγραφεί από τη συλλογή.'),
           ],
         ),
       ),

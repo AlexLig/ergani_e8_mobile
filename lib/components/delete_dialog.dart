@@ -1,15 +1,11 @@
+import 'package:ergani_e8/contacts/employee.dart';
 import 'package:flutter/material.dart';
 
 class DeleteDialog extends StatelessWidget {
-  final String firstName;
-  final String lastName;
-  final Function onDelete;
+  final Employee employee;
 
-  const DeleteDialog({
-    @required this.firstName,
-    @required this.lastName,
-    @required this.onDelete,
-  });
+  const DeleteDialog({Key key, this.employee}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -17,20 +13,22 @@ class DeleteDialog extends StatelessWidget {
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Text('Ο/Η $lastName $firstName θα διαγραφεί από τη συλλογή.'),
+            Text(
+              'Ο/Η ${this.employee.lastName} ${this.employee.firstName} θα διαγραφεί από τη συλλογή.',
+            ),
           ],
         ),
       ),
       actions: <Widget>[
         FlatButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.pop(context),
           child: Text(
             'ΑΚΥΡΟ',
             style: TextStyle(color: Colors.deepPurple),
           ),
         ),
         FlatButton(
-          onPressed: onDelete,
+          onPressed: () => Navigator.pop(context, this.employee),
           child: Text(
             'ΔΙΑΓΡΑΦΗ',
             style: TextStyle(color: Colors.deepPurple),

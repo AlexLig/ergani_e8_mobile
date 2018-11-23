@@ -13,7 +13,7 @@ class _EmployeeData {
   String lastName = '';
   String vatNumber = '';
 }
-
+// TODO: Don't add if AFM already exists.
 class EmployeeFormState extends State<EmployeeForm> {
   final _formKey = GlobalKey<FormState>();
 

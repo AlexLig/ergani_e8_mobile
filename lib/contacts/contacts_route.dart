@@ -23,38 +23,62 @@ class ContactsRouteState extends State<ContactsRoute> {
         firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '222222222'),
     Employee(
         firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '333333333'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '111111111'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '222222222'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '333333333'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '111111111'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '222222222'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '333333333'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '111111111'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '222222222'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '333333333'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '111111111'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '222222222'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '333333333'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '111111111'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '222222222'),
+    Employee(
+        firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '333333333'),
   ];
 
-  void _handleDelete({
-    scaffoldContext,
-    String firstName,
-    String lastName,
-    String vatNumber,
-  }) {
-    showDialog(
+  void _handleDelete({scaffoldContext, Employee employee}) async {
+    final employeeToDelete = await showDialog(
         context: scaffoldContext,
         barrierDismissible: true,
         builder: (BuildContext context) {
-          return DeleteDialog(
-            firstName: firstName,
-            lastName: lastName,
-            onDelete: () {
-              setState(() {
-                employeeList = employeeList
-                    .where((el) => el.vatNumber != vatNumber)
-                    .toList();
-              });
-              Scaffold.of(scaffoldContext).showSnackBar(
-                SnackBar(
-                  content: Text('Ο/Η $lastName $firstName διαγράφηκε.'),
-                  backgroundColor: Colors.green,
-                  // TODO: Undo delete.
-                ),
-              );
-              Navigator.of(context).pop();
-            },
-          );
+          return DeleteDialog(employee: employee);
         });
+
+    if (employeeToDelete is Employee) {
+      setState(() {
+        employeeList = employeeList
+            .where((el) => el.vatNumber != employeeToDelete.vatNumber)
+            .toList();
+      });
+      Scaffold.of(scaffoldContext).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Ο/Η ${employeeToDelete.lastName} ${employeeToDelete.firstName} διαγράφηκε.',
+          ),
+          backgroundColor: Colors.green,
+          // TODO: Undo delete.
+        ),
+      );
+    }
   }
 
   Future<void> _handleEdit(BuildContext context) {
@@ -108,40 +132,37 @@ class ContactsRouteState extends State<ContactsRoute> {
               Expanded(
                 child: employeeList.length == 0
                     ? AddContactsIndicator()
-                    : ListView.builder(
-                        itemCount: employeeList.length,
-                        itemBuilder: (BuildContext context, int i) {
-                          return Column(
-                            children: <Widget>[
-                              EmployeeListTile(
-                                firstName: employeeList[i].firstName,
-                                lastName: employeeList[i].lastName,
-                                vatNumber: employeeList[i].vatNumber,
-                                onDelete: () {
-                                  _handleDelete(
-                                    scaffoldContext: context,
-                                    firstName: employeeList[i].firstName,
-                                    lastName: employeeList[i].lastName,
-                                    vatNumber: employeeList[i].vatNumber,
-                                  );
-                                },
-                                onEdit: () => _handleEdit(context),
-                                onTap: () => print(''),
-                                // overtimeStart: overtimeStart,
-                              ),
-                              i == employeeList.length - 1
-                                  ? Container(height: 32.0)
-                                  : Container(),
-                            ],
-                          );
-                        },
-                      ),
+                    : _buildEmployeeList(context),
               ),
             ],
           ),
         );
       }),
       drawer: ContactsDrawer(),
+    );
+  }
+
+  _buildEmployeeList(context) {
+    return ListView.builder(
+      itemCount: employeeList.length,
+      itemBuilder: (BuildContext context, int i) {
+        return Column(
+          children: <Widget>[
+            EmployeeListTile(
+              employee: employeeList[i],
+              onDelete: () => _handleDelete(
+                    scaffoldContext: context,
+                    employee: employeeList[i],
+                  ),
+              onEdit: () => _handleEdit(context),
+              onTap: () => print(''),
+            ),
+            i == employeeList.length - 1
+                ? Container(height: 50.0)
+                : Container(),
+          ],
+        );
+      },
     );
   }
 

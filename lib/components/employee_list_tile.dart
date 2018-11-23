@@ -1,20 +1,15 @@
+import 'package:ergani_e8/contacts/employee.dart';
 import 'package:flutter/material.dart';
 
 enum ContactActions { edit, delete }
 
 class EmployeeListTile extends StatelessWidget {
-  final String firstName;
-  final String lastName;
-  final String vatNumber;
-  final Function onDelete;
-  final Function onEdit;
-  final Function onTap;
+  final Employee employee;
+  final Function onDelete, onEdit, onTap;
 
   EmployeeListTile({
     Key key,
-    @required this.firstName,
-    @required this.lastName,
-    @required this.vatNumber,
+    @required this.employee,
     @required this.onDelete,
     @required this.onEdit,
     @required this.onTap,
@@ -22,9 +17,9 @@ class EmployeeListTile extends StatelessWidget {
   }) : super(key: key);
 
   String _getInitials() {
-    return this.lastName[0].toUpperCase() + this.firstName[0].toUpperCase();
+    return this.employee.lastName[0].toUpperCase() +
+        this.employee.firstName[0].toUpperCase();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +44,8 @@ class EmployeeListTile extends StatelessWidget {
             ),
           ),
         ),
-        title: Text('$lastName $firstName'),
-        subtitle: Text('ΑΦΜ: $vatNumber'),
+        title: Text('${employee.lastName} ${employee.firstName}'),
+        subtitle: Text('ΑΦΜ: ${employee.vatNumber}'),
         trailing: PopupMenuButton<ContactActions>(
           onSelected: (ContactActions selection) {
             switch (selection) {

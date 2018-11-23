@@ -1,5 +1,4 @@
 import 'package:ergani_e8/create_employee.dart';
-import 'package:ergani_e8/e8create.dart';
 import 'package:ergani_e8/e8home.dart';
 import 'package:flutter/material.dart';
 
@@ -35,15 +34,14 @@ class MyHomePage extends StatelessWidget {
           children: <Widget>[
             TestButton('E8', EmployeeForm()),
             TestButton(
-                'Test',
-                E8home(
-                  vatNumbers: VatNumbers(
-                    afmEmployer: '000011111',
-                    ameEmployer: '9845376124',
-                    afmEmployee: '10548480',
-                  ),
-                  // commonFinishHour: TimeOfDay(hour: 16, minute: 00),
-                )),
+              'Test',
+              E8home(
+                afmEmployer: '000011111',
+                ameEmployer: '9845376124',
+                afmEmployee: '10548480',
+              ),
+              // commonFinishHour: TimeOfDay(hour: 16, minute: 00),
+            ),
           ],
         ),
       ),

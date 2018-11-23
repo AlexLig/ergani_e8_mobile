@@ -1,33 +1,52 @@
+import 'package:ergani_e8/vatNumbers.dart';
 import 'package:flutter/material.dart';
-import 'package:ergani_e8/e8create.dart';
-import 'package:ergani_e8/e8cancel.dart';
+import 'package:ergani_e8/e8formCreate.dart';
+import 'package:ergani_e8/e8formCancel.dart';
 
 class E8home extends StatefulWidget {
-  final VatNumbers vatNumbers;
-  final TimeOfDay commonFinishHour;
-  E8home({Key key, @required this.vatNumbers, this.commonFinishHour})
+  String afmEmployer;
+  String ameEmployer;
+  String afmEmployee;
+  TimeOfDay commonFinishHour;
+  E8home(
+      {Key key,
+      @required this.afmEmployer,
+      @required this.afmEmployee,
+      this.ameEmployer,
+      this.commonFinishHour})
       : super(key: key);
 
   @override
-  E8HomeState createState() => E8HomeState();
+  E8homeState createState() => E8homeState();
 }
 
-class E8HomeState extends State<E8home> {
+class E8homeState extends State<E8home> {
   int _currentIndex = 0;
-  final List<Widget> _children = [
-    E8form(
-      vatNumbers: new VatNumbers(
-          afmEmployee: '123456789',
-          afmEmployer: '1053838105',
-          ameEmployer: '9999777710'),
-    ),
-    E8formCancel(
-      vatNumbers: new VatNumbers(
-          afmEmployee: '123456789',
-          afmEmployer: '1053838105',
-          ameEmployer: '9999777710'),
-    )
-  ];
+  String _afmEmployer;
+  String _ameEmployer;
+  String _afmEmployee;
+  VatNumbers _vatNumbers;
+  TimeOfDay _commonFinishHour;
+  List<Widget> _children = [];
+
+  @override
+  void initState() {
+    _afmEmployer = widget.afmEmployer;
+    _ameEmployer = widget.ameEmployer;
+    _afmEmployee = widget.afmEmployee;
+    _commonFinishHour = widget.commonFinishHour == null
+        ? TimeOfDay(hour: 16, minute: 00)
+        : widget.commonFinishHour;
+    _vatNumbers = VatNumbers(
+        afmEmployee: _afmEmployee,
+        ameEmployer: _ameEmployer,
+        afmEmployer: _afmEmployer);
+    _children = [
+      E8form(vatNumbers: _vatNumbers, commonFinishHour: _commonFinishHour),
+      E8formCancel(vatNumbers: _vatNumbers, commonFinishHour: _commonFinishHour)
+    ];
+    super.initState();
+  }
 
   void onTabTapped(int index) {
     setState(() {

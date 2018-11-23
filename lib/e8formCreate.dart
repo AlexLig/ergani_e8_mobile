@@ -1,17 +1,9 @@
+import 'package:ergani_e8/utilFunctions.dart';
+import 'package:ergani_e8/vatNumbers.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class VatNumbers {
-  String afmEmployer;
-  String ameEmployer;
-  String afmEmployee;
 
-  VatNumbers({
-    @required this.afmEmployee,
-    @required this.afmEmployer,
-    this.ameEmployer,
-  });
-}
 
 class E8form extends StatefulWidget {
   final VatNumbers vatNumbers;
@@ -27,6 +19,7 @@ class E8formState extends State<E8form> {
   double _sliderValue;
   TimeOfDay _overtimeStart;
   TimeOfDay _overtimeFinish;
+  Widget _ameTextChild;
 
   Widget _buildEmployee(BuildContext context) => ListTile(
         title: Text('Κωστας Γουστουριδης'),
@@ -40,11 +33,11 @@ class E8formState extends State<E8form> {
               padding: const EdgeInsets.only(right: 8.0),
               child: Text('ΑΦΜ: ${widget.vatNumbers.afmEmployer}'),
             ),
-            _child
+            _ameTextChild
           ],
         ),
       );
-  Widget _child;
+
   Widget _buildOverTimePicker(BuildContext context) {
     return Column(
       children: <Widget>[
@@ -83,7 +76,6 @@ class E8formState extends State<E8form> {
       ],
     );
   }
-
   Future<Null> _selectStartTime(BuildContext context) async {
     final TimeOfDay picked = await showTimePicker(
       context: context,
@@ -99,7 +91,6 @@ class E8formState extends State<E8form> {
       });
     }
   }
-
   Future<Null> _selectFinishTime(BuildContext context) async {
     final TimeOfDay picked = await showTimePicker(
       context: context,
@@ -119,7 +110,6 @@ class E8formState extends State<E8form> {
       });
     }
   }
-
   void _handleSliderChange(newSliderValue) {
     setState(() {
       _sliderValue = newSliderValue;
@@ -136,7 +126,7 @@ class E8formState extends State<E8form> {
         : widget.commonFinishHour;
     _overtimeFinish =
         addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
-    _child = widget.vatNumbers.ameEmployer != null
+    _ameTextChild = widget.vatNumbers.ameEmployer != null
         ? Text('ΑΜΕ: ${widget.vatNumbers.ameEmployer}')
         : Container();
 
@@ -175,37 +165,6 @@ class E8formState extends State<E8form> {
   }
 }
 
-// BUG when exceeding 24 hours
-TimeOfDay addToTimeOfDay(TimeOfDay timeOfDay, {int hour = 0, int minute = 0}) {
-  int newMins = (minute + timeOfDay.minute) % 60;
-  int addedHours = (minute + timeOfDay.minute) ~/ 60;
-  int tempAddedHours = hour + addedHours + timeOfDay.hour;
-  int newHours;
-  if (tempAddedHours ~/ 24 > 0) {
-    newHours = tempAddedHours ~/ 24;
-  } else {
-    newHours = tempAddedHours;
-  }
-  return TimeOfDay(hour: newHours, minute: newMins);
-}
 
-// checks if timeA is later that timeB
-bool isLater(TimeOfDay timeA, TimeOfDay timeB) {
-  int hourA = timeA.hour;
-  int hourB = timeB.hour;
-  int minutesA = timeA.minute;
-  int minutesB = timeB.minute;
 
-  return hourA > hourB || (hourA == hourB && minutesA > minutesB);
-}
 
-String e8Parser(VatNumbers vats, TimeOfDay start, TimeOfDay finish) {
-  String employerVat = vats.ameEmployer == null
-      ? vats.afmEmployer.trim()
-      : vats.afmEmployer.trim() + vats.ameEmployer.trim();
-  String employeeVat = vats.afmEmployee.trim();
-  String startHour = start.hour.toString() + start.minute.toString();
-  String finishHour = finish.hour.toString() + finish.minute.toString();
-  List<String> e8Data = ['Υ1', employerVat, employeeVat, startHour, finishHour];
-  return e8Data.join(" ");
-}

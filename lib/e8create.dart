@@ -146,7 +146,9 @@ class E8formState extends State<E8form> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+     
+      floatingActionButton: FloatingActionButton(child: Icon(Icons.message),onPressed: ()=> print('hi')),
+      appBar: AppBar(title: Text('Νέα υποβολή'),),
       body: Builder(
         builder: (context) => Column(
               children: <Widget>[
@@ -195,4 +197,15 @@ bool isLater(TimeOfDay timeA, TimeOfDay timeB) {
   int minutesB = timeB.minute;
 
   return hourA > hourB || (hourA == hourB && minutesA > minutesB);
+}
+
+String e8Parser(VatNumbers vats, TimeOfDay start, TimeOfDay finish) {
+  String employerVat = vats.ameEmployer == null
+      ? vats.afmEmployer.trim()
+      : vats.afmEmployer.trim() + vats.ameEmployer.trim();
+  String employeeVat = vats.afmEmployee.trim();
+  String startHour = start.hour.toString() + start.minute.toString();
+  String finishHour = finish.hour.toString() + finish.minute.toString();
+  List<String> e8Data = ['Υ1', employerVat, employeeVat, startHour, finishHour];
+  return e8Data.join(" ");
 }

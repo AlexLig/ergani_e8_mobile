@@ -1,5 +1,6 @@
 import 'package:ergani_e8/create_employee.dart';
-import 'package:ergani_e8/e8.dart';
+import 'package:ergani_e8/e8create.dart';
+import 'package:ergani_e8/e8home.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -35,7 +36,7 @@ class MyHomePage extends StatelessWidget {
             TestButton('E8', EmployeeForm()),
             TestButton(
                 'Test',
-                E8form(
+                E8home(
                   vatNumbers: VatNumbers(
                     afmEmployer: '000011111',
                     ameEmployer: '9845376124',

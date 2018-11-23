@@ -23,7 +23,6 @@ class E8form extends StatefulWidget {
 }
 
 class E8formState extends State<E8form> {
-  final _formKey = GlobalKey<FormState>();
   double _sliderValue;
   TimeOfDay _overtimeStart;
   TimeOfDay _overtimeFinish;
@@ -53,43 +52,81 @@ class E8formState extends State<E8form> {
           style: TextStyle(fontSize: 18.0),
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             FlatButton(
               // TODO : set context to alwaysUse24HourFormat
               child: Text(_overtimeStart.format(context)),
-              onPressed: () => print('My name is Alex whats yours?'),
+              onPressed: () => _selectStartTime(context),
             ),
             Icon(Icons.arrow_forward),
             FlatButton(
               child: Text(_overtimeFinish.format(context)),
-              onPressed: () => print('My name is Kostas. Whats yours?'),
+              onPressed: () => _selectFinishTime(context),
             )
           ],
         ),
-        Slider(
-          divisions: 6,
-          min: 0,
-          max: 3,
-          label: '$_sliderValue  ώρες',
-          value: _sliderValue,
-          onChanged: (newValue) {
-            setState(() => _sliderValue = newValue);
-          },
+        Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+          child: Slider(
+            divisions: 5,
+            min: 0.5,
+            max: 3.0,
+            label: '$_sliderValue  ώρες',
+            value: _sliderValue,
+            onChanged: (newSliderValue) {
+              _handleSliderChange(newSliderValue);
+            },
+          ),
         )
       ],
     );
   }
 
+  Future<Null> _selectStartTime(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: _overtimeStart,
+    );
+    if (picked != null && picked != _overtimeStart) {
+      setState(() {
+        _overtimeStart = picked;
+      });
+    }
+  }
+
+  Future<Null> _selectFinishTime(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: _overtimeFinish,
+    );
+    if (picked != null && picked != _overtimeFinish) {
+      setState(() {
+        _overtimeFinish = picked;
+      });
+    }
+  }
+
+  void _handleSliderChange(newSliderValue) {
+    setState(() {
+      _sliderValue = newSliderValue;
+      _overtimeFinish =
+          addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
+    });
+  }
+
   @override
   void initState() {
+    _sliderValue = 0.5;
     _overtimeStart = widget.commonFinishHour == null
         ? TimeOfDay(hour: 16, minute: 00)
         : widget.commonFinishHour;
-    _overtimeFinish = addToTimeOfDay(_overtimeStart, minute: 90, hour: 9);
+    _overtimeFinish =
+        addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
     _child = widget.vatNumbers.ameEmployer != null
         ? Text('ΑΜΕ: ${widget.vatNumbers.ameEmployer}')
         : Container();
-    _sliderValue = 0.0;
+
     super.initState();
   }
 
@@ -100,14 +137,27 @@ class E8formState extends State<E8form> {
       body: Column(
         children: <Widget>[
           _buildEmployer(),
-          Divider(height: 16.0),
-          _buildEmployee(),
-          _buildOverTimePicker()
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8.0, 32.0, 8.0, 8.0),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    _buildEmployee(),
+                    Divider(),
+                    _buildOverTimePicker(),
+                  ],
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
   }
 }
+
 // BUG when exceeding 24 hours
 TimeOfDay addToTimeOfDay(TimeOfDay timeOfDay, {int hour = 0, int minute = 0}) {
   int newMins = (minute + timeOfDay.minute) % 60;

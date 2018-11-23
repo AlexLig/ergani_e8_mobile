@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 enum ContactActions { edit, delete }
 
 class Employee extends StatelessWidget {
-  String firstName;
-  String lastName;
-  String vatNumber;
-  Function onDelete;
-  Function onEdit;
+  final String firstName;
+  final String lastName;
+  final String vatNumber;
+  final Function onDelete;
+  final Function onEdit;
 
   Employee({
     Key key,

@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:async';
 import 'package:ergani_e8/contacts/delete_dialog.dart';
 import 'package:ergani_e8/contacts/drawer.dart';
 import 'package:ergani_e8/contacts/edit_dialog.dart';
@@ -50,9 +50,13 @@ class ContactsRouteState extends State<ContactsRoute> {
         firstName: 'Ηλιάννα', lastName: 'Παπαγεωργίου', vatNumber: '123456789'),
   ];
 
-  Future<void> _handleDelete(
-      {scaffoldContext, String firstName, String lastName, String vatNumber}) {
-    return showDialog(
+  void _handleDelete({
+    scaffoldContext,
+    String firstName,
+    String lastName,
+    String vatNumber,
+  }) {
+    showDialog(
         context: scaffoldContext,
         barrierDismissible: true,
         builder: (BuildContext context) {
@@ -60,13 +64,25 @@ class ContactsRouteState extends State<ContactsRoute> {
             firstName: firstName,
             lastName: lastName,
             onDelete: () {
-              setState(() {
-                employeeList = employeeList
-                    .where((el) => el.vatNumber != vatNumber)
-                    .toList();
-              });
+              try {
+                setState(() {
+                  employeeList = employeeList
+                      .where((el) => el.vatNumber != vatNumber)
+                      .toList();
+                });
+                Scaffold.of(scaffoldContext).showSnackBar(SnackBar(
+                  content: Text('Ο υπάλληλος διαγράφηκε.'),
+                  backgroundColor: Colors.green,
+                  // TODO: Undo delete.
+                ));
+              } catch (e) {
+                Scaffold.of(scaffoldContext).showSnackBar(SnackBar(
+                  content: Text('Σφάλμα διαγραφής υπαλλήλου.'),
+                  backgroundColor: Colors.orange,
+                ));
+                print(e);
+              }
               Navigator.of(context).pop();
-              _showSnackBar(scaffoldContext, 'Ο υπάλληλος διαγράφηκε.');
             },
           );
         });
@@ -87,7 +103,6 @@ class ContactsRouteState extends State<ContactsRoute> {
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text(text),
       backgroundColor: Colors.green,
-      duration: Duration(seconds: 5),
       action: SnackBarAction(
         textColor: Colors.white,
         label: 'Not really',
@@ -110,7 +125,7 @@ class ContactsRouteState extends State<ContactsRoute> {
               tooltip: 'Προσθήκη Υπαλλήλου',
               icon: Icon(Icons.person_add, color: Colors.white),
               // SnackBar not working here. Need GlobalKey??
-              onPressed: () => _showSnackBar(context, 'Trying to search? o.O'),
+              onPressed: () => _handleEdit(context),
             ),
           ),
         ],
@@ -121,44 +136,46 @@ class ContactsRouteState extends State<ContactsRoute> {
       // Not the context of a child of Scaffold.
       // You can solve this by simply using a different context :
       body: Builder(builder: (context) {
-        return Column(
-          children: <Widget>[
-            Expanded(
-              child: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      shrinkWrap: false,
-                      // padding: EdgeInsets.all(8.0),
-                      itemCount: employeeList.length,
-                      itemBuilder: (BuildContext context, int i) {
-                        return Column(
-                          children: <Widget>[
-                            EmployeeListTile(
-                              firstName: employeeList[i].firstName,
-                              lastName: employeeList[i].lastName,
-                              vatNumber: employeeList[i].vatNumber,
-                              onDelete: () {
-                                _handleDelete(
-                                  scaffoldContext: context,
-                                  firstName: employeeList[i].firstName,
-                                  lastName: employeeList[i].lastName,
-                                  vatNumber: employeeList[i].vatNumber,
-                                );
-                              },
-                              onEdit: () => _handleEdit(context),
-                              onTap: () => _showSnackBar(
-                                  context, 'Την Ηλιάννα ρε λιγούρη;'),
-                              // overtimeStart: overtimeStart,
-                            ),
-                            i == employeeList.length - 1
-                                ? Container(height: 32.0)
-                                : Container(),
-                          ],
-                        );
-                      },
-                    ),
-            ),
-          ],
+
+        return Container(
+          color: employeeList.length == 0 ? Colors.grey[200] : Colors.white ,
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        itemCount: employeeList.length,
+                        itemBuilder: (BuildContext context, int i) {
+                          return Column(
+                            children: <Widget>[
+                              EmployeeListTile(
+                                firstName: employeeList[i].firstName,
+                                lastName: employeeList[i].lastName,
+                                vatNumber: employeeList[i].vatNumber,
+                                onDelete: () {
+                                  _handleDelete(
+                                    scaffoldContext: context,
+                                    firstName: employeeList[i].firstName,
+                                    lastName: employeeList[i].lastName,
+                                    vatNumber: employeeList[i].vatNumber,
+                                  );
+                                },
+                                onEdit: () => _handleEdit(context),
+                                onTap: () => _showSnackBar(
+                                    context, 'Την Ηλιάννα ρε λιγούρη;'),
+                                // overtimeStart: overtimeStart,
+                              ),
+                              i == employeeList.length - 1
+                                  ? Container(height: 32.0)
+                                  : Container(),
+                            ],
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
         );
       }),
       drawer: ContactsDrawer(),

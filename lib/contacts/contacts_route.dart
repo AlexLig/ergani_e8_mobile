@@ -70,8 +70,6 @@ class ContactsRouteState extends State<ContactsRoute> {
         vatNumber: 'l33tf4bul0us'),
   ];
 
-  void _incrementCounter() => setState(() => _counter++);
-  void _resetCounter() => setState(() => _counter = 0);
   Future<void> _handleDelete(
       {BuildContext context, String firstName, String lastName}) {
     return showDialog(
@@ -150,52 +148,60 @@ class ContactsRouteState extends State<ContactsRoute> {
   }
 
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Scaffold(
-          appBar: PreferredSize(
-            preferredSize:
-                Size(MediaQuery.of(context).size.width, _appBarHeight),
-            child: AppBar(
-              title: Text('Υπάλληλοι'),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.search),
-                  tooltip: 'Αναζήτηση',
-                  // SnackBar not working here. Need GlobalKey??
-                  onPressed: () =>
-                      _showSnackBar(context, 'Trying to search? o.O'),
-                )
-              ],
+    return Scaffold(
+      appBar: AppBar(
+        flexibleSpace: FlexibleSpaceBar(
+          collapseMode: CollapseMode.pin,
+        ),
+        title: Text('Υπάλληλοι'),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: FloatingActionButton(
+              mini: true,
+              tooltip: 'Προσθήκη Υπαλλήλου',
+              child: Icon(Icons.person_add, color: Colors.grey[800]),
+              backgroundColor: Colors.white,
+              // SnackBar not working here. Need GlobalKey??
+              onPressed: () => _showSnackBar(context, 'Trying to search? o.O'),
             ),
           ),
-          bottomNavigationBar: BottomAppBar(
-            child: Container(
-              // color: Colors.teal,
-              height: 50.0,
-              child: TextField(
-                decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    hintText: 'Αναζήτηση υπαλλήλου...'),
-              ),
+        ],
+      ),
+
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(top: 0.0),
+        child: BottomAppBar(
+          child: Container(
+            // color: Colors.teal,
+            height: 50.0,
+            child: TextField(
+              decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  hintText: 'Αναζήτηση υπαλλήλου...'),
             ),
           ),
-          // Needed to open a snackbar.
-          // This happens because you are using the context of the widget that instantiated Scaffold.
-          // Not the context of a child of Scaffold.
-          // You can solve this by simply using a different context :
-          body: Builder(builder: (context) {
-            return Column(
-              children: <Widget>[
-                Expanded(
-                  child: isLoading
-                      ? Center(child: CircularProgressIndicator())
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          // padding: EdgeInsets.all(8.0),
-                          itemCount: employeeList.length,
-                          itemBuilder: (BuildContext context, int i) {
-                            return InkWell(
+        ),
+      ),
+      // Needed to open a snackbar.
+      // This happens because you are using the context of the widget that instantiated Scaffold.
+      // Not the context of a child of Scaffold.
+      // You can solve this by simply using a different context :
+      body: Builder(builder: (context) {
+        return Column(
+          children: <Widget>[
+            Expanded(
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      // padding: EdgeInsets.all(8.0),
+                      itemCount: employeeList.length,
+                      itemBuilder: (BuildContext context, int i) {
+                        return Column(
+                          children: <Widget>[
+                            // i == 0 ? Container(height: 16.0,) : Container(),
+                            InkWell(
                               child: Employee(
                                 firstName: employeeList[i].firstName,
                                 lastName: employeeList[i].lastName,
@@ -210,40 +216,20 @@ class ContactsRouteState extends State<ContactsRoute> {
                               ),
                               onTap: () => _showSnackBar(
                                   context, 'Την Ηλιάννα ρε λιγούρη;'),
-                            );
-                          },
-                        ),
-                ),
-              ],
-            );
-          }),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-          floatingActionButton: FloatingActionButton(
-            heroTag: 'ftbBot',
-            tooltip: 'Increment',
-            child: Icon(Icons.person_add),
-            onPressed: _incrementCounter,
-          ),
-          drawer: ContactsDrawer(),
-        ),
-        Positioned(
-          left: 16.0,
-          top: _appBarHeight - 5,
-          child: FloatingActionButton.extended(
-            isExtended: true,
-            heroTag: 'ftbTop',
-            tooltip: 'Increment',
-            label: Text(
-              'ΠΡΟΣΘΗΚΗ',
-              style: TextStyle(color: Colors.blue),
+                            ),
+                            // Divider(indent: 70.0),
+                            i == employeeList.length - 1
+                                ? Container(height: 32.0)
+                                : Container(),
+                          ],
+                        );
+                      },
+                    ),
             ),
-            icon: Icon(Icons.add, color: Colors.blue),
-            // mini: true,
-            backgroundColor: Colors.white,
-            onPressed: _incrementCounter,
-          ),
-        ),
-      ],
+          ],
+        );
+      }),
+      drawer: ContactsDrawer(),
     );
   }
 }

@@ -20,7 +20,7 @@ class Employee extends StatelessWidget {
   }) : super(key: key);
 
   String _getInitials() =>
-      this.firstName[0].toUpperCase() + this.lastName[0].toUpperCase();
+      this.lastName[0].toUpperCase() + this.firstName[0].toUpperCase();
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -29,7 +29,8 @@ class Employee extends StatelessWidget {
         width: 50.0,
         decoration: BoxDecoration(
           color: Color.fromRGBO(244, 244, 244, 1.0),
-          borderRadius: BorderRadius.circular(50.0),
+          shape: BoxShape.circle,
+          // borderRadius: BorderRadius.circular(50.0),
         ),
         child: Center(
           child: Text(
@@ -43,7 +44,7 @@ class Employee extends StatelessWidget {
           ),
         ),
       ),
-      title: Text('$firstName $lastName'),
+      title: Text('$lastName $firstName'),
       subtitle: Text('ΑΦΜ: $vatNumber'),
       trailing: PopupMenuButton<ContactActions>(
         onSelected: (ContactActions selection) {
@@ -69,6 +70,5 @@ class Employee extends StatelessWidget {
               )
             ],
       ),
-    );
-  }
+    );  }
 }

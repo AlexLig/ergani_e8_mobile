@@ -4,17 +4,15 @@ import 'package:ergani_e8/e8formCreate.dart';
 import 'package:ergani_e8/e8formCancel.dart';
 
 class E8home extends StatefulWidget {
-  String afmEmployer;
-  String ameEmployer;
-  String afmEmployee;
-  TimeOfDay commonFinishHour;
-  E8home(
-      {Key key,
-      @required this.afmEmployer,
-      @required this.afmEmployee,
-      this.ameEmployer,
-      this.commonFinishHour})
-      : super(key: key);
+  final String ameEmployer, afmEmployer, afmEmployee;
+  final TimeOfDay commonFinishHour;
+  E8home({
+    Key key,
+    @required this.afmEmployer,
+    @required this.afmEmployee,
+    this.ameEmployer,
+    this.commonFinishHour,
+  }) : super(key: key);
 
   @override
   E8homeState createState() => E8homeState();
@@ -22,9 +20,7 @@ class E8home extends StatefulWidget {
 
 class E8homeState extends State<E8home> {
   int _currentIndex = 0;
-  String _afmEmployer;
-  String _ameEmployer;
-  String _afmEmployee;
+  String _afmEmployer, _ameEmployer, _afmEmployee;
   VatNumbers _vatNumbers;
   TimeOfDay _commonFinishHour;
   List<Widget> _children = [];

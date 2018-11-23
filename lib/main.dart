@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Container(
       color: Colors.amber,
       height: 300,
@@ -40,7 +39,6 @@ class MyHomePage extends StatelessWidget {
                 ameEmployer: '9845376124',
                 afmEmployee: '10548480',
               ),
-              // commonFinishHour: TimeOfDay(hour: 16, minute: 00),
             ),
           ],
         ),

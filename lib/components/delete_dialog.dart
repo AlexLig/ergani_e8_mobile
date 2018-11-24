@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class DeleteDialog extends StatelessWidget {
   final Employee employee;
 
-  const DeleteDialog({Key key, this.employee}) : super(key: key);
+  const DeleteDialog({Key key, @required this.employee}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +24,14 @@ class DeleteDialog extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           child: Text(
             'ΑΚΥΡΟ',
-            style: TextStyle(color: Colors.deepPurple),
+            style: TextStyle(color: Colors.blue),
           ),
         ),
         FlatButton(
           onPressed: () => Navigator.pop(context, this.employee),
           child: Text(
             'ΔΙΑΓΡΑΦΗ',
-            style: TextStyle(color: Colors.deepPurple),
+            style: TextStyle(color: Colors.blue),
           ),
         ),
       ],

@@ -57,11 +57,10 @@ class ContactsRouteState extends State<ContactsRoute> {
 
   void _handleDelete({scaffoldContext, Employee employee}) async {
     final employeeToDelete = await showDialog(
-        context: scaffoldContext,
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-          return DeleteDialog(employee: employee);
-        });
+      context: scaffoldContext,
+      barrierDismissible: true,
+      builder: (context) => DeleteDialog(employee: employee),
+    );
 
     if (employeeToDelete is Employee) {
       setState(() {
@@ -70,38 +69,42 @@ class ContactsRouteState extends State<ContactsRoute> {
             .toList();
       });
       Scaffold.of(scaffoldContext).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Ο/Η ${employeeToDelete.lastName} ${employeeToDelete.firstName} διαγράφηκε.',
-          ),
-          backgroundColor: Colors.green,
-          // TODO: Undo delete.
-        ),
+        _successfulDeleteSnackbar(context),
       );
     }
   }
 
-  Future<void> _handleEdit(BuildContext context) {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return EditDialog(
-            onSave: () => Navigator.of(context).pop(),
-          );
-        });
+  void _handleEdit({scaffoldContext, Employee employee}) async {
+    final employeeToAdd = await showDialog(
+      context: scaffoldContext,
+      barrierDismissible: false,
+      builder: (context) => EditDialog(employee: employee),
+    );
+
+    if (employeeToAdd is Employee) print(employeeToAdd);
   }
 
-  _showSnackBar(context, String text) {
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text(text),
-      backgroundColor: Colors.green,
+  SnackBar _successfulDeleteSnackbar(context) {
+    return SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Icon(Icons.info),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(
+              'Ο υπάλληλος διαγράφηκε.',
+            ),
+          ),
+        ],
+      ),
       action: SnackBarAction(
-        textColor: Colors.white,
-        label: 'Not really',
+        textColor: Colors.blue,
+        label: 'ΑΝΑΙΡΕΣΗ',
         onPressed: () => print('Trolled.'),
       ),
-    ));
+      // TODO: Undo delete.
+    );
   }
 
   Widget build(BuildContext context) {
@@ -113,10 +116,11 @@ class ContactsRouteState extends State<ContactsRoute> {
         title: Text('Υπάλληλοι'),
         actions: <Widget>[
           IconButton(
-              tooltip: 'Προσθήκη Υπαλλήλου',
-              icon: Icon(Icons.person_add, color: Colors.white),
-              // SnackBar not working here. Need GlobalKey??
-              onPressed: () => _handleSubmitEmployee(context)),
+            tooltip: 'Προσθήκη Υπαλλήλου',
+            icon: Icon(Icons.person_add, color: Colors.white),
+            // SnackBar not working here. Need GlobalKey??
+            onPressed: () => _handleSubmitEmployee(context: context),
+          ),
         ],
       ),
 
@@ -150,11 +154,18 @@ class ContactsRouteState extends State<ContactsRoute> {
           children: <Widget>[
             EmployeeListTile(
               employee: employeeList[i],
-              onDelete: () => _handleDelete(
-                    scaffoldContext: context,
-                    employee: employeeList[i],
-                  ),
-              onEdit: () => _handleEdit(context),
+              onDelete: () {
+                _handleDelete(
+                  scaffoldContext: context,
+                  employee: employeeList[i],
+                );
+              },
+              onEdit: () {
+                _handleSubmitEmployee(
+                  context: context,
+                  employee: employeeList[i],
+                );
+              },
               onTap: () => print(''),
             ),
             i == employeeList.length - 1
@@ -166,13 +177,29 @@ class ContactsRouteState extends State<ContactsRoute> {
     );
   }
 
-  _handleSubmitEmployee(context) async {
-    final newEmployee = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EmployeeForm(),
-      ),
+  _handleSubmitEmployee({context, Employee employee}) async {
+    final newEmployee = await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => EmployeeForm(),
     );
-    if (newEmployee is Employee) setState(() => employeeList.add(newEmployee));
+
+    if (newEmployee is Employee) {
+      setState(() => employeeList.add(newEmployee));
+      //   Scaffold.of(scaffoldContext).showSnackBar(
+      //     SnackBar(
+      //       content: Row(
+      //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //         children: <Widget>[
+      //           Icon(Icons.check_circle),
+      //           Text(
+      //             'Ο υπάλληλος προστέθηκε.',
+      //           ),
+      //         ],
+      //       ),
+      //       backgroundColor: Colors.green,
+      //     ),
+      //   );
+    }
   }
 }

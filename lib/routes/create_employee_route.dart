@@ -34,21 +34,21 @@ class EmployeeFormState extends State<EmployeeForm> {
     var _surnameController = TextEditingController();
     var _vatNumberController = TextEditingController();
       
-      
+    Employee _employee;
 
   @override
   void initState() {
     super.initState();
-    // _employee = widget.employee;
+    _employee = widget.employee;
     // _nameController = TextEditingController();
     // _surnameController = TextEditingController();
     // _vatNumberController = TextEditingController();
 
-    // if (_employee != null) {
-    //   _nameController.text = _employee.firstName;
-    //   _surnameController.text = _employee.lastName;
-    //   _vatNumberController.text = _employee.vatNumber;
-    // }
+    if (_employee != null) {
+      _nameController.text = _employee.firstName;
+      _surnameController.text = _employee.lastName;
+      _vatNumberController.text = _employee.vatNumber;
+    }
     nameFocus = FocusNode();
     surnameFocus = FocusNode();
     vatNumberFocus = FocusNode();

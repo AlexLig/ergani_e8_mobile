@@ -161,7 +161,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     final newEmployee = await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => EmployeeForm(),
+      builder: (context) => EmployeeForm(employee: employee,),
     );
 
     if (newEmployee is Employee) {

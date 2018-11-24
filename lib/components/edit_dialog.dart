@@ -1,12 +1,10 @@
+import 'package:ergani_e8/contacts/employee.dart';
 import 'package:flutter/material.dart';
 
 class EditDialog extends StatelessWidget {
-  final Function onSave;
+  final Employee employee;
 
-  const EditDialog({
-    Key key,
-    @required this.onSave,
-  }) : super(key: key);
+  const EditDialog({Key key, @required this.employee}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +24,7 @@ class EditDialog extends StatelessWidget {
           child: Text('ΑΚΥΡΟ'),
         ),
         FlatButton(
-          onPressed: onSave,
+          onPressed: () => Navigator.pop(context, this.employee),
           child: Text('ΑΠΟΘΗΚΕΥΣΗ'),
         )
       ],

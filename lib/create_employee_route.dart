@@ -2,6 +2,9 @@ import 'package:ergani_e8/contacts/employee.dart';
 import 'package:flutter/material.dart';
 
 class EmployeeForm extends StatefulWidget {
+  final Employee employee;
+  EmployeeForm({BuildContext context, this.employee});
+
   @override
   EmployeeFormState createState() {
     return EmployeeFormState();
@@ -9,10 +12,11 @@ class EmployeeForm extends StatefulWidget {
 }
 
 class _EmployeeData {
-  String firstName = '';
-  String lastName = '';
-  String vatNumber = '';
+  String firstName;
+  String lastName;
+  String vatNumber;
 }
+
 // TODO: Don't add if AFM already exists.
 class EmployeeFormState extends State<EmployeeForm> {
   final _formKey = GlobalKey<FormState>();
@@ -21,21 +25,30 @@ class EmployeeFormState extends State<EmployeeForm> {
   FocusNode nameFocus;
   FocusNode surnameFocus;
   FocusNode vatNumberFocus;
-
   var _data = _EmployeeData();
-  // var _data = Employee(
-  //   firstName: '',
-  //   lastName: '',
-  //   vatNumber: '',
-  // );
 
-  final nameController = TextEditingController();
-  final surnameController = TextEditingController();
-  final vatNumberController = TextEditingController();
+  // TextEditingController _nameController,
+  //     _surnameController,
+  //     _vatNumberController;
+    var _nameController = TextEditingController();
+    var _surnameController = TextEditingController();
+    var _vatNumberController = TextEditingController();
+      
+      
+
   @override
   void initState() {
     super.initState();
+    // _employee = widget.employee;
+    // _nameController = TextEditingController();
+    // _surnameController = TextEditingController();
+    // _vatNumberController = TextEditingController();
 
+    // if (_employee != null) {
+    //   _nameController.text = _employee.firstName;
+    //   _surnameController.text = _employee.lastName;
+    //   _vatNumberController.text = _employee.vatNumber;
+    // }
     nameFocus = FocusNode();
     surnameFocus = FocusNode();
     vatNumberFocus = FocusNode();
@@ -46,9 +59,9 @@ class EmployeeFormState extends State<EmployeeForm> {
     nameFocus.dispose();
     surnameFocus.dispose();
     vatNumberFocus.dispose();
-    nameController.dispose();
-    surnameController.dispose();
-    vatNumberController.dispose();
+    _nameController.dispose();
+    _surnameController.dispose();
+    _vatNumberController.dispose();
     super.dispose();
   }
 
@@ -56,13 +69,13 @@ class EmployeeFormState extends State<EmployeeForm> {
     if (this._formKey.currentState.validate()) {
       //_formKey.currentState.save();
 
-      _data.firstName = nameController.text;
-      _data.lastName = surnameController.text;
-      _data.vatNumber = vatNumberController.text;
+      _data.firstName = _nameController.text;
+      _data.lastName = _surnameController.text;
+      _data.vatNumber = _vatNumberController.text;
 
-      nameController.clear();
-      surnameController.clear();
-      vatNumberController.clear();
+      _nameController.clear();
+      _surnameController.clear();
+      _vatNumberController.clear();
 
       print('Printing the employee data.');
       print('Name: ${_data.firstName}');
@@ -82,9 +95,9 @@ class EmployeeFormState extends State<EmployeeForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Container(
+    return AlertDialog(
+      title: Text('Προσθήκη υπαλλήλου'),
+      content: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
@@ -105,7 +118,7 @@ class EmployeeFormState extends State<EmployeeForm> {
                     return 'Προσθέστε όνομα';
                   }
                 },
-                controller: nameController,
+                controller: _nameController,
               ),
               // SURNAME textfield
               TextFormField(
@@ -121,7 +134,7 @@ class EmployeeFormState extends State<EmployeeForm> {
                     return 'Προσθέστε επίθετο';
                   }
                 },
-                controller: surnameController,
+                controller: _surnameController,
               ),
               // VATNUMBER textfield
               TextFormField(
@@ -130,28 +143,30 @@ class EmployeeFormState extends State<EmployeeForm> {
                 textInputAction: TextInputAction.done,
                 decoration: InputDecoration(labelText: 'ΑΦΜ'),
                 validator: (value) => validateAfm(value),
-                controller: vatNumberController,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: RaisedButton(
-                      color: Colors.teal,
-                      onPressed: () => this.submit(context),
-                      child: Text(
-                        'ΑΠΟΘΗΚΕΥΣΗ',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
+                controller: _vatNumberController,
               ),
             ],
           ),
         ),
       ),
+      actions: [
+        FlatButton(
+          child: Text('ΑΚΥΡΟ', style: TextStyle(color: Colors.teal)),
+          // color: Colors.black,
+          onPressed: () => Navigator.pop(context),
+        ),
+        Padding(
+          padding: EdgeInsets.all(0.0),
+          child: RaisedButton(
+            color: Colors.teal,
+            onPressed: () => this.submit(context),
+            child: Text(
+              'ΑΠΟΘΗΚΕΥΣΗ',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

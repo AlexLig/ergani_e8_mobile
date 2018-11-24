@@ -1,7 +1,10 @@
 import 'package:ergani_e8/contacts/contacts_route.dart';
+import 'package:ergani_e8/contacts/employee.dart';
+import 'package:ergani_e8/contacts/employer.dart';
 import 'package:ergani_e8/create_employee_route.dart';
+import 'package:ergani_e8/e8/e8homeInher.dart';
 
-import 'package:ergani_e8/e8home.dart';
+import 'package:ergani_e8/e8/e8screen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -37,6 +40,16 @@ class MyHomePage extends StatelessWidget {
             children: <Widget>[
               TestButton(title: 'E8', route: EmployeeForm()),
               TestButton(title: 'Contacts', route: ContactsRoute()),
+              TestButton(
+                  title: 'inherit',
+                  route: E8homeInherited(
+                    employer: Employer(vatNumberAFM: "000000000"),
+                    employee: Employee(
+                        firstName: "Hliana",
+                        lastName: "Papageorgiou",
+                        vatNumber: "1053838105"),
+                    child: E8home(),
+                  )),
             ],
           ),
         ),

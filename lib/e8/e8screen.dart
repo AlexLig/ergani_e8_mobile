@@ -1,17 +1,11 @@
-import 'package:ergani_e8/contacts/employee.dart';
-import 'package:ergani_e8/contacts/employer.dart';
-import 'package:ergani_e8/vatNumbers.dart';
-import 'package:flutter/material.dart';
-import 'package:ergani_e8/e8formCreate.dart';
 import 'package:ergani_e8/e8formCancel.dart';
+import 'package:ergani_e8/e8formCreate.dart';
+import 'package:flutter/material.dart';
+import 'package:ergani_e8/e8/e8homeInher.dart';
 
 class E8home extends StatefulWidget {
-  final Employer employer;
-  final Employee employee;
   E8home({
     Key key,
-    @required this.employer,
-    @required this.employee,
   }) : super(key: key);
 
   @override
@@ -20,24 +14,19 @@ class E8home extends StatefulWidget {
 
 class E8homeState extends State<E8home> {
   int _currentIndex = 0;
-  Employer _employer;
-  Employee _employee;
   List<Widget> _children = [];
 
   @override
   void initState() {
-    _employer= widget.employer;
-    _employee= widget.employee;
-    // _commonFinishHour = widget.commonFinishHour == null
-    //     ? TimeOfDay(hour: 16, minute: 00)
-    //     : widget.commonFinishHour;
-    // _vatNumbers = VatNumbers(
-    //     afmEmployee: _afmEmployee,
-    //     ameEmployer: _ameEmployer,
-    //     afmEmployer: _afmEmployer);
     _children = [
-      E8form(employer: _employer,employee: _employee,),
-      // E8formCancel(vatNumbers: _vatNumbers, commonFinishHour: _commonFinishHour)
+      E8form(
+        employer: E8homeInherited.of(context).empoyer,
+        employee: E8homeInherited.of(context).empoyee,
+      ),
+      E8form(
+        employer: E8homeInherited.of(context).empoyer,
+        employee: E8homeInherited.of(context).empoyee,
+      ),
     ];
     super.initState();
   }

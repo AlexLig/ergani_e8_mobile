@@ -1,12 +1,10 @@
-import 'package:ergani_e8/contacts/contacts_route.dart';
-import 'package:ergani_e8/contacts/employee.dart';
-import 'package:ergani_e8/contacts/employer.dart';
-import 'package:ergani_e8/create_employee_route.dart';
-
-
 import 'package:ergani_e8/e8/e8home.dart';
 import 'package:ergani_e8/e8/e8provider.dart';
-import 'package:ergani_e8/e8/e8route.dart';
+import 'package:ergani_e8/models/employee.dart';
+import 'package:ergani_e8/models/employer.dart';
+import 'package:ergani_e8/routes/contacts_route.dart';
+import 'package:ergani_e8/routes/create_employee_route.dart';
+import 'package:ergani_e8/routes/e8route.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());

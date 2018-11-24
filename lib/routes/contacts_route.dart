@@ -1,13 +1,13 @@
 import 'dart:async';
+import 'package:ergani_e8/components/drawer.dart';
 import 'package:ergani_e8/components/empty_contacts_indicator.dart';
 import 'package:ergani_e8/components/delete_dialog.dart';
-import 'package:ergani_e8/contacts/drawer.dart';
 import 'package:ergani_e8/components/edit_dialog.dart';
-import 'package:ergani_e8/contacts/employee.dart';
 import 'package:ergani_e8/components/employee_list_tile.dart';
-import 'package:ergani_e8/contacts/employer.dart';
-import 'package:ergani_e8/create_employee_route.dart';
-import 'package:ergani_e8/e8/e8route.dart';
+import 'package:ergani_e8/models/employee.dart';
+import 'package:ergani_e8/models/employer.dart';
+import 'package:ergani_e8/routes/create_employee_route.dart';
+import 'package:ergani_e8/routes/e8route.dart';
 import 'package:flutter/material.dart';
 
 class ContactsRoute extends StatefulWidget {

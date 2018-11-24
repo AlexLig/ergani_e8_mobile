@@ -1,4 +1,4 @@
-import 'package:ergani_e8/contacts/employee.dart';
+import 'package:ergani_e8/models/employee.dart';
 import 'package:flutter/material.dart';
 
 class EmployeeForm extends StatefulWidget {

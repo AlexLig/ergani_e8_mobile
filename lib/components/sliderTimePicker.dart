@@ -1,6 +1,5 @@
-import 'package:ergani_e8/contacts/employee.dart';
-import 'package:ergani_e8/contacts/employer.dart';
 import 'package:ergani_e8/e8/e8provider.dart';
+import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 

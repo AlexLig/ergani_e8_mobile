@@ -1,5 +1,5 @@
-import 'package:ergani_e8/contacts/employee.dart';
-import 'package:ergani_e8/contacts/employer.dart';
+import 'package:ergani_e8/models/employee.dart';
+import 'package:ergani_e8/models/employer.dart';
 import 'package:flutter/material.dart';
 
 class E8provider extends InheritedWidget {

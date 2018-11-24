@@ -1,44 +1,23 @@
-import 'package:ergani_e8/e8formCancel.dart';
-import 'package:ergani_e8/e8formCreate.dart';
+
 import 'package:flutter/material.dart';
-import 'package:ergani_e8/e8/e8homeInher.dart';
+import 'package:ergani_e8/e8/e8form.dart';
 
 class E8home extends StatefulWidget {
-  E8home({
-    Key key,
-  }) : super(key: key);
-
   @override
   E8homeState createState() => E8homeState();
 }
-
 class E8homeState extends State<E8home> {
   int _currentIndex = 0;
-  List<Widget> _children = [];
-
-  @override
-  void initState() {
-    _children = [
-      E8form(
-        employer: E8homeInherited.of(context).empoyer,
-        employee: E8homeInherited.of(context).empoyee,
-      ),
-      E8form(
-        employer: E8homeInherited.of(context).empoyer,
-        employee: E8homeInherited.of(context).empoyee,
-      ),
-    ];
-    super.initState();
-  }
+  List<Widget> _children;
 
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
     });
   }
-
   @override
   Widget build(BuildContext context) {
+     _children = [E8form(context),E8form(context)];
     return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
           onTap: onTabTapped,

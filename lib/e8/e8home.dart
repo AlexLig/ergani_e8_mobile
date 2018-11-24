@@ -6,39 +6,41 @@ class E8home extends StatefulWidget {
   E8homeState createState() => E8homeState();
 }
 
-class E8homeState extends State<E8home> {
-  int _currentIndex = 0;
-  List<Widget> _children;
+class E8homeState extends State<E8home> with SingleTickerProviderStateMixin {
+  TabController tabController;
 
   @override
   void initState() {
     super.initState();
-    _children = [E8form(), E8form()];
+    tabController = TabController(vsync: this, length: 2);
   }
 
-  void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          onTap: onTabTapped,
-          currentIndex: _currentIndex,
-          items: [
-            BottomNavigationBarItem(
-              icon: new Icon(Icons.message),
-              title: new Text('Νέα υποβολή'),
-            ),
-            BottomNavigationBarItem(
-              icon: new Icon(Icons.delete),
-              title: new Text('Ακύρωση προηγούμενης'),
-            ),
+      appBar: AppBar(
+        title: Text('Φορμα Ε8'),
+        bottom: TabBar(
+          controller: tabController,
+          tabs: <Widget>[
+            Tab(text: 'ΝΕΑ ΥΠΟΒΟΛΗ'),
+            Tab(text: 'ΑΚΥΡΩΣΗ ΥΠΟΒΟΛΗΣ'),
           ],
         ),
-        body: _children[_currentIndex]);
+      ),
+      body: TabBarView(
+        controller: tabController,
+        children: <Widget>[
+          E8form(),
+          E8form(),
+        ],
+      ),
+    );
   }
 }

@@ -35,3 +35,11 @@ bool isLater(TimeOfDay timeA, TimeOfDay timeB) {
 //   List<String> e8Data = ['Υ1', employerVat, employeeVat, startHour, finishHour];
 //   return e8Data.join(" ");
 // }
+
+bool notNull(Object o) => o != null;
+  bool isNotNull(value) {
+    if (value == null)
+      return false;
+    else
+      return true;
+  }

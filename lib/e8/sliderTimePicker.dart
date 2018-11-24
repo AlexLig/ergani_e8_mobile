@@ -5,7 +5,6 @@ import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 
 class SliderTimePicker extends StatefulWidget {
-  
   @override
   State<StatefulWidget> createState() => SliderTimePickerState();
 }
@@ -14,15 +13,13 @@ class SliderTimePickerState extends State<SliderTimePicker> {
   double _sliderValue;
   TimeOfDay _overtimeStart;
   TimeOfDay _overtimeFinish;
-  // Employer _employer;
   Employee _employee;
+  bool _isFirstBuild = true;
+
   @override
   void initState() {
     super.initState();
     _sliderValue = 0.5;
-    
-
-    
   }
 
   Future<Null> _selectStartTime(BuildContext context) async {
@@ -54,10 +51,8 @@ class SliderTimePickerState extends State<SliderTimePicker> {
             content: Text('Η ώρα λήξης πρέπει να είναι μεγαλύτερη.'),
           ),
         );
-      }
-      setState(() {
-        _overtimeFinish = picked;
-      });
+      } else
+        setState(() => _overtimeFinish = picked);
     }
   }
 
@@ -71,13 +66,17 @@ class SliderTimePickerState extends State<SliderTimePicker> {
 
   @override
   Widget build(BuildContext context) {
-    _employee = E8provider.of(context).employee;
-    // _employer = E8provider.of(context).employer;
-    _overtimeStart = _employee.hourToStart == null
-        ? TimeOfDay(hour: 16, minute: 00)
-        : _employee.hourToStart;
-    _overtimeFinish =
-        addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
+    if (_isFirstBuild) {
+      _employee = E8provider.of(context).employee;
+      _overtimeStart = _employee.hourToStart == null
+          ? TimeOfDay(hour: 16, minute: 00)
+          : _employee.hourToStart;
+      _overtimeFinish =
+          addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
+
+      _isFirstBuild = false;
+    }
+
     return Column(
       children: <Widget>[
         Text(

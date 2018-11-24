@@ -1,5 +1,5 @@
 
-import 'package:ergani_e8/vatNumbers.dart';
+
 import 'package:flutter/material.dart';
 // BUG when exceeding 24 hours
 TimeOfDay addToTimeOfDay(TimeOfDay timeOfDay, {int hour = 0, int minute = 0}) {
@@ -25,13 +25,13 @@ bool isLater(TimeOfDay timeA, TimeOfDay timeB) {
   return hourA > hourB || (hourA == hourB && minutesA > minutesB);
 }
 
-String e8Parser(VatNumbers vats, TimeOfDay start, TimeOfDay finish) {
-  String employerVat = vats.ameEmployer == null
-      ? vats.afmEmployer.trim()
-      : vats.afmEmployer.trim() + vats.ameEmployer.trim();
-  String employeeVat = vats.afmEmployee.trim();
-  String startHour = start.hour.toString() + start.minute.toString();
-  String finishHour = finish.hour.toString() + finish.minute.toString();
-  List<String> e8Data = ['Υ1', employerVat, employeeVat, startHour, finishHour];
-  return e8Data.join(" ");
-}
+// String e8Parser(VatNumbers vats, TimeOfDay start, TimeOfDay finish) {
+//   String employerVat = vats.ameEmployer == null
+//       ? vats.afmEmployer.trim()
+//       : vats.afmEmployer.trim() + vats.ameEmployer.trim();
+//   String employeeVat = vats.afmEmployee.trim();
+//   String startHour = start.hour.toString() + start.minute.toString();
+//   String finishHour = finish.hour.toString() + finish.minute.toString();
+//   List<String> e8Data = ['Υ1', employerVat, employeeVat, startHour, finishHour];
+//   return e8Data.join(" ");
+// }

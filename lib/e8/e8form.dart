@@ -1,10 +1,11 @@
 import 'package:ergani_e8/contacts/employee.dart';
 import 'package:ergani_e8/contacts/employer.dart';
 import 'package:ergani_e8/e8/e8provider.dart';
+import 'package:ergani_e8/e8/sliderTimePicker.dart';
 import 'package:flutter/material.dart';
 
 class E8form extends StatefulWidget {
-  E8form(BuildContext context);
+  // E8form(BuildContext context);
   @override
   E8formState createState() => E8formState();
 }
@@ -61,6 +62,7 @@ class E8formState extends State<E8form> {
                         children: <Widget>[
                           _buildEmployee(context),
                           Divider(),
+                          SliderTimePicker(),
                         ],
                       ),
                     ),

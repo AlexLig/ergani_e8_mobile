@@ -11,12 +11,6 @@ class EmployeeForm extends StatefulWidget {
   }
 }
 
-class _EmployeeData {
-  String firstName;
-  String lastName;
-  String vatNumber;
-}
-
 // TODO: Don't add if AFM already exists.
 class EmployeeFormState extends State<EmployeeForm> {
   final _formKey = GlobalKey<FormState>();
@@ -25,24 +19,17 @@ class EmployeeFormState extends State<EmployeeForm> {
   FocusNode nameFocus;
   FocusNode surnameFocus;
   FocusNode vatNumberFocus;
-  var _data = _EmployeeData();
 
-  // TextEditingController _nameController,
-  //     _surnameController,
-  //     _vatNumberController;
-    var _nameController = TextEditingController();
-    var _surnameController = TextEditingController();
-    var _vatNumberController = TextEditingController();
-      
-    Employee _employee;
+  var _nameController = TextEditingController();
+  var _surnameController = TextEditingController();
+  var _vatNumberController = TextEditingController();
+
+  Employee _employee;
 
   @override
   void initState() {
     super.initState();
     _employee = widget.employee;
-    // _nameController = TextEditingController();
-    // _surnameController = TextEditingController();
-    // _vatNumberController = TextEditingController();
 
     if (_employee != null) {
       _nameController.text = _employee.firstName;
@@ -68,28 +55,16 @@ class EmployeeFormState extends State<EmployeeForm> {
   submit(context) {
     if (this._formKey.currentState.validate()) {
       //_formKey.currentState.save();
-
-      _data.firstName = _nameController.text;
-      _data.lastName = _surnameController.text;
-      _data.vatNumber = _vatNumberController.text;
+      Employee employeeToSubmit = Employee(
+          firstName: _nameController.text,
+          lastName: _surnameController.text,
+          vatNumber: _vatNumberController.text);
 
       _nameController.clear();
       _surnameController.clear();
       _vatNumberController.clear();
 
-      print('Printing the employee data.');
-      print('Name: ${_data.firstName}');
-      print('Surname: ${_data.lastName}');
-      print('VatNumber: ${_data.vatNumber}');
-
-      Navigator.pop(
-        context,
-        Employee(
-          firstName: _data.firstName,
-          lastName: _data.lastName,
-          vatNumber: _data.vatNumber,
-        ),
-      );
+      Navigator.pop(context, employeeToSubmit);
     }
   }
 
@@ -185,6 +160,3 @@ bool isValid(String value, RegExp regex) {
       .map((match) => match.start == 0 && match.end == value.length)
       .reduce((sum, nextValue) => sum && nextValue);
 }
-
-// bool logicalAnd(sum, nextValue) => sum && nextValue;
-// Function assertMatchEnds(String value) => (match) => match.start == 0 && match.end == value.length;

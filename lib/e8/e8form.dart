@@ -1,3 +1,4 @@
+import 'package:ergani_e8/components/employee_list_tile.dart';
 import 'package:ergani_e8/contacts/employee.dart';
 import 'package:ergani_e8/contacts/employer.dart';
 import 'package:ergani_e8/e8/e8provider.dart';
@@ -19,10 +20,13 @@ class E8formState extends State<E8form> {
     super.initState();
   }
 
-  Widget _buildEmployee(BuildContext context) => ListTile(
-        title: Text('${_employee.lastName} ${_employee.firstName}'),
-        subtitle: Text('ΑΦΜ: ${_employee.vatNumber}'),
-      );
+  Widget _buildEmployee(BuildContext context) => EmployeeListTile(
+    employee: _employee,
+  );
+  //  ListTile(
+  //       title: Text('${_employee.lastName} ${_employee.firstName}'),
+  //       subtitle: Text('ΑΦΜ: ${_employee.vatNumber}'),
+  //     );
   Widget _buildEmployer(BuildContext context) => ListTile(
         title: Text('${_employer.name} '),
         subtitle: Row(

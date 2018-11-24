@@ -145,7 +145,12 @@ class ContactsRouteState extends State<ContactsRoute> {
             ),
             i == employeeList.length - 1
                 ? Container(height: 50.0)
-                : Container(),
+                : Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Divider(
+                      indent: 60.0,
+                    ),
+                  ),
           ],
         );
       },

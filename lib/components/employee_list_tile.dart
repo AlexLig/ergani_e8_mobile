@@ -10,9 +10,9 @@ class EmployeeListTile extends StatelessWidget {
   EmployeeListTile({
     Key key,
     @required this.employee,
-    @required this.onDelete,
-    @required this.onEdit,
-    @required this.onTap,
+    this.onDelete,
+    this.onEdit,
+    this.onTap,
     overtimeStart,
   }) : super(key: key);
 
@@ -46,7 +46,8 @@ class EmployeeListTile extends StatelessWidget {
         ),
         title: Text('${employee.lastName} ${employee.firstName}'),
         subtitle: Text('ΑΦΜ: ${employee.vatNumber}'),
-        trailing: PopupMenuButton<ContactActions>(
+        trailing: onDelete !=null && onEdit != null
+        ? PopupMenuButton<ContactActions>(
           onSelected: (ContactActions selection) {
             switch (selection) {
               case ContactActions.edit:
@@ -70,7 +71,8 @@ class EmployeeListTile extends StatelessWidget {
                   child: Text('Διαγραφή'),
                 )
               ],
-        ),
+        )
+        : null ,
       ),
     );
   }

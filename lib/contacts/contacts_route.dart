@@ -5,7 +5,9 @@ import 'package:ergani_e8/contacts/drawer.dart';
 import 'package:ergani_e8/components/edit_dialog.dart';
 import 'package:ergani_e8/contacts/employee.dart';
 import 'package:ergani_e8/components/employee_list_tile.dart';
+import 'package:ergani_e8/contacts/employer.dart';
 import 'package:ergani_e8/create_employee_route.dart';
+import 'package:ergani_e8/e8/e8route.dart';
 import 'package:flutter/material.dart';
 
 class ContactsRoute extends StatefulWidget {
@@ -84,6 +86,18 @@ class ContactsRouteState extends State<ContactsRoute> {
     if (employeeToAdd is Employee) print(employeeToAdd);
   }
 
+  _handleTapEmployee({Employee employee}) async {
+    final e8FormCompleted = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => E8route(
+              employee: employee,
+              employer: Employer(vatNumberAFM: '123123123'),
+            ),
+      ),
+    );
+  }
+
   SnackBar _successfulDeleteSnackbar(context) {
     return SnackBar(
       content: Row(
@@ -105,6 +119,63 @@ class ContactsRouteState extends State<ContactsRoute> {
       ),
       // TODO: Undo delete.
     );
+  }
+
+  _buildEmployeeList(context) {
+    return ListView.builder(
+      itemCount: employeeList.length,
+      itemBuilder: (BuildContext context, int i) {
+        return Column(
+          children: <Widget>[
+            EmployeeListTile(
+              employee: employeeList[i],
+              onDelete: () {
+                _handleDelete(
+                  scaffoldContext: context,
+                  employee: employeeList[i],
+                );
+              },
+              onEdit: () {
+                _handleSubmitEmployee(
+                  context: context,
+                  employee: employeeList[i],
+                );
+              },
+              onTap: () => _handleTapEmployee(employee: employeeList[i]),
+            ),
+            i == employeeList.length - 1
+                ? Container(height: 50.0)
+                : Container(),
+          ],
+        );
+      },
+    );
+  }
+
+  _handleSubmitEmployee({context, Employee employee}) async {
+    final newEmployee = await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => EmployeeForm(),
+    );
+
+    if (newEmployee is Employee) {
+      setState(() => employeeList.add(newEmployee));
+      //   Scaffold.of(scaffoldContext).showSnackBar(
+      //     SnackBar(
+      //       content: Row(
+      //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //         children: <Widget>[
+      //           Icon(Icons.check_circle),
+      //           Text(
+      //             'Ο υπάλληλος προστέθηκε.',
+      //           ),
+      //         ],
+      //       ),
+      //       backgroundColor: Colors.green,
+      //     ),
+      //   );
+    }
   }
 
   Widget build(BuildContext context) {
@@ -144,62 +215,5 @@ class ContactsRouteState extends State<ContactsRoute> {
       }),
       drawer: ContactsDrawer(),
     );
-  }
-
-  _buildEmployeeList(context) {
-    return ListView.builder(
-      itemCount: employeeList.length,
-      itemBuilder: (BuildContext context, int i) {
-        return Column(
-          children: <Widget>[
-            EmployeeListTile(
-              employee: employeeList[i],
-              onDelete: () {
-                _handleDelete(
-                  scaffoldContext: context,
-                  employee: employeeList[i],
-                );
-              },
-              onEdit: () {
-                _handleSubmitEmployee(
-                  context: context,
-                  employee: employeeList[i],
-                );
-              },
-              onTap: () => print(''),
-            ),
-            i == employeeList.length - 1
-                ? Container(height: 50.0)
-                : Container(),
-          ],
-        );
-      },
-    );
-  }
-
-  _handleSubmitEmployee({context, Employee employee}) async {
-    final newEmployee = await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => EmployeeForm(),
-    );
-
-    if (newEmployee is Employee) {
-      setState(() => employeeList.add(newEmployee));
-      //   Scaffold.of(scaffoldContext).showSnackBar(
-      //     SnackBar(
-      //       content: Row(
-      //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-      //         children: <Widget>[
-      //           Icon(Icons.check_circle),
-      //           Text(
-      //             'Ο υπάλληλος προστέθηκε.',
-      //           ),
-      //         ],
-      //       ),
-      //       backgroundColor: Colors.green,
-      //     ),
-      //   );
-    }
   }
 }

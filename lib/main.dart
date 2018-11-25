@@ -1,15 +1,34 @@
-import 'package:ergani_e8/e8/e8home.dart';
-import 'package:ergani_e8/e8/e8provider.dart';
 import 'package:ergani_e8/models/employee.dart';
-import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/contacts_route.dart';
-import 'package:ergani_e8/routes/create_employee_route.dart';
-import 'package:ergani_e8/routes/e8route.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  MyAppState createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+  List<Employee> employeeList = [
+    Employee(
+      firstName: 'Ηλιάννα',
+      lastName: 'Παπαγεωργίου',
+      vatNumber: '111111111',
+    ),
+    Employee(firstName: 'Κωστής', lastName: 'Παλαμάς', vatNumber: '222222222'),
+    Employee(
+        firstName: 'Αλέξανδρος',
+        lastName: 'Παπαδιαμάντης',
+        vatNumber: '333333333'),
+    Employee(firstName: 'Ιωάννης', lastName: 'Ρίτσος', vatNumber: '444444444'),
+    Employee(
+        firstName: 'Αδαμάντιος', lastName: 'Κοραής', vatNumber: '555555555'),
+  ];
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,55 +36,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('ERGANI'),
-        ),
-        body: MyHomePage(),
-      ),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      body: Container(
-        color: Colors.amber,
-        height: 300,
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              TestButton(title: 'E8', route: EmployeeForm()),
-              TestButton(title: 'Contacts', route: ContactsRoute()),
-              TestButton(
-                title: 'inherit',
-                route: E8route(
-                  employer: Employer(
-                      vatNumberAFM: '123123123', vatNumberAME: '0000000000',name: 'PAPASTRATOS'),
-                  employee: Employee(
-                      firstName: "Ηλιανα",
-                      lastName: 'Παπαγεωργιου',
-                      vatNumber: '105383810'),
-                ),
-              ),
-              TestButton(
-                title: 'inherit2',
-                route: E8provider(
-                  employer: Employer(vatNumberAFM: '123123123'),
-                  employee: Employee(
-                      firstName: "Ηλιανα",
-                      lastName: 'Παπαγεωργιου',
-                      vatNumber: '105383810'),
-                  child: E8home(),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
+      home: ContactsRoute(employeeList: employeeList),
     );
   }
 }

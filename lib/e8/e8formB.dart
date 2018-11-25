@@ -201,9 +201,9 @@ class E8formBState extends State<E8formB> {
             children: <Widget>[
               EmployerListTile(employer: _employer),
               EmployeeListTile(employee: _employee),
-              _isReset ? _buildInactiveSlider() : _buildActiveSlider(),
+              _isReset ? null : _buildActiveSlider(),
               Text(_erganiCode)
-            ],
+            ].where(isNotNull).toList(),
           );
         },
       ),

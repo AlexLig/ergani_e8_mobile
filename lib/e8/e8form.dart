@@ -1,10 +1,8 @@
 import 'package:ergani_e8/components/employee_list_tile.dart';
 import 'package:ergani_e8/components/employer_list_tile.dart';
-import 'package:ergani_e8/components/sliderTimePicker.dart';
 import 'package:ergani_e8/e8/e8provider.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
-import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 
 class E8form extends StatelessWidget {

@@ -1,6 +1,5 @@
 import 'package:ergani_e8/e8/e8formB.dart';
 import 'package:flutter/material.dart';
-import 'package:ergani_e8/e8/e8form.dart';
 
 class E8home extends StatefulWidget {
   @override

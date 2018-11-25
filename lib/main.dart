@@ -43,7 +43,8 @@ class MyHomePage extends StatelessWidget {
               TestButton(
                 title: 'inherit',
                 route: E8route(
-                  employer: Employer(vatNumberAFM: '123123123'),
+                  employer: Employer(
+                      vatNumberAFM: '123123123', vatNumberAME: '0000000000',name: 'PAPASTRATOS'),
                   employee: Employee(
                       firstName: "Ηλιανα",
                       lastName: 'Παπαγεωργιου',

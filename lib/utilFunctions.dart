@@ -1,6 +1,7 @@
-
-
+import 'package:ergani_e8/models/employee.dart';
+import 'package:ergani_e8/models/employer.dart';
 import 'package:flutter/material.dart';
+
 // BUG when exceeding 24 hours
 TimeOfDay addToTimeOfDay(TimeOfDay timeOfDay, {int hour = 0, int minute = 0}) {
   int newMins = (minute + timeOfDay.minute) % 60;
@@ -25,21 +26,18 @@ bool isLater(TimeOfDay timeA, TimeOfDay timeB) {
   return hourA > hourB || (hourA == hourB && minutesA > minutesB);
 }
 
-// String e8Parser(VatNumbers vats, TimeOfDay start, TimeOfDay finish) {
-//   String employerVat = vats.ameEmployer == null
-//       ? vats.afmEmployer.trim()
-//       : vats.afmEmployer.trim() + vats.ameEmployer.trim();
-//   String employeeVat = vats.afmEmployee.trim();
-//   String startHour = start.hour.toString() + start.minute.toString();
-//   String finishHour = finish.hour.toString() + finish.minute.toString();
-//   List<String> e8Data = ['Υ1', employerVat, employeeVat, startHour, finishHour];
-//   return e8Data.join(" ");
-// }
+String e8Parser(
+    {Employer employer, Employee employee, TimeOfDay start, TimeOfDay finish}) {
+  String employerVat = employer.vatNumberAME == null
+      ? employer.vatNumberAFM.trim()
+      : employer.vatNumberAFM.trim() + employer.vatNumberAME.trim();
+  String employeeVat = employee.vatNumber.trim();
+  RegExp exp = RegExp(r'[^{0-9}]');
+  String overTime = start.toString().replaceAll(exp, '') +
+      finish.toString().replaceAll(exp, '');
 
-bool notNull(Object o) => o != null;
-  bool isNotNull(value) {
-    if (value == null)
-      return false;
-    else
-      return true;
-  }
+  List<String> e8Data = ['Υ1', employerVat, employeeVat, overTime];
+  return e8Data.join(" ");
+}
+
+bool isNotNull(value) => value != null;

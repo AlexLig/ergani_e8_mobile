@@ -1,5 +1,6 @@
 import 'package:ergani_e8/components/employee_list_tile.dart';
 import 'package:ergani_e8/components/employer_list_tile.dart';
+import 'package:ergani_e8/components/send_dialog.dart';
 import 'package:ergani_e8/e8/e8provider.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
@@ -20,6 +21,7 @@ class E8formBState extends State<E8formB> {
   TimeOfDay _overtimeFinish;
   Employer _employer;
   Employee _employee;
+  String _erganiCode;
   bool _isFirstBuild = true;
   bool _isReset;
 
@@ -32,6 +34,18 @@ class E8formBState extends State<E8formB> {
       _overtimeStart = TimeOfDay(hour: 00, minute: 00);
       _overtimeFinish = TimeOfDay(hour: 00, minute: 00);
     }
+  }
+
+  _handleSend(
+      {scaffoldContext, String message, @required String number}) async {
+    final shouldSend = await showDialog(
+      context: scaffoldContext,
+      barrierDismissible: true,
+      builder: (context) => SendDialog(
+            erganiCode: message,
+            number: number,
+          ),
+    );
   }
 
   Future<Null> _selectStartTime(BuildContext context) async {
@@ -156,6 +170,11 @@ class E8formBState extends State<E8formB> {
   Widget build(BuildContext context) {
     _employer = E8provider.of(context).employer;
     _employee = E8provider.of(context).employee;
+    _erganiCode = e8Parser(
+        employer: _employer,
+        employee: _employee,
+        start: _overtimeStart,
+        finish: _overtimeFinish);
     if (_isFirstBuild && !_isReset) {
       _overtimeStart = _employee.hourToStart == null
           ? TimeOfDay(hour: 16, minute: 00)
@@ -170,7 +189,8 @@ class E8formBState extends State<E8formB> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: _isReset ? Colors.orange : Colors.blue,
         child: Icon(Icons.textsms),
-        onPressed: () => print('hi'),
+        onPressed: () => _handleSend(
+            scaffoldContext: context, message: _erganiCode, number: "5400"),
       ),
       body: Builder(
         builder: (context) {
@@ -179,11 +199,7 @@ class E8formBState extends State<E8formB> {
               EmployerListTile(employer: _employer),
               EmployeeListTile(employee: _employee),
               _isReset ? _buildInactiveSlider() : _buildActiveSlider(),
-              Text(e8Parser(
-                  employer: _employer,
-                  employee: _employee,
-                  start: _overtimeStart,
-                  finish: _overtimeFinish))
+              Text(_erganiCode)
             ],
           );
         },

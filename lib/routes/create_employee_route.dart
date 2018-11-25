@@ -14,7 +14,6 @@ class EmployeeForm extends StatefulWidget {
 // TODO: Don't add if AFM already exists.
 class EmployeeFormState extends State<EmployeeForm> {
   final _formKey = GlobalKey<FormState>();
-
   // FocusNode employeeFocusNode;
   FocusNode nameFocus;
   FocusNode surnameFocus;
@@ -25,6 +24,8 @@ class EmployeeFormState extends State<EmployeeForm> {
   var _vatNumberController = TextEditingController();
 
   Employee _employee;
+
+  var _employeeList;
 
   @override
   void initState() {
@@ -71,7 +72,8 @@ class EmployeeFormState extends State<EmployeeForm> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('${_employee == null ? 'Προσθήκη' : 'Επεξεργασία'} υπαλλήλου'),
+      title:
+          Text('${_employee == null ? 'Προσθήκη' : 'Επεξεργασία'} υπαλλήλου'),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -144,13 +146,13 @@ class EmployeeFormState extends State<EmployeeForm> {
       ],
     );
   }
-}
 
-validateAfm(String afm) {
-  if (afm.isEmpty) {
-    return 'Προσθέστε ΑΦΜ';
-  } else if (!isValid(afm, RegExp(r'^[0-9]+$')) || afm.length != 9) {
-    return 'Ο ΑΦΜ αποτελείται απο 9 αριθμούς';
+  validateAfm(String afm) {
+    if (afm.isEmpty) {
+      return 'Προσθέστε ΑΦΜ';
+    } else if (!isValid(afm, RegExp(r'^[0-9]+$')) || afm.length != 9) {
+      return 'Ο ΑΦΜ αποτελείται απο 9 αριθμούς';
+    }
   }
 }
 

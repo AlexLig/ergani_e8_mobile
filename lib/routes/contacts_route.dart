@@ -80,8 +80,6 @@ class ContactsRouteState extends State<ContactsRoute> {
   }
 
   void _deleteEmployee(Employee employeeToDelete) {
-    // bool hasDifferentVat(employee) => em
-
     setState(() {
       employeeList = employeeList
           .where((el) => el.vatNumber != employeeToDelete.vatNumber)
@@ -92,71 +90,6 @@ class ContactsRouteState extends State<ContactsRoute> {
 
   void _addEmployee(Employee newEmployee) {
     if (newEmployee != null) setState(() => employeeList.add(newEmployee));
-  }
-
-  SnackBar _successfulDeleteSnackbar(context) {
-    return SnackBar(
-      content: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Icon(Icons.info),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text('Ο υπάλληλος διαγράφηκε.'),
-          ),
-        ],
-      ),
-      action: SnackBarAction(
-        textColor: Colors.blue,
-        label: 'ΑΝΑΙΡΕΣΗ',
-        onPressed: () {
-          _addEmployee(deletedEmployee);
-          setState(() => deletedEmployee = null);
-        },
-      ),
-      // TODO: Undo delete.
-    );
-  }
-
-  _buildEmployeeList(context) {
-    return ListView.builder(
-      itemCount: employeeList.length,
-      itemBuilder: (BuildContext context, int i) {
-        Employee employee = employeeList[i];
-        return Column(
-          children: <Widget>[
-            EmployeeListTile(
-              employee: employee,
-              onDelete: () {
-                _handleDelete(
-                  scaffoldContext: context,
-                  employee: employee,
-                );
-              },
-              onEdit: () {
-                _handleEdit(
-                  scaffoldContext: context,
-                  employee: employee,
-                );
-              },
-              onTap: () {
-                _handleTapEmployee(
-                  employee: employee,
-                );
-              },
-            ),
-            i == employeeList.length - 1
-                ? Container(height: 50.0)
-                : Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Divider(
-                      indent: 60.0,
-                    ),
-                  ),
-          ],
-        );
-      },
-    );
   }
 
   Widget build(BuildContext context) {
@@ -188,7 +121,10 @@ class ContactsRouteState extends State<ContactsRoute> {
               Expanded(
                 child: employeeList.length == 0
                     ? AddContactsIndicator()
-                    : _buildEmployeeList(context),
+                    : ListView.builder(
+                        itemCount: employeeList.length,
+                        itemBuilder: _buildEmployeeList(context),
+                      ),
               ),
             ],
           ),
@@ -196,5 +132,67 @@ class ContactsRouteState extends State<ContactsRoute> {
       }),
       drawer: ContactsDrawer(),
     );
+  }
+
+  SnackBar _successfulDeleteSnackbar(context) {
+    return SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Icon(Icons.info),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text('Ο υπάλληλος διαγράφηκε.'),
+          ),
+        ],
+      ),
+      action: SnackBarAction(
+        textColor: Colors.blue,
+        label: 'ΑΝΑΙΡΕΣΗ',
+        onPressed: () {
+          _addEmployee(deletedEmployee);
+          setState(() => deletedEmployee = null);
+        },
+      ),
+      // TODO: Undo delete.
+    );
+  }
+
+  Function _buildEmployeeList(context) {
+    return (BuildContext context, int i) {
+      Employee employee = employeeList[i];
+      return Column(
+        children: <Widget>[
+          EmployeeListTile(
+            employee: employee,
+            onDelete: () {
+              _handleDelete(
+                scaffoldContext: context,
+                employee: employee,
+              );
+            },
+            onEdit: () {
+              _handleEdit(
+                scaffoldContext: context,
+                employee: employee,
+              );
+            },
+            onTap: () {
+              _handleTapEmployee(
+                employee: employee,
+              );
+            },
+          ),
+          i == employeeList.length - 1
+              ? Container(height: 50.0)
+              : Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Divider(
+                    indent: 60.0,
+                  ),
+                ),
+        ],
+      );
+    };
   }
 }

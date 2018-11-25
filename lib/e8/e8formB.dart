@@ -42,10 +42,12 @@ class E8formBState extends State<E8formB> {
       context: scaffoldContext,
       barrierDismissible: true,
       builder: (context) => SendDialog(
+            isReset: _isReset,
             erganiCode: message,
             number: number,
           ),
     );
+    if (shouldSend == true) sendSms(message: message, number: number);
   }
 
   Future<Null> _selectStartTime(BuildContext context) async {
@@ -170,11 +172,7 @@ class E8formBState extends State<E8formB> {
   Widget build(BuildContext context) {
     _employer = E8provider.of(context).employer;
     _employee = E8provider.of(context).employee;
-    _erganiCode = e8Parser(
-        employer: _employer,
-        employee: _employee,
-        start: _overtimeStart,
-        finish: _overtimeFinish);
+
     if (_isFirstBuild && !_isReset) {
       _overtimeStart = _employee.hourToStart == null
           ? TimeOfDay(hour: 16, minute: 00)
@@ -184,6 +182,11 @@ class E8formBState extends State<E8formB> {
 
       _isFirstBuild = false;
     }
+    _erganiCode = e8Parser(
+        employer: _employer,
+        employee: _employee,
+        start: _overtimeStart,
+        finish: _overtimeFinish);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(

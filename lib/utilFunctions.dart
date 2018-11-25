@@ -41,3 +41,7 @@ String e8Parser(
 }
 
 bool isNotNull(value) => value != null;
+
+void sendSms({@required message, @required number}) {
+  print('$message send to $number');
+}

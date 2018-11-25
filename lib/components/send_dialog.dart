@@ -5,7 +5,10 @@ class SendDialog extends StatelessWidget {
   final String erganiCode;
   final String number;
 
-  const SendDialog({Key key, this.erganiCode, @required this.number})
+  final bool isReset;
+
+  const SendDialog(
+      {Key key, this.erganiCode, @required this.number, @required this.isReset})
       : super(key: key);
 
   @override
@@ -29,13 +32,13 @@ class SendDialog extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           child: Text(
             'ΑΚΥΡΟ',
-            style: TextStyle(color: Colors.blue),
+            style: TextStyle(color: isReset ? Colors.orange : Colors.blue),
           ),
         ),
         Padding(
           padding: EdgeInsets.all(0.0),
           child: RaisedButton(
-            color: Colors.blue,
+            color: isReset ? Colors.orange : Colors.blue,
             onPressed: () => Navigator.pop(context, true),
             child: Text(
               'ΑΠΟΣΤΟΛΗ',

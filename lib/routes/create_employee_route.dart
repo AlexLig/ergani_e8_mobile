@@ -71,7 +71,7 @@ class EmployeeFormState extends State<EmployeeForm> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Προσθήκη υπαλλήλου'),
+      title: Text('${_employee == null ? 'Προσθήκη' : 'Επεξεργασία'} υπαλλήλου'),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,

@@ -2,7 +2,6 @@ import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:flutter/material.dart';
 
-// BUG when exceeding 24 hours
 TimeOfDay addToTimeOfDay(TimeOfDay timeOfDay, {int hour = 0, int minute = 0}) =>
     minutesToTime(hoursMinsToMinutes(hour, minute) + timeToMinutes(timeOfDay));
 
@@ -13,14 +12,8 @@ int timeToMinutes(TimeOfDay time) => time.hour * 60 + time.minute;
 int hoursMinsToMinutes(int hours, int minutes) => hours * 60 + minutes;
 
 // checks if timeA is later that timeB
-bool isLater(TimeOfDay timeA, TimeOfDay timeB) {
-  int hourA = timeA.hour;
-  int hourB = timeB.hour;
-  int minutesA = timeA.minute;
-  int minutesB = timeB.minute;
-
-  return hourA > hourB || (hourA == hourB && minutesA > minutesB);
-}
+bool isLater(TimeOfDay timeA, TimeOfDay timeB) =>
+    timeToMinutes(timeA) > timeToMinutes(timeB);
 
 String e8Parser(
     {Employer employer, Employee employee, TimeOfDay start, TimeOfDay finish}) {

@@ -3,18 +3,14 @@ import 'package:ergani_e8/models/employer.dart';
 import 'package:flutter/material.dart';
 
 // BUG when exceeding 24 hours
-TimeOfDay addToTimeOfDay(TimeOfDay timeOfDay, {int hour = 0, int minute = 0}) {
-  int newMins = (minute + timeOfDay.minute) % 60;
-  int addedHours = (minute + timeOfDay.minute) ~/ 60;
-  int tempAddedHours = hour + addedHours + timeOfDay.hour;
-  int newHours;
-  if (tempAddedHours ~/ 24 > 0) {
-    newHours = tempAddedHours ~/ 24;
-  } else {
-    newHours = tempAddedHours;
-  }
-  return TimeOfDay(hour: newHours, minute: newMins);
-}
+TimeOfDay addToTimeOfDay(TimeOfDay timeOfDay, {int hour = 0, int minute = 0}) =>
+    minutesToTime(hoursMinsToMinutes(hour, minute) + timeToMinutes(timeOfDay));
+
+TimeOfDay minutesToTime(int minutes) =>
+    TimeOfDay(hour: (minutes ~/ 60) % 24, minute: minutes % 60);
+
+int timeToMinutes(TimeOfDay time) => time.hour * 60 + time.minute;
+int hoursMinsToMinutes(int hours, int minutes) => hours * 60 + minutes;
 
 // checks if timeA is later that timeB
 bool isLater(TimeOfDay timeA, TimeOfDay timeB) {

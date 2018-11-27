@@ -18,12 +18,12 @@ class MyAppState extends State<MyApp> {
     super.initState();
     employeeList = <Employee>[
       Employee(
-          'Ηλιάννα', 'Παπαγεωργίου', '111111111', hoursMinsToTime(15, 30)),
-      Employee('Κωστής', 'Παλαμάς', '222222222', hoursMinsToTime(14, 20)),
+          'Ηλιάννα', 'Παπαγεωργίου', '111111111', TimeOfDay(hour: 15, minute: 30)),
+      Employee('Κωστής', 'Παλαμάς', '222222222', TimeOfDay(hour: 14, minute: 20)),
       Employee(
-          'Αλέξανδρος', 'Παπαδιαμάντης', '333333333', hoursMinsToTime(16, 50)),
-      Employee('Ιωάννης', 'Ρίτσος', '444444444', hoursMinsToTime(17, 10)),
-      Employee('Αδαμάντιος', 'Κοραής', '555555555', hoursMinsToTime(19, 10)),
+          'Αλέξανδρος', 'Παπαδιαμάντης', '333333333', TimeOfDay(hour: 16, minute: 50)),
+      Employee('Ιωάννης', 'Ρίτσος', '444444444', TimeOfDay(hour: 17, minute: 10)),
+      Employee('Αδαμάντιος', 'Κοραής', '555555555', TimeOfDay(hour: 19, minute: 10)),
     ];
   }
 

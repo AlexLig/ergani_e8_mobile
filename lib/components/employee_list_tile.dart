@@ -1,4 +1,5 @@
 import 'package:ergani_e8/models/employee.dart';
+import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 
 enum ContactActions { edit, delete }
@@ -20,6 +21,8 @@ class EmployeeListTile extends StatelessWidget {
     return this.employee.lastName[0].toUpperCase() +
         this.employee.firstName[0].toUpperCase();
   }
+
+  RegExp exp = RegExp(r'[^{0-9}]');
 
   @override
   Widget build(BuildContext context) {
@@ -45,34 +48,43 @@ class EmployeeListTile extends StatelessWidget {
           ),
         ),
         title: Text('${employee.lastName} ${employee.firstName}'),
-        subtitle: Text('ΑΦΜ: ${employee.vatNumber}'),
-        trailing: onDelete !=null && onEdit != null
-        ? PopupMenuButton<ContactActions>(
-          onSelected: (ContactActions selection) {
-            switch (selection) {
-              case ContactActions.edit:
-                this.onEdit();
-                break;
-              case ContactActions.delete:
-                this.onDelete();
-                break;
-              default:
-                print(selection);
-            }
-          },
-          itemBuilder: (BuildContext context) =>
-              <PopupMenuEntry<ContactActions>>[
-                PopupMenuItem<ContactActions>(
-                  value: ContactActions.edit,
-                  child: Text('Επεξεργασία'),
-                ),
-                PopupMenuItem<ContactActions>(
-                  value: ContactActions.delete,
-                  child: Text('Διαγραφή'),
-                )
-              ],
-        )
-        : null ,
+        isThreeLine: true,
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('ΑΦΜ: ${employee.vatNumber}'),
+            Text(
+              'Λήξη Εργασίας: ${employee.hourToStart.toString().replaceAll(exp, '')}',
+            ),
+          ],
+        ),
+        trailing: onDelete != null && onEdit != null
+            ? PopupMenuButton<ContactActions>(
+                onSelected: (ContactActions selection) {
+                  switch (selection) {
+                    case ContactActions.edit:
+                      this.onEdit();
+                      break;
+                    case ContactActions.delete:
+                      this.onDelete();
+                      break;
+                    default:
+                      print(selection);
+                  }
+                },
+                itemBuilder: (BuildContext context) =>
+                    <PopupMenuEntry<ContactActions>>[
+                      PopupMenuItem<ContactActions>(
+                        value: ContactActions.edit,
+                        child: Text('Επεξεργασία'),
+                      ),
+                      PopupMenuItem<ContactActions>(
+                        value: ContactActions.delete,
+                        child: Text('Διαγραφή'),
+                      )
+                    ],
+              )
+            : null,
       ),
     );
   }

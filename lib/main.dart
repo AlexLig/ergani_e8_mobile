@@ -1,4 +1,5 @@
 import 'package:ergani_e8/models/employee.dart';
+import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/contacts_route.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   List<Employee> employeeList;
+  Employer _employer;
 
   @override
   void initState() {
@@ -25,6 +27,7 @@ class MyAppState extends State<MyApp> {
       Employee('Ιωάννης', 'Ρίτσος', '444444444', TimeOfDay(hour: 17, minute: 10)),
       Employee('Αδαμάντιος', 'Κοραής', '555555555', TimeOfDay(hour: 19, minute: 10)),
     ];
+    _employer = Employer(000022221);
   }
 
   
@@ -36,7 +39,7 @@ class MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ContactsRoute(employeeList: employeeList),
+      home: ContactsRoute(employeeList: employeeList, employer: _employer,),
     );
   }
 }

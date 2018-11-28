@@ -10,16 +10,14 @@ class EmployerListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('${isNotNull(employer.name) ? employer.name : 'Εργοδότης'}'),
+      title: Text('${employer.name}'),
       subtitle: Row(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: Text('ΑΦΜ: ${employer.vatNumberAFM}'),
+            child: Text('ΑΦΜ: ${employer.afm}'),
           ),
-          isNotNull(employer.vatNumberAME)
-              ? Text('ΑΜΕ: ${employer.vatNumberAME}')
-              : null,
+          employer.hasAme() ? Text('ΑΜΕ: ${employer.ame}') : null,
         ].where(isNotNull).toList(),
       ),
     );

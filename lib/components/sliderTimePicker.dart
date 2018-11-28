@@ -87,12 +87,12 @@ class SliderTimePickerState extends State<SliderTimePicker> {
           children: <Widget>[
             FlatButton(
               // TODO : set context to alwaysUse24HourFormat
-              child: Text(_overtimeStart.format(context)),
+              child: Text(timeToString(_overtimeStart)),
               onPressed: () => _selectStartTime(context),
             ),
             Icon(Icons.arrow_forward),
             FlatButton(
-              child: Text(_overtimeFinish.format(context)),
+              child: Text(timeToString(_overtimeFinish)),
               onPressed: () => _selectFinishTime(context),
             )
           ],

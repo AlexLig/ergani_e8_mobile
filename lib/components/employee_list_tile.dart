@@ -53,7 +53,7 @@ class EmployeeListTile extends StatelessWidget {
           children: <Widget>[
             Text('ΑΦΜ: ${employee.vatNumber}'),
             Text(
-              'Ωράριο: ${employee.workStart.hour}:${employee.workStart.minute} - ${employee.workFinish.hour}:${employee.workFinish.minute}',
+              'Ωράριο: ${timeToString(employee.workStart)} - ${timeToString(employee.workFinish)}',
             ),
           ],
         ),

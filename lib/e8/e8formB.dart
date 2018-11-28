@@ -174,9 +174,9 @@ class E8formBState extends State<E8formB> {
     _employee = E8provider.of(context).employee;
 
     if (_isFirstBuild && !_isReset) {
-      _overtimeStart = _employee.hourToStart == null
+      _overtimeStart = _employee.workStart == null
           ? TimeOfDay(hour: 16, minute: 00)
-          : _employee.hourToStart;
+          : _employee.workStart;
       _overtimeFinish =
           addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
 

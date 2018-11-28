@@ -53,7 +53,7 @@ class EmployeeListTile extends StatelessWidget {
           children: <Widget>[
             Text('ΑΦΜ: ${employee.vatNumber}'),
             Text(
-              'Λήξη Εργασίας: ${employee.hourToStart.toString().replaceAll(exp, '')}',
+              'Λήξη Εργασίας: ${employee.workStart.toString().replaceAll(exp, '')}',
             ),
           ],
         ),

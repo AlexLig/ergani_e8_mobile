@@ -67,9 +67,9 @@ class SliderTimePickerState extends State<SliderTimePicker> {
   Widget build(BuildContext context) {
     if (_isFirstBuild) {
       _employee = E8provider.of(context).employee;
-      _overtimeStart = _employee.hourToStart == null
+      _overtimeStart = _employee.workStart == null
           ? TimeOfDay(hour: 16, minute: 00)
-          : _employee.hourToStart;
+          : _employee.workStart;
       _overtimeFinish =
           addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
 

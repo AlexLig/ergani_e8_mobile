@@ -23,7 +23,7 @@ String e8Parser(
 
   List<String> e8Data = [
     'Υ1',
-    employer.afm + (employer.ame ??= ''),
+    employer.afm + (employer.ame ?? ''),
     employee.vatNumber,
     overTime
   ];

@@ -29,30 +29,21 @@ class ContactsRouteState extends State<ContactsRoute> {
     employeeList = widget.employeeList;
   }
 
-  void _handleEdit({scaffoldContext, Employee employee}) async {
-    final newEmployee = await showDialog(
-      context: scaffoldContext,
-      barrierDismissible: false,
-      builder: (context) => EmployeeForm(employee: employee),
+  void _handleSubmit([Employee employee]) async {
+    final newEmployee = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CreateEmployeeRoute(employee: employee),
+      ),
     );
 
     if (newEmployee is Employee) {
-      _deleteEmployee(employee);
+      if (employee != null) _deleteEmployee(employee);
       _addEmployee(newEmployee);
     }
   }
 
-  void _handleSubmitEmployee({scaffoldContext, Employee employee}) async {
-    final newEmployee = await showDialog(
-      context: scaffoldContext,
-      barrierDismissible: false,
-      builder: (context) => EmployeeForm(employee: employee),
-    );
-
-    if (newEmployee is Employee) _addEmployee(newEmployee);
-  }
-
-  void _handleTapEmployee({Employee employee}) async {
+  void _handleTap(Employee employee) async {
     final e8FormCompleted = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -64,18 +55,16 @@ class ContactsRouteState extends State<ContactsRoute> {
     );
   }
 
-  void _handleDelete({scaffoldContext, Employee employee}) async {
+  void _handleDelete(context, Employee employee) async {
     final employeeToDelete = await showDialog(
-      context: scaffoldContext,
+      context: context,
       barrierDismissible: true,
       builder: (context) => DeleteDialog(employee: employee),
     );
 
     if (employeeToDelete is Employee) {
       _deleteEmployee(employeeToDelete);
-      Scaffold.of(scaffoldContext).showSnackBar(
-        _successfulDeleteSnackbar(context),
-      );
+      Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
     }
   }
 
@@ -104,7 +93,7 @@ class ContactsRouteState extends State<ContactsRoute> {
             tooltip: 'Προσθήκη Υπαλλήλου',
             icon: Icon(Icons.person_add, color: Colors.white),
             // SnackBar not working here. Need GlobalKey??
-            onPressed: () => _handleSubmitEmployee(scaffoldContext: context),
+            onPressed: _handleSubmit,
           ),
         ],
       ),
@@ -134,6 +123,30 @@ class ContactsRouteState extends State<ContactsRoute> {
     );
   }
 
+  Function _buildEmployeeList(context) {
+    return (BuildContext context, int i) {
+      Employee employee = employeeList[i];
+      return Column(
+        children: <Widget>[
+          EmployeeListTile(
+            employee: employee,
+            onDelete: () => _handleDelete(context, employee),
+            onEdit: () => _handleSubmit(employee),
+            onTap: () => _handleTap(employee),
+          ),
+          i == employeeList.length - 1
+              ? Container(height: 50.0)
+              : Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Divider(
+                    indent: 60.0,
+                  ),
+                ),
+        ],
+      );
+    };
+  }
+
   SnackBar _successfulDeleteSnackbar(context) {
     return SnackBar(
       content: Row(
@@ -156,43 +169,5 @@ class ContactsRouteState extends State<ContactsRoute> {
       ),
       // TODO: Undo delete.
     );
-  }
-
-  Function _buildEmployeeList(context) {
-    return (BuildContext context, int i) {
-      Employee employee = employeeList[i];
-      return Column(
-        children: <Widget>[
-          EmployeeListTile(
-            employee: employee,
-            onDelete: () {
-              _handleDelete(
-                scaffoldContext: context,
-                employee: employee,
-              );
-            },
-            onEdit: () {
-              _handleEdit(
-                scaffoldContext: context,
-                employee: employee,
-              );
-            },
-            onTap: () {
-              _handleTapEmployee(
-                employee: employee,
-              );
-            },
-          ),
-          i == employeeList.length - 1
-              ? Container(height: 50.0)
-              : Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Divider(
-                    indent: 60.0,
-                  ),
-                ),
-        ],
-      );
-    };
   }
 }

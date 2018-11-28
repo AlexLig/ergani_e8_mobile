@@ -1,18 +1,18 @@
 import 'package:ergani_e8/models/employee.dart';
 import 'package:flutter/material.dart';
 
-class EmployeeForm extends StatefulWidget {
+class CreateEmployeeRoute extends StatefulWidget {
   final Employee employee;
-  EmployeeForm({BuildContext context, this.employee});
+  CreateEmployeeRoute({BuildContext context, this.employee});
 
   @override
-  EmployeeFormState createState() {
-    return EmployeeFormState();
+  CreateEmployeeRouteState createState() {
+    return CreateEmployeeRouteState();
   }
 }
 
 // TODO: Don't add if AFM already exists.
-class EmployeeFormState extends State<EmployeeForm> {
+class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   final _formKey = GlobalKey<FormState>();
   // FocusNode employeeFocusNode;
   FocusNode firstNameFocus;
@@ -30,20 +30,19 @@ class EmployeeFormState extends State<EmployeeForm> {
   bool _shouldValidateOnChangeLastName = false;
   bool _shouldValidateOnChangeVatNumber = false;
   bool _shouldValidateOnChangeTimeToStart = false;
-  var _employeeList;
 
   @override
   void initState() {
     super.initState();
     _employee = widget.employee;
 
-    if (_employee != null) {
-      _firstNameController.text = _employee.firstName;
-      _lastNameController.text = _employee.lastName;
-      _vatNumberController.text = _employee.vatNumber;
-      // _timeToStartController.text =
-      //     '${_employee.hourToStart.hour}${_employee.hourToStart.minute}';
-    }
+    // if (_employee != null) {
+      _firstNameController.text = _employee?.firstName;
+      _lastNameController.text = _employee?.lastName;
+      _vatNumberController.text = _employee?.vatNumber;
+      _timeToStartController.text =
+          '${_employee?.hourToStart.hour}:${_employee?.hourToStart.minute}';
+    // }
     firstNameFocus = FocusNode();
     lastNameFocus = FocusNode();
     vatNumberFocus = FocusNode();
@@ -77,23 +76,23 @@ class EmployeeFormState extends State<EmployeeForm> {
     super.dispose();
   }
 
-// '${s[0].toUpperCase()}${s.substring(1)}'
-  submit(context) {
+  void submit(context) {
     if (this._formKey.currentState.validate()) {
-      //_formKey.currentState.save();
-      Employee employeeToSubmit = Employee(
-        '${_firstNameController.text[0].toUpperCase()}${_firstNameController.text.substring(1)}',
-        '${_lastNameController.text[0].toUpperCase()}${_lastNameController.text.substring(1)}',
-        _vatNumberController.text,
-        TimeOfDay(
-          hour: int.tryParse(_timeToStartController.text.substring(0, 2)) ?? 00,
-          minute: int.tryParse(_timeToStartController.text.substring(2, 4)) ?? 00,
-        ),
-      );
-// int.tryParse returns null on invalid input. Can use ?? to check if null.
-// e.g. int val = int.tryParse(text) ?? defaultValue;
+      _formKey.currentState.save();
+      // int.tryParse returns null on invalid input. Can use ?? to check if null.
+      // e.g. int val = int.tryParse(text) ?? defaultValue;
+      int hour = int.tryParse(_timeToStartController.text.substring(0, 2));
+      int minute = int.tryParse(_timeToStartController.text.substring(2, 4));
+      var time = TimeOfDay(hour: hour, minute: minute);
+      var firstName =
+          '${_firstNameController.text[0].toUpperCase()}${_firstNameController.text.substring(1)}';
+      var lastName =
+          '${_lastNameController.text[0].toUpperCase()}${_lastNameController.text.substring(1)}';
+      var vatNumber = _vatNumberController.text;
 
-// TODO: directly write to the db, show loading in the midtime, then send ok via pop().
+      var employeeToSubmit = Employee(firstName, lastName, vatNumber, time);
+
+    // TODO: directly write to the db, show loading in the midtime, then send ok via pop().
       _firstNameController.clear();
       _lastNameController.clear();
       _vatNumberController.clear();
@@ -178,14 +177,14 @@ class EmployeeFormState extends State<EmployeeForm> {
                 maxLength: 4,
                 validator: (value) {
                   if (!isValid(value, RegExp(r'^[0-9]+$')) ||
-                      value.length != 4) {
+                      value.length != 4|| value.isEmpty ) {
                     print('hello from validator');
                     return 'Προσθέστε ώρα';
                   }
                 },
                 onFieldSubmitted: (value) {
                   if (!isValid(value, RegExp(r'^[0-9]+$')) ||
-                      value.length != 4) {
+                      value.length != 4 || value.isEmpty) {
                     setState(() => _shouldValidateOnChangeTimeToStart = true);
                     print('hello from onFieldSubmitted');
                   } else

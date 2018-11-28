@@ -14,7 +14,6 @@ class EmployeeListTile extends StatelessWidget {
     this.onDelete,
     this.onEdit,
     this.onTap,
-    overtimeStart,
   }) : super(key: key);
 
   String _getInitials() {

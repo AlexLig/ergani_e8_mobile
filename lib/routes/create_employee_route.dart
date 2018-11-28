@@ -1,3 +1,4 @@
+import 'package:ergani_e8/components/time_picker.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:flutter/material.dart';
 
@@ -15,21 +16,20 @@ class CreateEmployeeRoute extends StatefulWidget {
 class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   final _formKey = GlobalKey<FormState>();
   // FocusNode employeeFocusNode;
+  Employee _employee;
+  TimeOfDay _workStart, _workFinish;
   FocusNode firstNameFocus;
   FocusNode lastNameFocus;
   FocusNode vatNumberFocus;
-  FocusNode timeToStartFocus;
 
   var _firstNameController = TextEditingController();
   var _lastNameController = TextEditingController();
   var _vatNumberController = TextEditingController();
   var _timeToStartController = TextEditingController();
 
-  Employee _employee;
   bool _shouldValidateOnChangeFirstName = false;
   bool _shouldValidateOnChangeLastName = false;
   bool _shouldValidateOnChangeVatNumber = false;
-  bool _shouldValidateOnChangeTimeToStart = false;
 
   @override
   void initState() {
@@ -37,16 +37,17 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     _employee = widget.employee;
 
     // if (_employee != null) {
-      _firstNameController.text = _employee?.firstName;
-      _lastNameController.text = _employee?.lastName;
-      _vatNumberController.text = _employee?.vatNumber;
-      _timeToStartController.text =
-          '${_employee?.hourToStart.hour}:${_employee?.hourToStart.minute}';
+    _firstNameController.text = _employee?.firstName;
+    _lastNameController.text = _employee?.lastName;
+    _vatNumberController.text = _employee?.vatNumber;
+    _workStart = _employee?.workStart ?? TimeOfDay(hour: 08, minute: 00);
+    _workFinish = _employee?.workFinish ?? TimeOfDay(hour: 16, minute: 00);
+    _timeToStartController.text =
+        '${_employee?.workStart?.hour ?? ''}:${_employee?.workStart?.minute}';
     // }
     firstNameFocus = FocusNode();
     lastNameFocus = FocusNode();
     vatNumberFocus = FocusNode();
-    timeToStartFocus = FocusNode();
 
     // firstNameFocus.addListener(() {
     //   if (!firstNameFocus.hasFocus) {
@@ -68,152 +69,222 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     firstNameFocus.dispose();
     lastNameFocus.dispose();
     vatNumberFocus.dispose();
-    timeToStartFocus.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
     _vatNumberController.dispose();
-    _timeToStartController.dispose();
     super.dispose();
   }
 
   void submit(context) {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
-      // int.tryParse returns null on invalid input. Can use ?? to check if null.
-      // e.g. int val = int.tryParse(text) ?? defaultValue;
-      int hour = int.tryParse(_timeToStartController.text.substring(0, 2));
-      int minute = int.tryParse(_timeToStartController.text.substring(2, 4));
-      var time = TimeOfDay(hour: hour, minute: minute);
+
       var firstName =
           '${_firstNameController.text[0].toUpperCase()}${_firstNameController.text.substring(1)}';
       var lastName =
           '${_lastNameController.text[0].toUpperCase()}${_lastNameController.text.substring(1)}';
       var vatNumber = _vatNumberController.text;
 
-      var employeeToSubmit = Employee(firstName, lastName, vatNumber, time);
+      var employeeToSubmit =
+          Employee(firstName, lastName, vatNumber, _workStart, _workFinish);
 
-    // TODO: directly write to the db, show loading in the midtime, then send ok via pop().
+      // TODO: directly write to the db, show loading in the midtime, then send ok via pop().
       _firstNameController.clear();
       _lastNameController.clear();
       _vatNumberController.clear();
-      _timeToStartController.clear();
       Navigator.pop(context, employeeToSubmit);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title:
-          Text('${_employee == null ? 'Προσθήκη' : 'Επεξεργασία'} υπαλλήλου'),
-      content: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
+    return Scaffold(
+      appBar: AppBar(
+          title: Text(
+              '${_employee == null ? 'Προσθήκη' : 'Επεξεργασία'} υπαλλήλου')),
+      body: Form(
+        key: _formKey,
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              // FIRSTNAME Textfield
-              TextFormField(
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (value) {
-                  FocusScope.of(context).requestFocus(lastNameFocus);
-                },
-                autofocus: true,
-                autovalidate: _shouldValidateOnChangeFirstName,
-                focusNode: firstNameFocus,
-                decoration: InputDecoration(labelText: 'Όνομα'),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Προσθέστε όνομα';
-                  }
-                },
-                controller: _firstNameController,
-              ),
-              // LASTNAME textfield
-              TextFormField(
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (value) {
-                  if (value.isEmpty)
-                    setState(() => _shouldValidateOnChangeLastName = true);
-                  else
-                    FocusScope.of(context).requestFocus(vatNumberFocus);
-                },
-                focusNode: lastNameFocus,
-                decoration: InputDecoration(labelText: 'Επίθετο'),
-                validator: (value) {
-                  if (value.isEmpty) return 'Προσθέστε επίθετο';
-                },
-                autovalidate: _shouldValidateOnChangeLastName,
-                // onEditingComplete: () =>
-                controller: _lastNameController,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  // FIRSTNAME Textfield
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: _buildFirstName(context),
+                  )),
+
+                  // LASTNAME textfield
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: _buildLastName(context),
+                  )),
+                ],
               ),
               // VATNUMBER textfield
-              TextFormField(
-                keyboardType: TextInputType.number,
-                focusNode: vatNumberFocus,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(labelText: 'ΑΦΜ'),
-                validator: (value) => validateAfm(value),
-                autovalidate: _shouldValidateOnChangeVatNumber,
-                maxLength: 9,
-                onFieldSubmitted: (value) {
-                  if (!isValid(value, RegExp(r'^[0-9]+$')) || value.length != 9)
-                    setState(() => _shouldValidateOnChangeVatNumber = true);
-                  else
-                    FocusScope.of(context).requestFocus(timeToStartFocus);
-                },
-                controller: _vatNumberController,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: _buildVatNumber(context),
               ),
               // TIMETOSTART
-              TextFormField(
-                keyboardType: TextInputType.number,
-                focusNode: timeToStartFocus,
-                controller: _timeToStartController,
-                textInputAction: TextInputAction.done,
-                decoration: InputDecoration(labelText: 'Λήξη Εργασίας'),
-                autovalidate: _shouldValidateOnChangeTimeToStart,
-                maxLength: 4,
-                validator: (value) {
-                  if (!isValid(value, RegExp(r'^[0-9]+$')) ||
-                      value.length != 4|| value.isEmpty ) {
-                    print('hello from validator');
-                    return 'Προσθέστε ώρα';
-                  }
-                },
-                onFieldSubmitted: (value) {
-                  if (!isValid(value, RegExp(r'^[0-9]+$')) ||
-                      value.length != 4 || value.isEmpty) {
-                    setState(() => _shouldValidateOnChangeTimeToStart = true);
-                    print('hello from onFieldSubmitted');
-                  } else
-                    this.submit(context);
-                },
+              _buildWorkHours(context),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 30.0),
+                      child: RaisedButton(
+                        color: Colors.blue,
+                        onPressed: () => this.submit(context),
+                        child: Text(
+                          'ΑΠΟΘΗΚΕΥΣΗ',
+                          style: TextStyle(color: Colors.white, fontSize: 16.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 2.0),
+                      child: FlatButton(
+                        shape: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue)),
+                        child:
+                            Text('ΑΚΥΡΟ', style: TextStyle(color: Colors.blue)),
+                        // color: Colors.black,
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
-      actions: [
-        FlatButton(
-          child: Text('ΑΚΥΡΟ', style: TextStyle(color: Colors.teal)),
-          // color: Colors.black,
-          onPressed: () => Navigator.pop(context),
+    );
+  }
+
+  TextFormField _buildFirstName(context) {
+    return TextFormField(
+      keyboardType: TextInputType.text,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        FocusScope.of(context).requestFocus(lastNameFocus);
+      },
+      autofocus: true,
+      autovalidate: _shouldValidateOnChangeFirstName,
+      focusNode: firstNameFocus,
+      decoration: InputDecoration(
+        labelText: 'Όνομα',
+        border: OutlineInputBorder(),
+        prefixIcon: Icon(Icons.person),
+      ),
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Προσθέστε όνομα';
+        }
+      },
+      controller: _firstNameController,
+    );
+  }
+
+  TextFormField _buildLastName(context) {
+    return TextFormField(
+      keyboardType: TextInputType.text,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        if (value.isEmpty)
+          setState(() => _shouldValidateOnChangeLastName = true);
+        else
+          FocusScope.of(context).requestFocus(vatNumberFocus);
+      },
+      focusNode: lastNameFocus,
+      decoration: InputDecoration(
+        labelText: 'Επίθετο',
+        border: OutlineInputBorder(),
+        // prefixIcon: Icon(Icons.perm_contact_calendar)
+        // prefixIcon: Icon(Icons.recent_actors)
+        prefixIcon: Icon(Icons.contacts),
+      ),
+      validator: (value) {
+        if (value.isEmpty) return 'Προσθέστε επίθετο';
+      },
+      autovalidate: _shouldValidateOnChangeLastName,
+      // onEditingComplete: () =>
+      controller: _lastNameController,
+    );
+  }
+
+  TextFormField _buildVatNumber(context) {
+    return TextFormField(
+      keyboardType: TextInputType.number,
+      focusNode: vatNumberFocus,
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        labelText: 'ΑΦΜ',
+        border: OutlineInputBorder(),
+        prefixIcon: Icon(Icons.work),
+      ),
+      validator: (value) => validateAfm(value),
+      autovalidate: _shouldValidateOnChangeVatNumber,
+      maxLength: 9,
+      onFieldSubmitted: (value) {
+        if (!isValid(value, RegExp(r'^[0-9]+$')) || value.length != 9)
+          setState(() => _shouldValidateOnChangeVatNumber = true);
+        // else
+        // FocusScope.of(context).requestFocus();
+      },
+      controller: _vatNumberController,
+    );
+  }
+
+  _buildWorkHours(context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        TimePickerButton(
+          workHour: _workStart,
+          onPressed: () => _selectWorkStart(context),
         ),
-        Padding(
-          padding: EdgeInsets.all(0.0),
-          child: RaisedButton(
-            color: Colors.teal,
-            onPressed: () => this.submit(context),
-            child: Text(
-              'ΑΠΟΘΗΚΕΥΣΗ',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
+        Icon(Icons.arrow_forward),
+        TimePickerButton(
+          workHour: _workFinish,
+          onPressed: () => _selectWorkFinish(context),
         ),
       ],
     );
+  }
+
+  void _selectWorkStart(BuildContext context) async {
+    final TimeOfDay startTime = await showTimePicker(
+      context: context,
+      initialTime: _workStart,
+    );
+
+    if (startTime is TimeOfDay) setState(() => _workStart = startTime);
+  }
+
+  void _selectWorkFinish(BuildContext context) async {
+    final TimeOfDay finishTime = await showTimePicker(
+      context: context,
+      initialTime: _workFinish,
+    );
+
+    if (finishTime is TimeOfDay) setState(() => _workFinish = finishTime);
   }
 
   validateAfm(String afm) {

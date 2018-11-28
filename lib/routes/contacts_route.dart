@@ -10,8 +10,9 @@ import 'package:flutter/material.dart';
 
 class ContactsRoute extends StatefulWidget {
   final List<Employee> employeeList;
+  final Employer employer;
 
-  ContactsRoute({@required this.employeeList});
+  ContactsRoute({@required this.employeeList, @required this.employer});
 
   @override
   ContactsRouteState createState() => ContactsRouteState();
@@ -20,6 +21,7 @@ class ContactsRoute extends StatefulWidget {
 class ContactsRouteState extends State<ContactsRoute> {
   final double _appBarHeight = 100.0;
   bool isLoading = false;
+  Employer _employer;
   List<Employee> employeeList;
   Employee deletedEmployee;
 
@@ -27,6 +29,7 @@ class ContactsRouteState extends State<ContactsRoute> {
   void initState() {
     super.initState();
     employeeList = widget.employeeList;
+    _employer = widget.employer;
   }
 
   void _handleSubmit([Employee employee]) async {
@@ -49,7 +52,7 @@ class ContactsRouteState extends State<ContactsRoute> {
       MaterialPageRoute(
         builder: (context) => E8route(
               employee: employee,
-              employer: Employer(vatNumberAFM: '123123123'),
+              employer: _employer
             ),
       ),
     );

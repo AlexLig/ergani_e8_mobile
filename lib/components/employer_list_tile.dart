@@ -4,24 +4,17 @@ import 'package:flutter/material.dart';
 
 class EmployerListTile extends StatelessWidget {
   final Employer employer;
-
+  String textValue;
   EmployerListTile({this.employer});
 
   @override
   Widget build(BuildContext context) {
+    textValue = employer.ame == null
+        ? 'ΑΦΜ: ${employer.afm}'
+        : 'ΑΦΜ: ${employer.afm} ΑΜΕ: ${employer.ame}';
     return ListTile(
-      title: Text('${isNotNull(employer.name) ? employer.name : 'Εργοδότης'}'),
-      subtitle: Row(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Text('ΑΦΜ: ${employer.vatNumberAFM}'),
-          ),
-          isNotNull(employer.vatNumberAME)
-              ? Text('ΑΜΕ: ${employer.vatNumberAME}')
-              : null,
-        ].where(isNotNull).toList(),
-      ),
+      title: Text(employer.name ?? 'Εργοδότης'),
+      subtitle: Text(textValue),
     );
   }
 }

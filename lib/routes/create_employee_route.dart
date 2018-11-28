@@ -1,5 +1,6 @@
 import 'package:ergani_e8/components/time_picker.dart';
 import 'package:ergani_e8/models/employee.dart';
+import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 
 class CreateEmployeeRoute extends StatefulWidget {
@@ -290,18 +291,4 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     if (finishTime is TimeOfDay) setState(() => _workFinish = finishTime);
   }
 
-  validateAfm(String afm) {
-    if (afm.isEmpty) {
-      return 'Προσθέστε ΑΦΜ';
-    } else if (!isValid(afm, RegExp(r'^[0-9]+$')) || afm.length != 9) {
-      return 'Ο ΑΦΜ αποτελείται απο 9 αριθμούς';
-    }
-  }
-}
-
-bool isValid(String value, RegExp regex) {
-  return regex
-      .allMatches(value)
-      .map((match) => match.start == 0 && match.end == value.length)
-      .reduce((sum, nextValue) => sum && nextValue);
 }

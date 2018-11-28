@@ -41,8 +41,4 @@ class Employer {
     return map;
   }
 
-  bool hasAme() {
-    if (this._ame != null) return true;
-    return false;
-  }
 }

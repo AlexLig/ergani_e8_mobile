@@ -35,3 +35,18 @@ bool isNotNull(value) => value != null;
 void sendSms({@required message, @required number}) {
   print('$message send to $number');
 }
+
+validateAfm(String afm) {
+  if (afm.isEmpty) {
+    return 'Προσθέστε ΑΦΜ';
+  } else if (!isValid(afm, RegExp(r'^[0-9]+$')) || afm.length != 9) {
+    return 'Ο ΑΦΜ αποτελείται απο 9 αριθμούς';
+  }
+}
+
+bool isValid(String value, RegExp regex) {
+  return regex
+      .allMatches(value)
+      .map((match) => match.start == 0 && match.end == value.length)
+      .reduce((sum, nextValue) => sum && nextValue);
+}

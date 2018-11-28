@@ -1,4 +1,5 @@
 import 'package:ergani_e8/models/employee.dart';
+import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 
 class EmployeeForm extends StatefulWidget {
@@ -87,7 +88,8 @@ class EmployeeFormState extends State<EmployeeForm> {
         _vatNumberController.text,
         TimeOfDay(
           hour: int.tryParse(_timeToStartController.text.substring(0, 2)) ?? 00,
-          minute: int.tryParse(_timeToStartController.text.substring(2, 4)) ?? 00,
+          minute:
+              int.tryParse(_timeToStartController.text.substring(2, 4)) ?? 00,
         ),
       );
 // int.tryParse returns null on invalid input. Can use ?? to check if null.
@@ -216,19 +218,4 @@ class EmployeeFormState extends State<EmployeeForm> {
       ],
     );
   }
-
-  validateAfm(String afm) {
-    if (afm.isEmpty) {
-      return 'Προσθέστε ΑΦΜ';
-    } else if (!isValid(afm, RegExp(r'^[0-9]+$')) || afm.length != 9) {
-      return 'Ο ΑΦΜ αποτελείται απο 9 αριθμούς';
-    }
-  }
-}
-
-bool isValid(String value, RegExp regex) {
-  return regex
-      .allMatches(value)
-      .map((match) => match.start == 0 && match.end == value.length)
-      .reduce((sum, nextValue) => sum && nextValue);
 }

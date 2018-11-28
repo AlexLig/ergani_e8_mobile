@@ -27,7 +27,7 @@ class MyAppState extends State<MyApp> {
       Employee('Ιωάννης', 'Ρίτσος', '444444444', TimeOfDay(hour: 17, minute: 10)),
       Employee('Αδαμάντιος', 'Κοραής', '555555555', TimeOfDay(hour: 19, minute: 10)),
     ];
-    _employer = Employer('000022221');
+    _employer = Employer('000022222');
   }
 
   

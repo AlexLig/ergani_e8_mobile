@@ -17,15 +17,16 @@ bool isLater(TimeOfDay timeA, TimeOfDay timeB) =>
 
 String e8Parser(
     {Employer employer, Employee employee, TimeOfDay start, TimeOfDay finish}) {
-  String employerVat = employer.hasAme()
-      ? employer.afm.toString()
-      : employer.afm.toString() + employer.ame.toString();
-  String employeeVat = employee.vatNumber.toString();
   RegExp exp = RegExp(r'[^{0-9}]');
   String overTime = start.toString().replaceAll(exp, '') +
       finish.toString().replaceAll(exp, '');
 
-  List<String> e8Data = ['Υ1', employerVat, employeeVat, overTime];
+  List<String> e8Data = [
+    'Υ1',
+    employer.afm + (employer.ame ??= ''),
+    employee.vatNumber,
+    overTime
+  ];
   return e8Data.join(" ");
 }
 

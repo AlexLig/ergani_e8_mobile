@@ -60,7 +60,11 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
+        primaryColor: Colors.blueGrey[700],
+        accentColor: Colors.teal[800],
+        buttonColor: Colors.teal[800],
+        cursorColor: Colors.blueGrey[700],
       ),
       home: ContactsRoute(employeeList: employeeList),
     );

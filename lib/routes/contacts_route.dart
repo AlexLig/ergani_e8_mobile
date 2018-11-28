@@ -91,13 +91,16 @@ class ContactsRouteState extends State<ContactsRoute> {
         actions: <Widget>[
           IconButton(
             tooltip: 'Προσθήκη Υπαλλήλου',
-            icon: Icon(Icons.person_add, color: Colors.white),
+            icon: Icon(Icons.search),
             // SnackBar not working here. Need GlobalKey??
             onPressed: _handleSubmit,
           ),
         ],
       ),
-
+      floatingActionButton: FloatingActionButton(
+        onPressed: _handleSubmit,
+        child: Icon(Icons.person_add),
+      ),
       // Needed to open a snackbar.
       // This happens because you are using the context of the widget that instantiated Scaffold.
       // Not the context of a child of Scaffold.
@@ -135,7 +138,7 @@ class ContactsRouteState extends State<ContactsRoute> {
             onTap: () => _handleTap(employee),
           ),
           i == employeeList.length - 1
-              ? Container(height: 50.0)
+              ? SizedBox(height: 100.0)
               : Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: Divider(

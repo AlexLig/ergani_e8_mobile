@@ -40,7 +40,7 @@ class EmployeeListTile extends StatelessWidget {
               '${_getInitials()}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.teal,
+                color: Theme.of(context).accentColor,
                 fontSize: 24.0,
               ),
             ),

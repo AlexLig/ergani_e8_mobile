@@ -18,14 +18,11 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   // FocusNode employeeFocusNode;
   Employee _employee;
   TimeOfDay _workStart, _workFinish;
-  FocusNode firstNameFocus;
-  FocusNode lastNameFocus;
-  FocusNode vatNumberFocus;
+  FocusNode firstNameFocus, lastNameFocus, vatNumberFocus;
 
   var _firstNameController = TextEditingController();
   var _lastNameController = TextEditingController();
   var _vatNumberController = TextEditingController();
-  var _timeToStartController = TextEditingController();
 
   bool _shouldValidateOnChangeFirstName = false;
   bool _shouldValidateOnChangeLastName = false;
@@ -36,15 +33,12 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     super.initState();
     _employee = widget.employee;
 
-    // if (_employee != null) {
     _firstNameController.text = _employee?.firstName;
     _lastNameController.text = _employee?.lastName;
     _vatNumberController.text = _employee?.vatNumber;
     _workStart = _employee?.workStart ?? TimeOfDay(hour: 08, minute: 00);
     _workFinish = _employee?.workFinish ?? TimeOfDay(hour: 16, minute: 00);
-    _timeToStartController.text =
-        '${_employee?.workStart?.hour ?? ''}:${_employee?.workStart?.minute}';
-    // }
+
     firstNameFocus = FocusNode();
     lastNameFocus = FocusNode();
     vatNumberFocus = FocusNode();
@@ -79,10 +73,14 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      var firstName =
-          '${_firstNameController.text[0].toUpperCase()}${_firstNameController.text.substring(1)}';
-      var lastName =
-          '${_lastNameController.text[0].toUpperCase()}${_lastNameController.text.substring(1)}';
+      var firstName = _firstNameController.text[0].toUpperCase() +
+              _firstNameController.text.substring(1) ??
+          '';
+      // '${_firstNameController.text[0].toUpperCase()}${_firstNameController.text.substring(1)}';
+      var lastName = _lastNameController.text[0].toUpperCase() +
+              _lastNameController.text.substring(1) ??
+          '';
+      // '${_lastNameController.text[0].toUpperCase()}${_lastNameController.text.substring(1)}';
       var vatNumber = _vatNumberController.text;
 
       var employeeToSubmit =
@@ -100,8 +98,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(
-              '${_employee == null ? 'Προσθήκη' : 'Επεξεργασία'} υπαλλήλου')),
+        title:
+            Text('${_employee == null ? 'Προσθήκη' : 'Επεξεργασία'} υπαλλήλου'),
+        backgroundColor: Colors.blueGrey[800],
+      ),
       body: Form(
         key: _formKey,
         child: Container(
@@ -143,7 +143,6 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                     child: Padding(
                       padding: EdgeInsets.only(top: 30.0),
                       child: RaisedButton(
-                        color: Colors.blue,
                         onPressed: () => this.submit(context),
                         child: Text(
                           'ΑΠΟΘΗΚΕΥΣΗ',
@@ -161,10 +160,14 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                       padding: EdgeInsets.only(top: 2.0),
                       child: FlatButton(
                         shape: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue)),
-                        child:
-                            Text('ΑΚΥΡΟ', style: TextStyle(color: Colors.blue)),
-                        // color: Colors.black,
+                          borderSide:
+                              BorderSide(color: Theme.of(context).buttonColor),
+                        ),
+                        child: Text(
+                          'ΑΚΥΡΟ',
+                          style:
+                              TextStyle(color: Theme.of(context).buttonColor),
+                        ),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ),
@@ -178,7 +181,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     );
   }
 
-  TextFormField _buildFirstName(context) {
+  _buildFirstName(context) {
     return TextFormField(
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.next,
@@ -190,7 +193,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       focusNode: firstNameFocus,
       decoration: InputDecoration(
         labelText: 'Όνομα',
-        border: OutlineInputBorder(),
+        border: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).accentColor)),
         prefixIcon: Icon(Icons.person),
       ),
       validator: (value) {

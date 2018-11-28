@@ -95,7 +95,7 @@ class E8formBState extends State<E8formB> {
   _buildActiveSlider() {
     var value = (_sliderValue * 2) % 2;
     var sliderValue = value == 0 ? _sliderValue.round() : _sliderValue;
-    
+
     return Column(
       children: <Widget>[
         Text(
@@ -124,8 +124,9 @@ class E8formBState extends State<E8formB> {
             min: 0.5,
             max: 3.0,
             // label: '$_sliderValue  ώρες',
-            label:
-                _sliderValue == 1 ? '$sliderValue ώρα' : '$sliderValue ώρες',
+            label: _sliderValue == 1 || _sliderValue == 1.5
+                ? '$sliderValue ώρα'
+                : '$sliderValue ώρες',
             value: _sliderValue,
             onChanged: (newSliderValue) {
               _handleSliderChange(newSliderValue);

@@ -1,6 +1,7 @@
 import 'package:ergani_e8/components/employee_list_tile.dart';
 import 'package:ergani_e8/components/employer_list_tile.dart';
 import 'package:ergani_e8/components/send_dialog.dart';
+import 'package:ergani_e8/components/time_picker.dart';
 import 'package:ergani_e8/e8/e8provider.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
@@ -105,16 +106,15 @@ class E8formBState extends State<E8formB> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlatButton(
-              // TODO : set context to alwaysUse24HourFormat
-              child: Text(_overtimeStart.format(context)),
+            TimePickerButton(
               onPressed: () => _selectStartTime(context),
+              workHour: _overtimeStart,
             ),
             Icon(Icons.arrow_forward),
-            FlatButton(
-              child: Text(_overtimeFinish.format(context)),
+            TimePickerButton(
               onPressed: () => _selectFinishTime(context),
-            )
+              workHour: _overtimeFinish,
+            ),
           ],
         ),
         Padding(

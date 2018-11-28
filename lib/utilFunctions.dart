@@ -14,9 +14,11 @@ int hoursMinsToMinutes(int hours, int minutes) => hours * 60 + minutes;
 // checks if timeA is later that timeB
 bool isLater(TimeOfDay timeA, TimeOfDay timeB) =>
     timeToMinutes(timeA) > timeToMinutes(timeB);
+
 String timeToString(TimeOfDay timeOfDay){
   return timeOfDay.toString().replaceAll(RegExp(r'[^{0-9}:]'), '');
 }
+
 String e8Parser(
     {Employer employer, Employee employee, TimeOfDay start, TimeOfDay finish}) {
   RegExp exp = RegExp(r'[^{0-9}]');

@@ -1,3 +1,4 @@
+import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 
 class TimePickerButton extends StatelessWidget {
@@ -20,7 +21,7 @@ class TimePickerButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Text(
-              workHour?.format(context) ?? TimeOfDay(hour: 00, minute: 00),
+              timeToString(workHour ?? TimeOfDay(hour: 00, minute: 00)),
               style: TextStyle(fontSize: 16.0),
             ),
             Padding(

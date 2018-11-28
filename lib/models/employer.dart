@@ -2,9 +2,9 @@ class Employer {
   String _name, _afm, _ame;
   int _id;
 
-  Employer(this._afm, [this._name, this._ame]);
+  Employer(this._afm, this._name, [this._ame]);
 
-  Employer.withID(this._id, this._afm, [this._name, this._ame]);
+  Employer.withID(this._id, this._afm, this._name, [this._ame]);
 
   Employer.fromMap(Map<String, dynamic> map) {
     this._id = map['id'];
@@ -40,5 +40,4 @@ class Employer {
 
     return map;
   }
-
 }

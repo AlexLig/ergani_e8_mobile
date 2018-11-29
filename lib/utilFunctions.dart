@@ -15,7 +15,7 @@ int hoursMinsToMinutes(int hours, int minutes) => hours * 60 + minutes;
 bool isLater(TimeOfDay timeA, TimeOfDay timeB) =>
     timeToMinutes(timeA) > timeToMinutes(timeB);
 
-String timeToString(TimeOfDay timeOfDay){
+String timeToString(TimeOfDay timeOfDay) {
   return timeOfDay.toString().replaceAll(RegExp(r'[^{0-9}:]'), '');
 }
 
@@ -40,17 +40,30 @@ void sendSms({@required message, @required number}) {
   print('$message send to $number');
 }
 
-validateAfm(String afm) {
-  if (afm.isEmpty) {
-    return 'Προσθέστε ΑΦΜ';
-  } else if (!isValid(afm, RegExp(r'^[0-9]+$')) || afm.length != 9) {
-    return 'Ο ΑΦΜ αποτελείται απο 9 αριθμούς';
+
+
+validateAfm(String afm) => _validateVatNumber(afm, 9);
+validateAme(String ame) => _validateVatNumber(ame, 10);
+_validateVatNumber(String vatNumber, int length) {
+  if (vatNumber.isEmpty) {
+    return 'Προσθέστε ${length == 9 ? 'ΑΦΜ' : 'ΑΜΕ'}';
+  } else if (isNotNumeric(vatNumber) || vatNumber.length != length) {
+    return 'O ${length == 9 ? 'ΑΦΜ' : 'ΑΜΕ'} αποτελείται από $length αριθμούς';
   }
 }
 
-bool isValid(String value, RegExp regex) {
-  return regex
-      .allMatches(value)
-      .map((match) => match.start == 0 && match.end == value.length)
-      .reduce((sum, nextValue) => sum && nextValue);
-}
+bool isNumeric(String value) => _isFullMatch(RegExp(r'[0-9]'), value);
+bool isNotNumeric(String value) => _isFullMatch(RegExp(r'[^{0-9}]'), value);
+bool _isFullMatch(RegExp regExp, String value) => regExp
+    .allMatches(value)
+    .map((match) => match.start == 0 && match.end == value.length)
+    .reduce((sum, nextValue) => sum && nextValue);
+
+/// Experimenting with currying
+// var isNotNumeric = _isFullMatch(RegExp(r'[^{0-9}]'));
+// var isNumeric = _isFullMatch(RegExp(r'[0-9]'));
+
+// Function _isFullMatch(RegExp regExp) => (String value) => regExp
+//     .allMatches(value)
+//     .map((match) => match.start == 0 && match.end == value.length)
+//     .reduce((sum, nextValue) => sum && nextValue);

@@ -247,7 +247,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       autovalidate: _shouldValidateOnChangeAfm,
       maxLength: 9,
       onFieldSubmitted: (value) {
-        if (!isValid(value, RegExp(r'^[0-9]+$')) || value.length != 9)
+        if (isNotNumeric(value) || value.length != 9)
           setState(() => _shouldValidateOnChangeAfm = true);
         // else
         // FocusScope.of(context).requestFocus();

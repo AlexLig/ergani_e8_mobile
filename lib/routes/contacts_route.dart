@@ -6,7 +6,9 @@ import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/create_employee_route.dart';
 import 'package:ergani_e8/routes/e8route.dart';
+import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ContactsRoute extends StatefulWidget {
   ContactsRoute();
@@ -15,7 +17,7 @@ class ContactsRoute extends StatefulWidget {
 }
 
 class ContactsRouteState extends State<ContactsRoute> {
-  // DatabaseHelper _databaseHelper = DataBaseHelper();
+  DatabaseHelper _databaseHelper = DatabaseHelper();
   List<Employee> _employeeList;
   int _count = 0;
   Employer _employer;
@@ -25,13 +27,13 @@ class ContactsRouteState extends State<ContactsRoute> {
   Employee _deletedEmployee;
 
   @override
-  void initState() {
+  Future initState() async {
     super.initState();
-    // final Database database = await _databaseHelper.initializeDatabase(); or await _databaseHelper.initializeDatabase(); ?
+    final database = await _databaseHelper.initializeDatabase();
 
-    // final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
-    // this._employeeList = employeeList;
-    // this._count = employeeList.length;
+    final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
+    this._employeeList = employeeList;
+    this._count = employeeList.length;
   }
 
   void _handleSubmit([Employee employee]) async {
@@ -69,23 +71,21 @@ class ContactsRouteState extends State<ContactsRoute> {
 
   void _deleteEmployee(Employee employeeToDelete) async {
     _deletedEmployee = employeeToDelete;
-    // int result = await databaseHelper.deleteEmployee(employeeToDelete.id);
-    // if (result != 0) {
-    //   Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
-    //   _updateListView();
-    // }
+    int result = await _databaseHelper.deleteEmployee(employeeToDelete.id);
+    if (result != 0) {
+      Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
+      _updateListView();
+    }
   }
 
-  void _addEmployee(Employee newEmployee) {
-    if (newEmployee != null) {
-      // int result = await databaseHelper.addEmployee(employeeToDelete.id);
-      // if (result != 0) {
-      // Scaffold.of(context).showSnackBar(SnackBar(
-      //   content: Text('Ο υπάλληλος αποθηκεύθηκε.'),
-      //   backgroundColor: Colors.green,
-      // ));
-      //   _updateListView();
-      // }
+  Future _addEmployee(Employee newEmployee) async {
+    int result = await _databaseHelper.createEmployee(newEmployee);
+    if (result != 0) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Ο υπάλληλος αποθηκεύθηκε.'),
+        backgroundColor: Colors.green,
+      ));
+      _updateListView();
     }
   }
 
@@ -190,12 +190,12 @@ class ContactsRouteState extends State<ContactsRoute> {
     );
   }
 
-  void _updateListView() {
-    // final Database database = await _databaseHelper.initializeDatabase();
-    // final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
-    //  setState((){
-    //    this._employeeList = employeeList;
-    //    this._count = employeeList.length;
-    // });
+  Future _updateListView() async {
+    final Database database = await _databaseHelper.initializeDatabase();
+    final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
+    setState(() {
+      this._employeeList = employeeList;
+      this._count = employeeList.length;
+    });
   }
 }

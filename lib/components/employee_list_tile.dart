@@ -51,7 +51,7 @@ class EmployeeListTile extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('ΑΦΜ: ${employee.vatNumber}'),
+            Text('ΑΦΜ: ${employee.afm}'),
             Text(
               'Ωράριο: ${timeToString(employee.workStart)} - ${timeToString(employee.workFinish)}',
             ),

@@ -26,15 +26,19 @@ class ContactsRouteState extends State<ContactsRoute> {
   bool isLoading = false;
   Employee _deletedEmployee;
 
-  @override
-  initState() async {
-    super.initState();
-    final database = await _databaseHelper.initializeDatabase();
+  // @override
+  // initState() async {
+  //   super.initState();
+  //   _initialListView();
+  // }
 
-    final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
-    this._employeeList = employeeList;
-    this._count = employeeList.length;
-  }
+  // void _initialListView() async {
+  //   final Database database = await _databaseHelper.initializeDatabase();
+  //   final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
+
+  //   this._employeeList = employeeList;
+  //   this._count = employeeList.length;
+  // }
 
   /// Event Handlers.
   void _handleSubmit([Employee employee]) async {
@@ -101,6 +105,10 @@ class ContactsRouteState extends State<ContactsRoute> {
   }
 
   Widget build(BuildContext context) {
+    if (_employeeList == null) {
+      _employeeList = List<Employee>();
+      _updateListView();
+    }
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: FlexibleSpaceBar(
@@ -129,7 +137,7 @@ class ContactsRouteState extends State<ContactsRoute> {
       drawer: ContactsDrawer(),
     );
   }
-  
+
   /// Build helpers.
   _buildBody() {
     Builder(

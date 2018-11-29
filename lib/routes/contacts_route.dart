@@ -27,7 +27,7 @@ class ContactsRouteState extends State<ContactsRoute> {
   Employee _deletedEmployee;
 
   @override
-  Future initState() async {
+  initState() async {
     super.initState();
     final database = await _databaseHelper.initializeDatabase();
 

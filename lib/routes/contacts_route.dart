@@ -36,6 +36,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     this._count = employeeList.length;
   }
 
+  /// Event Handlers.
   void _handleSubmit([Employee employee]) async {
     final newEmployee = await Navigator.push(
       context,
@@ -69,6 +70,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     if (employeeToDelete is Employee) _deleteEmployee(employeeToDelete);
   }
 
+  /// CRUD operations.
   void _deleteEmployee(Employee employeeToDelete) async {
     _deletedEmployee = employeeToDelete;
     int result = await _databaseHelper.deleteEmployee(employeeToDelete.id);
@@ -87,6 +89,15 @@ class ContactsRouteState extends State<ContactsRoute> {
       ));
       _updateListView();
     }
+  }
+
+  void _updateListView() async {
+    final Database database = await _databaseHelper.initializeDatabase();
+    final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
+    setState(() {
+      this._employeeList = employeeList;
+      this._count = employeeList.length;
+    });
   }
 
   Widget build(BuildContext context) {
@@ -118,7 +129,8 @@ class ContactsRouteState extends State<ContactsRoute> {
       drawer: ContactsDrawer(),
     );
   }
-
+  
+  /// Build helpers.
   _buildBody() {
     Builder(
       builder: (context) {
@@ -188,14 +200,5 @@ class ContactsRouteState extends State<ContactsRoute> {
       ),
       // TODO: Undo delete.
     );
-  }
-
-  Future _updateListView() async {
-    final Database database = await _databaseHelper.initializeDatabase();
-    final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
-    setState(() {
-      this._employeeList = employeeList;
-      this._count = employeeList.length;
-    });
   }
 }

@@ -8,9 +8,20 @@ class Employee {
 
   Employee(this._firstName, this._lastName, this._afm,
       [this._workStart, this._workFinish]);
-
+      
+  ///Named constructor
   Employee.withID(this._id, this._firstName, this._lastName, this._afm,
       this._workStart, this._workFinish);
+
+  ///Named constructor => new Employee from database Map.
+  Employee.fromMap(Map<String, dynamic> map) {
+    this._id = map['id'];
+    this._firstName = map['firstName'];
+    this._lastName = map['lastName'];
+    this._afm = map['afm'];
+    this._workStart = map['workStart'];
+    this._workFinish = map['workFinish'];
+  }
 
   String get firstName => this._firstName;
   String get lastName => this._lastName;
@@ -40,6 +51,7 @@ class Employee {
       this._workStart = workStart;
     }
   }
+
   set workFinish(TimeOfDay workFinish) {
     final int upperLimit = 1410; // 23:30
     if (timeToMinutes(workFinish) < upperLimit) {
@@ -58,14 +70,5 @@ class Employee {
     map['workFinish'] = this._workFinish;
 
     return map;
-  }
-
-  Employee.fromMap(Map<String, dynamic> map) {
-    this._id = map['id'];
-    this._firstName = map['firstName'];
-    this._lastName = map['lastName'];
-    this._afm = map['afm'];
-    this._workStart = map['workStart'];
-    this._workFinish = map['workFinish'];
   }
 }

@@ -53,22 +53,28 @@ class DatabaseHelper {
     ''');
   }
 
-  // Read
-  Future<List<Map<String, dynamic>>> getEmployeeMapList() async {
+  /// Read operation. Returns a List of all Employees in the database.
+  Future<List<Employee>> getEmployeeList() async {
+    var employeeMapList = await _getEmployeeMapList();
+
+    return employeeMapList.map((mapObj) => Employee.fromMap(mapObj)).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> _getEmployeeMapList() async {
     Database db = await this.database;
 
     var result = await db.query(employeeTable, orderBy: '$colFirstName ASC');
     return result;
   }
 
-  // Create
+  /// Create operation. Post an Employee in the database.
   Future<int> createEmployee(Employee employee) async {
     Database db = await this.database;
     var result = db.insert(employeeTable, employee.toMap());
     return result;
   }
 
-  // Update
+  /// Update opration. Modifiy an Employee in the database.
   Future<int> updateEmployee(Employee employee) async {
     Database db = await this.database;
     var result = await db.update(employeeTable, employee.toMap(),
@@ -76,7 +82,7 @@ class DatabaseHelper {
     return result;
   }
 
-  // Delete
+  /// Delete operation. Delete an Employee from the database.
   Future<int> deleteEmployee(int id) async {
     Database db = await this.database;
     var result =
@@ -86,7 +92,8 @@ class DatabaseHelper {
 
   Future<int> getCount() async {
     Database db = await this.database;
-    List<Map<String, dynamic>> list = await db.rawQuery('SELECT COUNT (*) from $employeeTable');
+    List<Map<String, dynamic>> list =
+        await db.rawQuery('SELECT COUNT (*) from $employeeTable');
     return Sqflite.firstIntValue(list);
   }
 }

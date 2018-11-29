@@ -38,6 +38,7 @@ class DatabaseHelper {
 
     var erganiDatabase =
         await openDatabase(path, version: 1, onCreate: _createDb);
+    return erganiDatabase;
   }
 
   void _createDb(Database db, int version) async {

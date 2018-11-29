@@ -16,46 +16,35 @@ class EmployerFormState extends State<EmployerForm> {
 
   Employer _employer;
 
-  FocusNode _nameFocus;
-  FocusNode _afmFocus;
-  FocusNode _ameFocus;
+  var _nameFocus = FocusNode();
+  var _afmFocus = FocusNode();
+  var _ameFocus = FocusNode();
 
-  TextEditingController _nameController;
-  TextEditingController _afmController;
-  TextEditingController _ameController;
+  var _nameController = TextEditingController();
+  var _afmController = TextEditingController();
+  var _ameController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
 
     _employer = widget.employer;
 
-    _nameFocus = FocusNode();
-    _afmFocus = FocusNode();
-    _ameFocus = FocusNode();
-
-    if (_employer != null) {
-      _nameController = TextEditingController(text: _employer.name);
-      _afmController = TextEditingController(text: _employer.afm);
-      _ameController = TextEditingController(text: _employer.ame ?? '');
-    }
-
-    _nameController = TextEditingController();
-    _afmController = TextEditingController();
-    _ameController = TextEditingController();
+    _nameController.text = _employer?.name;
+    _afmController.text = _employer?.afm;
+    _ameController.text = _employer?.ame;
   }
 
   @override
   void dispose() {
     _nameFocus.dispose();
     _afmFocus.dispose();
-    _ameFocus.dispose();
     _nameController.dispose();
     _afmController.dispose();
     _ameController.dispose();
     super.dispose();
   }
 
-  //TODO: solve what to do when the _nameController.text == null
   submit(context) {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
@@ -64,7 +53,7 @@ class EmployerFormState extends State<EmployerForm> {
         '${_nameController?.text[0].toUpperCase()}${_nameController.text.substring(1)}',
         _ameController.text,
       );
-      // TODO: directly write to the db, show loading in the midtime, then send ok via pop().
+     
       _nameController.clear();
       _afmController.clear();
       _ameController.clear();
@@ -90,7 +79,6 @@ class EmployerFormState extends State<EmployerForm> {
                 FocusScope.of(context).requestFocus(_afmFocus);
               },
               autofocus: true,
-              
               focusNode: _nameFocus,
               decoration: InputDecoration(labelText: 'Όνομα Εργοδότη'),
               validator: (value) {
@@ -100,7 +88,7 @@ class EmployerFormState extends State<EmployerForm> {
               },
               controller: _nameController,
             ),
-            
+
             // AFM textfield
             TextFormField(
               keyboardType: TextInputType.number,
@@ -109,8 +97,7 @@ class EmployerFormState extends State<EmployerForm> {
               validator: (value) => validateAfm(value),
               maxLength: 9,
               onFieldSubmitted: (value) {
-                
-                  FocusScope.of(context).requestFocus(_ameFocus);
+                FocusScope.of(context).requestFocus(_ameFocus);
               },
               controller: _afmController,
             ),
@@ -122,12 +109,10 @@ class EmployerFormState extends State<EmployerForm> {
               validator: (value) => validateAfm(value),
               maxLength: 10,
               onFieldSubmitted: (value) {
-                
-                  FocusScope.of(context).requestFocus(_ameFocus);
+                FocusScope.of(context).requestFocus(_ameFocus);
               },
               controller: _afmController,
             ),
-            
           ],
         ),
       ),

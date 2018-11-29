@@ -19,11 +19,14 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   // FocusNode employeeFocusNode;
   Employee _employee;
   TimeOfDay _workStart, _workFinish;
-  FocusNode firstNameFocus, lastNameFocus, afmFocus;
 
   var _firstNameController = TextEditingController();
   var _lastNameController = TextEditingController();
   var _afmController = TextEditingController();
+
+  var firstNameFocus = FocusNode();
+  var lastNameFocus = FocusNode();
+  var afmFocus = FocusNode();
 
   bool _shouldValidateOnChangeFirstName = false;
   bool _shouldValidateOnChangeLastName = false;
@@ -39,10 +42,6 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     _afmController.text = _employee?.afm;
     _workStart = _employee?.workStart ?? TimeOfDay(hour: 08, minute: 00);
     _workFinish = _employee?.workFinish ?? TimeOfDay(hour: 16, minute: 00);
-
-    firstNameFocus = FocusNode();
-    lastNameFocus = FocusNode();
-    afmFocus = FocusNode();
 
     // firstNameFocus.addListener(() {
     //   if (!firstNameFocus.hasFocus) {
@@ -87,7 +86,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       var employeeToSubmit =
           Employee(firstName, lastName, afm, _workStart, _workFinish);
 
-      // TODO: directly write to the db, show loading in the midtime, then send ok via pop().
+      
       _firstNameController.clear();
       _lastNameController.clear();
       _afmController.clear();
@@ -194,7 +193,8 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       focusNode: firstNameFocus,
       decoration: InputDecoration(
         labelText: 'Όνομα',
-        border: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).accentColor)),
+        border: OutlineInputBorder(
+            borderSide: BorderSide(color: Theme.of(context).accentColor)),
         prefixIcon: Icon(Icons.person),
       ),
       validator: (value) {
@@ -290,5 +290,4 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
     if (finishTime is TimeOfDay) setState(() => _workFinish = finishTime);
   }
-
 }

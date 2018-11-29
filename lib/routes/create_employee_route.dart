@@ -19,15 +19,15 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   // FocusNode employeeFocusNode;
   Employee _employee;
   TimeOfDay _workStart, _workFinish;
-  FocusNode firstNameFocus, lastNameFocus, vatNumberFocus;
+  FocusNode firstNameFocus, lastNameFocus, afmFocus;
 
   var _firstNameController = TextEditingController();
   var _lastNameController = TextEditingController();
-  var _vatNumberController = TextEditingController();
+  var _afmController = TextEditingController();
 
   bool _shouldValidateOnChangeFirstName = false;
   bool _shouldValidateOnChangeLastName = false;
-  bool _shouldValidateOnChangeVatNumber = false;
+  bool _shouldValidateOnChangeAfm = false;
 
   @override
   void initState() {
@@ -36,13 +36,13 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
     _firstNameController.text = _employee?.firstName;
     _lastNameController.text = _employee?.lastName;
-    _vatNumberController.text = _employee?.vatNumber;
+    _afmController.text = _employee?.afm;
     _workStart = _employee?.workStart ?? TimeOfDay(hour: 08, minute: 00);
     _workFinish = _employee?.workFinish ?? TimeOfDay(hour: 16, minute: 00);
 
     firstNameFocus = FocusNode();
     lastNameFocus = FocusNode();
-    vatNumberFocus = FocusNode();
+    afmFocus = FocusNode();
 
     // firstNameFocus.addListener(() {
     //   if (!firstNameFocus.hasFocus) {
@@ -53,9 +53,9 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     //   if (!lastNameFocus.hasFocus)
     //     setState(() => _shouldValidateOnChangeLastName = true);
     // });
-    // vatNumberFocus.addListener(() {
-    //   if (!vatNumberFocus.hasFocus)
-    //     setState(() => _shouldValidateOnChangeVatNumber = true);
+    // afmFocus.addListener(() {
+    //   if (!afmFocus.hasFocus)
+    //     setState(() => _shouldValidateOnChangeAfm = true);
     // });
   }
 
@@ -63,10 +63,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   void dispose() {
     firstNameFocus.dispose();
     lastNameFocus.dispose();
-    vatNumberFocus.dispose();
+    afmFocus.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _vatNumberController.dispose();
+    _afmController.dispose();
     super.dispose();
   }
 
@@ -82,15 +82,15 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
               _lastNameController.text.substring(1) ??
           '';
       // '${_lastNameController.text[0].toUpperCase()}${_lastNameController.text.substring(1)}';
-      var vatNumber = _vatNumberController.text;
+      var afm = _afmController.text;
 
       var employeeToSubmit =
-          Employee(firstName, lastName, vatNumber, _workStart, _workFinish);
+          Employee(firstName, lastName, afm, _workStart, _workFinish);
 
       // TODO: directly write to the db, show loading in the midtime, then send ok via pop().
       _firstNameController.clear();
       _lastNameController.clear();
-      _vatNumberController.clear();
+      _afmController.clear();
       Navigator.pop(context, employeeToSubmit);
     }
   }
@@ -214,7 +214,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         if (value.isEmpty)
           setState(() => _shouldValidateOnChangeLastName = true);
         else
-          FocusScope.of(context).requestFocus(vatNumberFocus);
+          FocusScope.of(context).requestFocus(afmFocus);
       },
       focusNode: lastNameFocus,
       decoration: InputDecoration(
@@ -236,7 +236,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   TextFormField _buildVatNumber(context) {
     return TextFormField(
       keyboardType: TextInputType.number,
-      focusNode: vatNumberFocus,
+      focusNode: afmFocus,
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         labelText: 'ΑΦΜ',
@@ -244,15 +244,15 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         prefixIcon: Icon(Icons.work),
       ),
       validator: (value) => validateAfm(value),
-      autovalidate: _shouldValidateOnChangeVatNumber,
+      autovalidate: _shouldValidateOnChangeAfm,
       maxLength: 9,
       onFieldSubmitted: (value) {
         if (!isValid(value, RegExp(r'^[0-9]+$')) || value.length != 9)
-          setState(() => _shouldValidateOnChangeVatNumber = true);
+          setState(() => _shouldValidateOnChangeAfm = true);
         // else
         // FocusScope.of(context).requestFocus();
       },
-      controller: _vatNumberController,
+      controller: _afmController,
     );
   }
 

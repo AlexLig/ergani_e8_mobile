@@ -9,27 +9,29 @@ import 'package:ergani_e8/routes/e8route.dart';
 import 'package:flutter/material.dart';
 
 class ContactsRoute extends StatefulWidget {
-  final List<Employee> employeeList;
-  final Employer employer;
-
-  ContactsRoute({@required this.employeeList, @required this.employer});
-
+  ContactsRoute();
   @override
   ContactsRouteState createState() => ContactsRouteState();
 }
 
 class ContactsRouteState extends State<ContactsRoute> {
+  // DatabaseHelper _databaseHelper = DataBaseHelper();
+  List<Employee> _employeeList;
+  int _count = 0;
+  Employer _employer;
+
   final double _appBarHeight = 100.0;
   bool isLoading = false;
-  Employer _employer;
-  List<Employee> employeeList;
-  Employee deletedEmployee;
+  Employee _deletedEmployee;
 
   @override
   void initState() {
     super.initState();
-    employeeList = widget.employeeList;
-    _employer = widget.employer;
+    // final Database database = await _databaseHelper.initializeDatabase(); or await _databaseHelper.initializeDatabase(); ?
+
+    // final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
+    // this._employeeList = employeeList;
+    // this._count = employeeList.length;
   }
 
   void _handleSubmit([Employee employee]) async {
@@ -50,10 +52,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     final e8FormCompleted = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => E8route(
-              employee: employee,
-              employer: _employer
-            ),
+        builder: (context) => E8route(employee: employee, employer: _employer),
       ),
     );
   }
@@ -65,23 +64,29 @@ class ContactsRouteState extends State<ContactsRoute> {
       builder: (context) => DeleteDialog(employee: employee),
     );
 
-    if (employeeToDelete is Employee) {
-      _deleteEmployee(employeeToDelete);
-      Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
-    }
+    if (employeeToDelete is Employee) _deleteEmployee(employeeToDelete);
   }
 
-  void _deleteEmployee(Employee employeeToDelete) {
-    setState(() {
-      employeeList = employeeList
-          .where((el) => el.vatNumber != employeeToDelete.vatNumber)
-          .toList();
-      deletedEmployee = employeeToDelete;
-    });
+  void _deleteEmployee(Employee employeeToDelete) async {
+    _deletedEmployee = employeeToDelete;
+    // int result = await databaseHelper.deleteEmployee(employeeToDelete.id);
+    // if (result != 0) {
+    //   Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
+    //   _updateListView();
+    // }
   }
 
   void _addEmployee(Employee newEmployee) {
-    if (newEmployee != null) setState(() => employeeList.add(newEmployee));
+    if (newEmployee != null) {
+      // int result = await databaseHelper.addEmployee(employeeToDelete.id);
+      // if (result != 0) {
+      // Scaffold.of(context).showSnackBar(SnackBar(
+      //   content: Text('Ο υπάλληλος αποθηκεύθηκε.'),
+      //   backgroundColor: Colors.green,
+      // ));
+      //   _updateListView();
+      // }
+    }
   }
 
   Widget build(BuildContext context) {
@@ -93,10 +98,11 @@ class ContactsRouteState extends State<ContactsRoute> {
         title: Text('Υπάλληλοι'),
         actions: <Widget>[
           IconButton(
-            tooltip: 'Προσθήκη Υπαλλήλου',
+            tooltip: 'Αναζήτηση Υπαλλήλου',
             icon: Icon(Icons.search),
             // SnackBar not working here. Need GlobalKey??
-            onPressed: _handleSubmit,
+            // TODO: implement search
+            onPressed: () => null,
           ),
         ],
       ),
@@ -108,49 +114,56 @@ class ContactsRouteState extends State<ContactsRoute> {
       // This happens because you are using the context of the widget that instantiated Scaffold.
       // Not the context of a child of Scaffold.
       // You can solve this by simply using a different context :
-      body: Builder(builder: (context) {
-        return Container(
-          color: employeeList.length == 0 ? Colors.grey[200] : Colors.white,
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: employeeList.length == 0
-                    ? AddContactsIndicator()
-                    : ListView.builder(
-                        itemCount: employeeList.length,
-                        itemBuilder: _buildEmployeeList(context),
-                      ),
-              ),
-            ],
-          ),
-        );
-      }),
+      body: _buildBody(),
       drawer: ContactsDrawer(),
     );
   }
 
-  Function _buildEmployeeList(context) {
-    return (BuildContext context, int i) {
-      Employee employee = employeeList[i];
-      return Column(
-        children: <Widget>[
-          EmployeeListTile(
-            employee: employee,
-            onDelete: () => _handleDelete(context, employee),
-            onEdit: () => _handleSubmit(employee),
-            onTap: () => _handleTap(employee),
+  _buildBody() {
+    Builder(
+      builder: (context) {
+        return Container(
+          // TODO: colors inhereted from theme.
+          color: _employeeList.length == 0 ? Colors.grey[200] : Colors.white,
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: _employeeList.length == 0
+                    ? AddContactsIndicator()
+                    : _buildEmployeeListView(),
+              ),
+            ],
           ),
-          i == employeeList.length - 1
-              ? SizedBox(height: 100.0)
-              : Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Divider(
-                    indent: 60.0,
+        );
+      },
+    );
+  }
+
+  ListView _buildEmployeeListView() {
+    return ListView.builder(
+      itemCount: _count,
+      itemBuilder: (BuildContext context, int i) {
+        Employee employee = _employeeList[i];
+        return Column(
+          children: <Widget>[
+            EmployeeListTile(
+              employee: employee,
+              onDelete: () => _handleDelete(context, employee),
+              onEdit: () => _handleSubmit(employee),
+              onTap: () => _handleTap(employee),
+            ),
+            i == _employeeList.length - 1
+                ? SizedBox(height: 100.0)
+                : Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Divider(
+                      indent: 60.0,
+                    ),
                   ),
-                ),
-        ],
-      );
-    };
+          ],
+        );
+      },
+    );
   }
 
   SnackBar _successfulDeleteSnackbar(context) {
@@ -169,11 +182,20 @@ class ContactsRouteState extends State<ContactsRoute> {
         textColor: Colors.blue,
         label: 'ΑΝΑΙΡΕΣΗ',
         onPressed: () {
-          _addEmployee(deletedEmployee);
-          setState(() => deletedEmployee = null);
+          _addEmployee(_deletedEmployee);
+          setState(() => _deletedEmployee = null);
         },
       ),
       // TODO: Undo delete.
     );
+  }
+
+  void _updateListView() {
+    // final Database database = await _databaseHelper.initializeDatabase();
+    // final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
+    //  setState((){
+    //    this._employeeList = employeeList;
+    //    this._count = employeeList.length;
+    // });
   }
 }

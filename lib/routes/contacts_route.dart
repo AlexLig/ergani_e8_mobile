@@ -18,27 +18,40 @@ class ContactsRoute extends StatefulWidget {
 
 class ContactsRouteState extends State<ContactsRoute> {
   DatabaseHelper _databaseHelper = DatabaseHelper();
-  List<Employee> _employeeList;
-  int _count = 0;
+  List<Employee> _employeeList = <Employee>[];
   Employer _employer;
 
-  final double _appBarHeight = 100.0;
   bool isLoading = false;
   Employee _deletedEmployee;
 
-  // @override
-  // initState() async {
-  //   super.initState();
-  //   _initialListView();
-  // }
+  @override
+  initState() {
+    super.initState();
+    // _employeeList = <Employee>[];
+    _updateListView();
+  }
 
-  // void _initialListView() async {
-  //   final Database database = await _databaseHelper.initializeDatabase();
-  //   final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
+  void _updateListView() async {
+    // Attempt 1.
+    // final List<Employee> employeeList = await database.getEmployeeList();
+    // setState(() => _employeeList.setAll(0, employeeList));
 
-  //   this._employeeList = employeeList;
-  //   this._count = employeeList.length;
-  // }
+    // Attempt 2.
+    // final Future<Database> dbFuture =  _databaseHelper.initializeDatabase();
+    // dbFuture.then((database){
+    //   Future<List<Employee>> employeeListFuture = _databaseHelper.getEmployeeList();
+    //   employeeListFuture.then((employeeList) => setState(() => _employeeList = employeeList) );
+    // });
+
+    // Attempt 3.
+    final Future<Database> dbFuture = _databaseHelper.initializeDatabase();
+    dbFuture.then((database) {
+      Future<List<Employee>> employeeListFuture =
+          _databaseHelper.getEmployeeList();
+      employeeListFuture.then((employeeList) => setState(
+          () => _employeeList.add(employeeList[_employeeList.length])));
+    });
+  }
 
   /// Event Handlers.
   void _handleSubmit([Employee employee]) async {
@@ -50,7 +63,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     );
 
     if (newEmployee is Employee) {
-      if (employee != null) _deleteEmployee(employee);
+      // if (employee != null) _deleteEmployee(employee);
       _addEmployee(newEmployee);
     }
   }
@@ -68,7 +81,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     final employeeToDelete = await showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (context) => DeleteDialog(employee: employee),
+      builder: (context) => DeleteDialog(employee:employee),
     );
 
     if (employeeToDelete is Employee) _deleteEmployee(employeeToDelete);
@@ -77,7 +90,7 @@ class ContactsRouteState extends State<ContactsRoute> {
   /// CRUD operations.
   void _deleteEmployee(Employee employeeToDelete) async {
     _deletedEmployee = employeeToDelete;
-    int result = await _databaseHelper.deleteEmployee(employeeToDelete.id);
+    int result = await _databaseHelper.deleteEmployee(employeeToDelete);
     if (result != 0) {
       Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
       _updateListView();
@@ -87,28 +100,24 @@ class ContactsRouteState extends State<ContactsRoute> {
   Future _addEmployee(Employee newEmployee) async {
     int result = await _databaseHelper.createEmployee(newEmployee);
     if (result != 0) {
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Ο υπάλληλος αποθηκεύθηκε.'),
-        backgroundColor: Colors.green,
-      ));
+      // Scaffold.of(context).showSnackBar(SnackBar(
+      //   content: Text('Ο υπάλληλος αποθηκεύθηκε.'),
+      //   backgroundColor: Colors.green,
+      // ));
       _updateListView();
-    }
-  }
-
-  void _updateListView() async {
-    final Database database = await _databaseHelper.initializeDatabase();
-    final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
-    setState(() {
-      this._employeeList = employeeList;
-      this._count = employeeList.length;
-    });
+    } else
+      debugPrint('Database responded with an Error.');
   }
 
   Widget build(BuildContext context) {
-    if (_employeeList == null) {
-      _employeeList = List<Employee>();
-      _updateListView();
-    }
+    // if (_employeeList == null) {
+    //   _employeeList = List<Employee>();
+    //   _updateListView();
+    // }
+    print('_employeeList.length: ${_employeeList.length}');
+    print('_employeeList: $_employeeList');
+    print('_employeeList type: ${_employeeList is Map}');
+
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: FlexibleSpaceBar(
@@ -119,7 +128,6 @@ class ContactsRouteState extends State<ContactsRoute> {
           IconButton(
             tooltip: 'Αναζήτηση Υπαλλήλου',
             icon: Icon(Icons.search),
-            // SnackBar not working here. Need GlobalKey??
             // TODO: implement search
             onPressed: () => null,
           ),
@@ -133,35 +141,33 @@ class ContactsRouteState extends State<ContactsRoute> {
       // This happens because you are using the context of the widget that instantiated Scaffold.
       // Not the context of a child of Scaffold.
       // You can solve this by simply using a different context :
-      body: _buildBody(),
+      body: Builder(
+        builder: (context) => _buildBody(),
+      ),
       drawer: ContactsDrawer(),
     );
   }
 
   /// Build helpers.
   _buildBody() {
-    Builder(
-      builder: (context) {
-        return Container(
-          // TODO: colors inhereted from theme.
-          color: _employeeList.length == 0 ? Colors.grey[200] : Colors.white,
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: _employeeList.length == 0
-                    ? AddContactsIndicator()
-                    : _buildEmployeeListView(),
-              ),
-            ],
+    return Container(
+      // TODO: colors inhereted from theme.
+      color: _employeeList.length == 0 ? Colors.amber[200] : Colors.white,
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: _employeeList.length == 0
+                ? AddContactsIndicator()
+                : _buildEmployeeListView(),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
   ListView _buildEmployeeListView() {
     return ListView.builder(
-      itemCount: _count,
+      itemCount: _employeeList.length,
       itemBuilder: (BuildContext context, int i) {
         Employee employee = _employeeList[i];
         return Column(

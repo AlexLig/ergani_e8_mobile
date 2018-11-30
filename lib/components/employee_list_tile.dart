@@ -17,11 +17,11 @@ class EmployeeListTile extends StatelessWidget {
   }) : super(key: key);
 
   String _getInitials() {
-    return this.employee.lastName[0].toUpperCase() +
+    return this.employee.lastName[0].toUpperCase() + //TODO: FIX method was called on null (this.employee is null)
         this.employee.firstName[0].toUpperCase();
   }
 
-  RegExp exp = RegExp(r'[^{0-9}]');
+  final RegExp exp = RegExp(r'[^{0-9}]');
 
   @override
   Widget build(BuildContext context) {

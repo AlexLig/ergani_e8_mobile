@@ -73,20 +73,21 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      var firstName = _firstNameController.text[0].toUpperCase() +
-              _firstNameController.text.substring(1) ??
-          '';
-      // '${_firstNameController.text[0].toUpperCase()}${_firstNameController.text.substring(1)}';
-      var lastName = _lastNameController.text[0].toUpperCase() +
-              _lastNameController.text.substring(1) ??
-          '';
-      // '${_lastNameController.text[0].toUpperCase()}${_lastNameController.text.substring(1)}';
+      var firstName =
+          //  _firstNameController.text[0].toUpperCase() +
+          //         _firstNameController.text.substring(1) ??
+          //     '';
+          '${_firstNameController.text[0].toUpperCase()}${_firstNameController.text.substring(1)}';
+      var lastName =
+          //  _lastNameController.text[0].toUpperCase() +
+          //         _lastNameController.text.substring(1) ??
+          //     '';
+          '${_lastNameController.text[0].toUpperCase()}${_lastNameController.text.substring(1)}';
       var afm = _afmController.text;
 
       var employeeToSubmit =
           Employee(firstName, lastName, afm, _workStart, _workFinish);
 
-      
       _firstNameController.clear();
       _lastNameController.clear();
       _afmController.clear();
@@ -159,10 +160,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                     child: Padding(
                       padding: EdgeInsets.only(top: 2.0),
                       child: FlatButton(
-                        shape: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Theme.of(context).buttonColor),
-                        ),
+                        // shape: OutlineInputBorder(
+                        //   borderSide:
+                        //       BorderSide(color: Theme.of(context).buttonColor),
+                        // ),
                         child: Text(
                           'ΑΚΥΡΟ',
                           style:
@@ -243,12 +244,12 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         border: OutlineInputBorder(),
         prefixIcon: Icon(Icons.work),
       ),
-      validator: (value) => validateAfm(value),
+      // validator: (value) => validateAfm(value),
       autovalidate: _shouldValidateOnChangeAfm,
       maxLength: 9,
       onFieldSubmitted: (value) {
-        if (isNotNumeric(value) || value.length != 9)
-          setState(() => _shouldValidateOnChangeAfm = true);
+        // if (isNotNumeric(value) || value.length != 9)
+        setState(() => _shouldValidateOnChangeAfm = true);
         // else
         // FocusScope.of(context).requestFocus();
       },

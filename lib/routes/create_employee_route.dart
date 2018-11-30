@@ -2,6 +2,7 @@ import 'package:ergani_e8/components/time_picker.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CreateEmployeeRoute extends StatefulWidget {
   final Employee employee;
@@ -71,6 +72,9 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   Future _submit(context) async {
     if (this._formKey.currentState.validate()) {
+      // close keyboard
+      SystemChannels.textInput.invokeMethod('TextInput.hide');
+
       _formKey.currentState.save();
 
       var afm = _afmController.text;
@@ -81,12 +85,15 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       _lastNameController.clear();
       _afmController.clear();
 
-      int result = _employee == null
-          ? await _erganiDatabase.createEmployee(employeeToSubmit)
-          : await _erganiDatabase.updateEmployee(employeeToSubmit);
-      result == 0
-          ? Navigator.pop(context, employeeToSubmit)
-          : Navigator.pop(context);
+      int result;
+      if (_employee == null)
+        result = await _erganiDatabase.createEmployee(employeeToSubmit);
+      else
+        result = await _erganiDatabase.updateEmployee(employeeToSubmit);
+      if (result != 0)
+        Navigator.pop(context, employeeToSubmit);
+      else
+        Navigator.pop(context);
     }
   }
 

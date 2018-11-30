@@ -16,6 +16,7 @@ class ContactsRoute extends StatefulWidget {
 }
 
 class ContactsRouteState extends State<ContactsRoute> {
+  BuildContext _scaffoldContext;
   ErganiDatabase _erganiDatabase = ErganiDatabase();
   List<Employee> _employeeList = <Employee>[];
   Employer _employer;
@@ -37,7 +38,7 @@ class ContactsRouteState extends State<ContactsRoute> {
   }
 
   /// Navigates to the create_employee_route, awaits for Navigator.pop result. If result is Employee means that create/edit was sucessful so display snackbar and update the listView.
-  void _handleSubmit([Employee employee]) async {
+  void _handleSubmit(context, [Employee employee]) async {
     final newEmployee = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -45,7 +46,7 @@ class ContactsRouteState extends State<ContactsRoute> {
       ),
     );
     if (newEmployee is Employee) {
-      _successfulCreateSnackbar(context);
+      Scaffold.of(_scaffoldContext).showSnackBar(_successfulCreateSnackbar(_scaffoldContext));
       _updateListView();
     }
   }
@@ -66,7 +67,7 @@ class ContactsRouteState extends State<ContactsRoute> {
       builder: (context) => DeleteDialog(employee: employee),
     );
     int result = await _deleteEmployee(employeeToDelete);
-    if (result == 0) {
+    if (result != 0) {
       Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
       _updateListView();
     }
@@ -99,7 +100,7 @@ class ContactsRouteState extends State<ContactsRoute> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _handleSubmit,
+        onPressed: () => _handleSubmit(context),
         child: Icon(Icons.person_add),
       ),
       // Needed to open a snackbar.
@@ -107,14 +108,15 @@ class ContactsRouteState extends State<ContactsRoute> {
       // Not the context of a child of Scaffold.
       // You can solve this by simply using a different context :
       body: Builder(
-        builder: (context) => _buildBody(),
+        builder: (context) => _buildBody(context),
       ),
       drawer: ContactsDrawer(),
     );
   }
 
   /// Build helpers.
-  _buildBody() {
+  _buildBody(context) {
+    _scaffoldContext = context;
     return Container(
       // TODO: colors inhereted from theme.
       color: _employeeList.length == 0 ? Colors.amber[200] : Colors.white,
@@ -140,7 +142,7 @@ class ContactsRouteState extends State<ContactsRoute> {
             EmployeeListTile(
               employee: employee,
               onDelete: () => _handleDelete(context, employee),
-              onEdit: () => _handleSubmit(employee),
+              onEdit: () => _handleSubmit(context, employee),
               onTap: () => _handleTap(employee),
             ),
             i == _employeeList.length - 1
@@ -172,8 +174,9 @@ class ContactsRouteState extends State<ContactsRoute> {
       action: SnackBarAction(
         textColor: Colors.blue,
         label: 'ΑΝΑΙΡΕΣΗ',
-        onPressed: () {
-          _erganiDatabase.createEmployee(_deletedEmployee);
+        onPressed: () async {
+          await _erganiDatabase.createEmployee(_deletedEmployee);
+          _updateListView();
           setState(() => _deletedEmployee = null);
         },
       ),

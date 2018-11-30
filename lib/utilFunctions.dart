@@ -16,7 +16,7 @@ bool isLater(TimeOfDay timeA, TimeOfDay timeB) =>
     timeToMinutes(timeA) > timeToMinutes(timeB);
 
 String timeToString(TimeOfDay timeOfDay) {
-  return timeOfDay.toString().replaceAll(RegExp(r'[^{0-9}:]'), '');
+  return timeOfDay.toString().replaceAll(RegExp(r'[^{0-9}]'), '');
 }
 
 TimeOfDay stringToTime(String timeString) {

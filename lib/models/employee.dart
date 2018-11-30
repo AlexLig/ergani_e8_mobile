@@ -30,48 +30,21 @@ class Employee {
   TimeOfDay get workFinish => this._workFinish;
   int get id => this._id;
 
-  set firstName(String firstName) {
-    if (firstName.length >= 3) this._firstName = firstName.trim();
-  }
-
-  set lastName(String lastName) {
-    if (lastName.length >= 3) this._lastName = lastName.trim();
-  }
-
-// TODO: check if duplicate
-  set afm(String afm) {
-    if (afm.length == 9) {
-      this._afm = afm;
-    }
-  }
-
-  set workStart(TimeOfDay workStart) {
-    final int upperLimit = 1410; // 23:30
-    if (timeToMinutes(workStart) < upperLimit) {
-      this._workStart = workStart;
-    }
-  }
-
-  set workFinish(TimeOfDay workFinish) {
-    final int upperLimit = 1410; // 23:30
-    if (timeToMinutes(workFinish) < upperLimit) {
-      this._workFinish = workFinish;
-    }
-  }
+  set firstName(String firstName) => this._firstName = firstName.trim();
+  set lastName(String lastName) => this._lastName = lastName.trim();
+  set afm(String afm) => this._afm = afm;
+  set workStart(TimeOfDay workStart) => this._workStart = workStart;
+  set workFinish(TimeOfDay workFinish) => this._workFinish = workFinish;
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
 
     if (id != null) map['id'] = this._id;
-    map['firstName'] = this._firstName;
-    map['lastName'] = this._lastName;
+    map['first_name'] = this._firstName;
+    map['last_name'] = this._lastName;
     map['afm'] = this._afm;
-    map['workStart'] = timeToString(this._workStart);
-    // '${this._workStart.hour}${this._workStart.minute}'
-    // TODO: Replace with proper formatting.
-    map['workFinish'] = timeToString(this._workFinish);
-    //'${this._workFinish.hour}${this._workFinish.minute}';
-
+    map['work_start'] = timeToString(this._workStart);
+    map['work_finish'] = timeToString(this._workFinish);
     return map;
   }
 }

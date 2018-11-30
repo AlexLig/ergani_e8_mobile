@@ -17,7 +17,7 @@ class ContactsRoute extends StatefulWidget {
 }
 
 class ContactsRouteState extends State<ContactsRoute> {
-  DatabaseHelper _databaseHelper = DatabaseHelper();
+  ErganiDatabase _databaseHelper = ErganiDatabase();
   List<Employee> _employeeList = <Employee>[];
   Employer _employer;
 
@@ -27,7 +27,7 @@ class ContactsRouteState extends State<ContactsRoute> {
   @override
   initState() {
     super.initState();
-     _updateListView();
+    _updateListView();
   }
 
   void _updateListView() async {
@@ -57,7 +57,7 @@ class ContactsRouteState extends State<ContactsRoute> {
       _employeeList = employeeList;
     });
   }
-  
+
   /// Event Handlers.
   void _handleSubmit([Employee employee]) async {
     final newEmployee = await Navigator.push(
@@ -68,7 +68,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     );
 
     if (newEmployee is Employee) {
-      // if (employee != null) _deleteEmployee(employee);
+      if (employee != null) _deleteEmployee(employee);
       _addEmployee(newEmployee);
     }
   }
@@ -86,7 +86,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     final employeeToDelete = await showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (context) => DeleteDialog(employee:employee),
+      builder: (context) => DeleteDialog(employee: employee),
     );
 
     if (employeeToDelete is Employee) _deleteEmployee(employeeToDelete);
@@ -113,6 +113,17 @@ class ContactsRouteState extends State<ContactsRoute> {
     } else
       debugPrint('Database responded with an Error.');
   }
+  /*  Future _editEmployee(Employee employee) async {
+    int result = await _databaseHelper.updateEmployee(employee);
+    if (result != 0) {
+      // Scaffold.of(context).showSnackBar(SnackBar(
+      //   content: Text('Ο υπάλληλος αποθηκεύθηκε.'),
+      //   backgroundColor: Colors.green,
+      // ));
+      _updateListView();
+    } else
+      debugPrint('Database responded with an Error.');
+  } */
 
   Widget build(BuildContext context) {
     // if (_employeeList == null) {

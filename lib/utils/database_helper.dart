@@ -5,11 +5,13 @@ import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
-class DatabaseHelper {
-  static DatabaseHelper _databaseHelper; // Singleton db helper.
-  static Database _database; // Singleton database.
+class ErganiDatabase {
+  // Singleton db helper.
+  static ErganiDatabase _erganiDatabase;
+  // Singleton database.
+  static Database _db;
 
-  String employeesTable = 'employees_table';
+  String employeeTable = 'employee';
   String colId = 'id';
   String colFirstName = 'first_name';
   String colLastName = 'last_name';
@@ -17,42 +19,39 @@ class DatabaseHelper {
   String colWorkStart = 'work_start';
   String colWorkFinish = 'work_finish';
 
-  DatabaseHelper._createInstance(); // Named constrcutor to create instance.
+  /// Named constrcutor to create instance.
+  ErganiDatabase._internal();
 
-  factory DatabaseHelper() {
-    if (_databaseHelper == null)
-      _databaseHelper = DatabaseHelper._createInstance(); // On app launch.
+  factory ErganiDatabase() {
+    if (_erganiDatabase == null)
+      _erganiDatabase = ErganiDatabase._internal(); // On app launch.
 
-    return _databaseHelper;
+    return _erganiDatabase;
   }
 
-  Future<Database> get database async {
-    if (_database == null) _database = await initializeDatabase();
+  /// Returns database internal instance. If null, initDB first.
+  Future<Database> get db async => _db ??= await initDB();
 
-    return _database;
-  }
-
-  Future<Database> initializeDatabase() async {
+  Future<Database> initDB() async {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = join(directory.path, 'ergani.db');
+    var erganiDB = await openDatabase(path, version: 1, onCreate: _createDb);
 
-    var erganiDatabase =
-        await openDatabase(path, version: 1, onCreate: _createDb);
-    return erganiDatabase;
+    return erganiDB;
   }
 
   /// On db creation, create the table of employees.
   void _createDb(Database db, int version) async {
     await db.execute('''
-    CREATE TABLE $employeesTable (
+    CREATE TABLE $employeeTable (
       $colId INTEGER PRIMARY KEY AUTOINCREMENT, 
       $colFirstName TEXT NOT NULL, 
       $colLastName TEXT NOT NULL, 
       $colAfm TEXT NOT NULL UNIQUE, 
-      $colWorkStart TEXT, 
+      $colWorkStart TEXT NOT NULL, 
       $colWorkFinish TEXT NOT NULL
     )
-    '''); // UNIQUE: throws error if duplicate
+    ''');
   }
 
   /// Read operation. Returns a List of all Employees in the database.
@@ -65,12 +64,12 @@ class DatabaseHelper {
     return list;
   }
 
-  /// Retrieve all entries in employeesTable as a List of Maps.
+  /// Retrieve all entries in employeeTable as a List of Maps.
   Future<List<Map<String, dynamic>>> _getEmployeeMapList() async {
-    Database db = await this.database;
+    Database db = await this.db;
 
     var result = await db
-        .rawQuery('SELECT * FROM $employeesTable ORDER BY $colLastName ASC');
+        .rawQuery('SELECT * FROM $employeeTable ORDER BY $colLastName ASC');
 
     print('retrieved $result');
     return result;
@@ -78,64 +77,56 @@ class DatabaseHelper {
 
   /// Create operation. Post an Employee in the database.
   Future<int> createEmployee(Employee employee) async {
-    Database db = await this.database;
+    Database db = await this.db;
     Map<String, dynamic> map = employee.toMap();
 
-    // var result = await db.transaction((txn) async {
-    //   int employeeID = await txn.rawInsert(
-    //       'INSERT INTO $employeesTable ($colFirstName, $colLastName, $colAfm, $colWorkStart, $colWorkFinish)VALUES(?, ?, ?, ?, ?)',
-    //       [
-    //         map['firstName'],
-    //         map['lastName'],
-    //         map['afm'],
-    //         map['workStart'],
-    //         map['workFinish']
-    //       ]);
-    //   print('employee ID: $employeeID');
-    // });
-    var result = await db.rawInsert(
-          'INSERT INTO $employeesTable ($colFirstName, $colLastName, $colAfm, $colWorkStart, $colWorkFinish)VALUES(?, ?, ?, ?, ?)',
+    var result = await db.transaction((txn) async {
+      int employeeID = await txn.rawInsert(
+          'INSERT INTO $employeeTable ($colFirstName, $colLastName, $colAfm, $colWorkStart, $colWorkFinish)VALUES(?, ?, ?, ?, ?)',
           [
-            map['firstName'],
-            map['lastName'],
+            map['first_name'],
+            map['last_name'],
             map['afm'],
-            map['workStart'],
-            map['workFinish']
+            map['work_start'],
+            map['work_finish']
           ]);
-      // print('employee ID: $employeeID');
+      print('employee ID: $employeeID');
+    });
 
     print('inserted $result');
     return result;
   }
 
-  /// Update opration. Modifiy an Employee in the database.
+ /*  /// Update opration. Modifiy an Employee in the database.
   Future<int> updateEmployee(Employee employee) async {
-    Database db = await this.database;
+    Database db = await this.db;
     Map<String, dynamic> map = employee.toMap();
 
     var result = await db.rawUpdate('''
-      UPDATE $employeesTable
-      SET $colFirstName = ${map['firstName']},
-          $colLastName = ${map['lastName']},
+      UPDATE $employeeTable
+      SET $colFirstName = ${map['first_name']},
+          $colLastName = ${map['last_name']},
           $colAfm = ${map['afm']},
-          $colWorkStart = ${map['workStart']},
-          $colWorkFinish = ${map['workFinish']}
+          $colWorkStart = ${map['work_start']},
+          $colWorkFinish = ${map['work_finish']},
       WHERE $colId = ${map['id']}
     ''');
+    // var result = db.update(employeeTable, map,
+    //     where: '$colId = ?', whereArgs: [map['id']]);
 
     print('Updated $result');
     return result;
-  }
+  } */
 
   /// Delete operation. Delete an Employee from the database.
   Future<int> deleteEmployee(Employee employee) async {
-    Database db = await this.database;
+    Database db = await this.db;
     Map<String, dynamic> map = employee.toMap();
 
     var result = await db.rawDelete('''
       DELETE
       FROM
-        $employeesTable
+        $employeeTable
       WHERE
        $colId = ${map['id']}
     ''');
@@ -145,9 +136,10 @@ class DatabaseHelper {
   }
 
   Future<int> getCount() async {
-    Database db = await this.database;
+    Database db = await this.db;
 
     return Sqflite.firstIntValue(
-        await db.rawQuery('SELECT COUNT (*) from $employeesTable'));
+        await db.rawQuery('SELECT COUNT (*) from $employeeTable'));
   }
+//TODO: validations b4 writing into db. 1) upper limit for work time 2) afm lenght
 }

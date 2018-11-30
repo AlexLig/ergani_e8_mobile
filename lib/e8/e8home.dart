@@ -1,4 +1,4 @@
-import 'package:ergani_e8/e8/e8formB.dart';
+import 'package:ergani_e8/e8/e8form.dart';
 import 'package:flutter/material.dart';
 
 class E8home extends StatefulWidget {
@@ -37,8 +37,8 @@ class E8homeState extends State<E8home> with SingleTickerProviderStateMixin {
       body: TabBarView(
         controller: tabController,
         children: <Widget>[
-          E8formB(isReset: false),
-          E8formB(isReset: true),
+          E8form(isReset: false),
+          E8form(isReset: true),
         ],
       ),
     );

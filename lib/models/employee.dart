@@ -13,7 +13,7 @@ class Employee {
   Employee.withID(this._id, this._firstName, this._lastName, this._afm,
       this._workStart, this._workFinish);
 
-  ///Named constructor => new Employee from database Map.
+  ///Named constructor. Returns a new Employee from sqflite Map.
   Employee.fromMap(Map<String, dynamic> map) {
     this._id = map['id'];
     this._firstName = map['firstName'];
@@ -66,8 +66,8 @@ class Employee {
     map['firstName'] = this._firstName;
     map['lastName'] = this._lastName;
     map['afm'] = this._afm;
-    map['workStart'] = this._workStart;
-    map['workFinish'] = this._workFinish;
+    map['workStart'] = '${this._workStart.hour}${this._workStart.minute}'; // TODO: Replace with proper formatting.
+    map['workFinish'] = '${this._workFinish.hour}${this._workFinish.minute}';
 
     return map;
   }

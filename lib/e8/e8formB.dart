@@ -20,7 +20,7 @@ class E8formBState extends State<E8formB> {
   double _sliderValue;
   TimeOfDay _overtimeStart;
   TimeOfDay _overtimeFinish;
-  Employer _employer;
+  Employer _employer = Employer('123456789', 'ΚυρΜπαμπηςΑΕ');
   Employee _employee;
   String _erganiCode;
   bool _isFirstBuild = true;
@@ -176,7 +176,7 @@ class E8formBState extends State<E8formB> {
 
   @override
   Widget build(BuildContext context) {
-    _employer = E8provider.of(context).employer;
+    // _employer = E8provider.of(context).employer;
     _employee = E8provider.of(context).employee;
 
     if (_isFirstBuild && !_isReset) {

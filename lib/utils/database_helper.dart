@@ -150,5 +150,7 @@ class ErganiDatabase {
         await db.rawQuery('SELECT COUNT (*) from $employeeTable'));
   }
 
+  Future close() async => _db.close();
+
 //TODO: validations b4 writing into db. 1) upper limit for work time 2) afm lenght
 }

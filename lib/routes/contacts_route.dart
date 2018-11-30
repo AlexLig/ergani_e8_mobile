@@ -36,7 +36,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     });
   }
 
-  /// Event Handlers.
+  /// Navigates to the create_employee_route, awaits for Navigator.pop result. If result is Employee means that create/edit was sucessful so display snackbar and update the listView.
   void _handleSubmit([Employee employee]) async {
     final newEmployee = await Navigator.push(
       context,
@@ -44,10 +44,9 @@ class ContactsRouteState extends State<ContactsRoute> {
         builder: (context) => CreateEmployeeRoute(employee: employee),
       ),
     );
-
     if (newEmployee is Employee) {
-      if (employee != null) _deleteEmployee(employee);
-      _addEmployee(newEmployee);
+      _successfulCreateSnackbar(context);
+      _updateListView();
     }
   }
 
@@ -66,48 +65,20 @@ class ContactsRouteState extends State<ContactsRoute> {
       barrierDismissible: true,
       builder: (context) => DeleteDialog(employee: employee),
     );
-
-    if (employeeToDelete is Employee) _deleteEmployee(employeeToDelete);
-  }
-
-  /// CRUD operations.
-  void _deleteEmployee(Employee employeeToDelete) async {
-    _deletedEmployee = employeeToDelete;
-    int result = await _erganiDatabase.deleteEmployee(employeeToDelete);
-    if (result != 0) {
-      // Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
+    int result = await _deleteEmployee(employeeToDelete);
+    if (result == 0) {
+      Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
       _updateListView();
     }
   }
 
-  Future _addEmployee(Employee newEmployee) async {
-    int result = await _erganiDatabase.createEmployee(newEmployee);
-    if (result != 0) {
-      // Scaffold.of(context).showSnackBar(SnackBar(
-      //   content: Text('Ο υπάλληλος αποθηκεύθηκε.'),
-      //   backgroundColor: Colors.green,
-      // ));
-      _updateListView();
-    } else
-      debugPrint('Database responded with an Error.');
+  Future<int> _deleteEmployee(Employee employeeToDelete) async {
+    _deletedEmployee = employeeToDelete;
+    int result = await _erganiDatabase.deleteEmployee(employeeToDelete);
+    return result;
   }
-  /*  Future _editEmployee(Employee employee) async {
-    int result = await _databaseHelper.updateEmployee(employee);
-    if (result != 0) {
-      // Scaffold.of(context).showSnackBar(SnackBar(
-      //   content: Text('Ο υπάλληλος αποθηκεύθηκε.'),
-      //   backgroundColor: Colors.green,
-      // ));
-      _updateListView();
-    } else
-      debugPrint('Database responded with an Error.');
-  } */
 
   Widget build(BuildContext context) {
-    // if (_employeeList == null) {
-    //   _employeeList = List<Employee>();
-    //   _updateListView();
-    // }
     print('_employeeList.length: ${_employeeList.length}');
     print('_employeeList: $_employeeList');
     print('_employeeList type: ${_employeeList is Map}');
@@ -202,11 +173,26 @@ class ContactsRouteState extends State<ContactsRoute> {
         textColor: Colors.blue,
         label: 'ΑΝΑΙΡΕΣΗ',
         onPressed: () {
-          _addEmployee(_deletedEmployee);
+          _erganiDatabase.createEmployee(_deletedEmployee);
           setState(() => _deletedEmployee = null);
         },
       ),
       // TODO: Undo delete.
+    );
+  }
+
+  SnackBar _successfulCreateSnackbar(context) {
+    return SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Icon(Icons.info),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text('Ο υπάλληλος αποθηκεύθηκε.'),
+          ),
+        ],
+      ),
     );
   }
 }

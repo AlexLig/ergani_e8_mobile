@@ -1,6 +1,6 @@
 import 'package:ergani_e8/components/time_picker.dart';
 import 'package:ergani_e8/models/employee.dart';
-import 'package:ergani_e8/utilFunctions.dart';
+import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 
 class CreateEmployeeRoute extends StatefulWidget {
@@ -13,9 +13,9 @@ class CreateEmployeeRoute extends StatefulWidget {
   }
 }
 
-// TODO: Don't add if AFM already exists.
 class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   final _formKey = GlobalKey<FormState>();
+  ErganiDatabase _erganiDatabase = ErganiDatabase();
   // FocusNode employeeFocusNode;
   Employee _employee;
   TimeOfDay _workStart, _workFinish;
@@ -69,29 +69,24 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     super.dispose();
   }
 
-  void submit(context) {
+  Future _submit(context) async {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      var firstName =
-          //  _firstNameController.text[0].toUpperCase() +
-          //         _firstNameController.text.substring(1) ??
-          //     '';
-          '${_firstNameController.text[0].toUpperCase()}${_firstNameController.text.substring(1)}';
-      var lastName =
-          //  _lastNameController.text[0].toUpperCase() +
-          //         _lastNameController.text.substring(1) ??
-          //     '';
-          '${_lastNameController.text[0].toUpperCase()}${_lastNameController.text.substring(1)}';
       var afm = _afmController.text;
-
-      var employeeToSubmit =
-          Employee(firstName, lastName, afm, _workStart, _workFinish);
+      var employeeToSubmit = Employee(_firstNameController.text,
+          _lastNameController.text, afm, _workStart, _workFinish);
 
       _firstNameController.clear();
       _lastNameController.clear();
       _afmController.clear();
-      Navigator.pop(context, employeeToSubmit);
+
+      int result = _employee == null
+          ? await _erganiDatabase.createEmployee(employeeToSubmit)
+          : await _erganiDatabase.updateEmployee(employeeToSubmit);
+      result == 0
+          ? Navigator.pop(context, employeeToSubmit)
+          : Navigator.pop(context);
     }
   }
 
@@ -144,7 +139,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                     child: Padding(
                       padding: EdgeInsets.only(top: 30.0),
                       child: RaisedButton(
-                        onPressed: () => this.submit(context),
+                        onPressed: () => this._submit(context),
                         child: Text(
                           'ΑΠΟΘΗΚΕΥΣΗ',
                           style: TextStyle(color: Colors.white, fontSize: 16.0),
@@ -185,6 +180,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   _buildFirstName(context) {
     return TextFormField(
       keyboardType: TextInputType.text,
+      textCapitalization: TextCapitalization.sentences,
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
         FocusScope.of(context).requestFocus(lastNameFocus);
@@ -210,6 +206,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   TextFormField _buildLastName(context) {
     return TextFormField(
       keyboardType: TextInputType.text,
+      textCapitalization: TextCapitalization.sentences,
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
         if (value.isEmpty)

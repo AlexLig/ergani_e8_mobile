@@ -97,7 +97,7 @@ class ErganiDatabase {
     return result;
   }
 
- /*  /// Update opration. Modifiy an Employee in the database.
+  /*  /// Update opration. Modifiy an Employee in the database.
   Future<int> updateEmployee(Employee employee) async {
     Database db = await this.db;
     Map<String, dynamic> map = employee.toMap();
@@ -111,12 +111,20 @@ class ErganiDatabase {
           $colWorkFinish = ${map['work_finish']},
       WHERE $colId = ${map['id']}
     ''');
-    // var result = db.update(employeeTable, map,
-    //     where: '$colId = ?', whereArgs: [map['id']]);
-
     print('Updated $result');
     return result;
   } */
+
+  /// Create operation. Post an Employee in the database.
+  Future<int> updateEmployee(Employee employee) async {
+    Database db = await this.db;
+    var result = await db.transaction((txn) async {
+      await deleteEmployee(employee);
+      await createEmployee(employee);
+    });
+
+    return result;
+  }
 
   /// Delete operation. Delete an Employee from the database.
   Future<int> deleteEmployee(Employee employee) async {
@@ -141,5 +149,6 @@ class ErganiDatabase {
     return Sqflite.firstIntValue(
         await db.rawQuery('SELECT COUNT (*) from $employeeTable'));
   }
+
 //TODO: validations b4 writing into db. 1) upper limit for work time 2) afm lenght
 }

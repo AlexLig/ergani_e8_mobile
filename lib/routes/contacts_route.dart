@@ -8,7 +8,6 @@ import 'package:ergani_e8/routes/create_employee_route.dart';
 import 'package:ergani_e8/routes/e8route.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 
 class ContactsRoute extends StatefulWidget {
   ContactsRoute();
@@ -17,7 +16,7 @@ class ContactsRoute extends StatefulWidget {
 }
 
 class ContactsRouteState extends State<ContactsRoute> {
-  ErganiDatabase _databaseHelper = ErganiDatabase();
+  ErganiDatabase _erganiDatabase = ErganiDatabase();
   List<Employee> _employeeList = <Employee>[];
   Employer _employer;
 
@@ -31,28 +30,7 @@ class ContactsRouteState extends State<ContactsRoute> {
   }
 
   void _updateListView() async {
-    // Attempt 1.
-    // final List<Employee> employeeList = await database.getEmployeeList();
-    // setState(() => _employeeList.setAll(0, employeeList));
-
-    // Attempt 2.
-    // final Future<Database> dbFuture =  _databaseHelper.initializeDatabase();
-    // dbFuture.then((database){
-    //   Future<List<Employee>> employeeListFuture = _databaseHelper.getEmployeeList();
-    //   employeeListFuture.then((employeeList) => setState(() => _employeeList = employeeList) );
-    // });
-
-    //  Attempt 3.
-    // final Future<Database> dbFuture = _databaseHelper.initializeDatabase();
-    // dbFuture.then((database) {
-    //   Future<List<Employee>> employeeListFuture =
-    //       _databaseHelper.getEmployeeList();
-    //   employeeListFuture.then((employeeList) => setState(
-    //       () => _employeeList.add(employeeList[_employeeList.length])));
-    // });
-
-    // Attempt 4.
-    final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
+    final List<Employee> employeeList = await _erganiDatabase.getEmployeeList();
     setState(() {
       _employeeList = employeeList;
     });
@@ -95,7 +73,7 @@ class ContactsRouteState extends State<ContactsRoute> {
   /// CRUD operations.
   void _deleteEmployee(Employee employeeToDelete) async {
     _deletedEmployee = employeeToDelete;
-    int result = await _databaseHelper.deleteEmployee(employeeToDelete);
+    int result = await _erganiDatabase.deleteEmployee(employeeToDelete);
     if (result != 0) {
       // Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
       _updateListView();
@@ -103,7 +81,7 @@ class ContactsRouteState extends State<ContactsRoute> {
   }
 
   Future _addEmployee(Employee newEmployee) async {
-    int result = await _databaseHelper.createEmployee(newEmployee);
+    int result = await _erganiDatabase.createEmployee(newEmployee);
     if (result != 0) {
       // Scaffold.of(context).showSnackBar(SnackBar(
       //   content: Text('Ο υπάλληλος αποθηκεύθηκε.'),

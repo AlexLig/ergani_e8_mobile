@@ -27,8 +27,7 @@ class ContactsRouteState extends State<ContactsRoute> {
   @override
   initState() {
     super.initState();
-    // _employeeList = <Employee>[];
-    _updateListView();
+     _updateListView();
   }
 
   void _updateListView() async {
@@ -43,16 +42,22 @@ class ContactsRouteState extends State<ContactsRoute> {
     //   employeeListFuture.then((employeeList) => setState(() => _employeeList = employeeList) );
     // });
 
-    // Attempt 3.
-    final Future<Database> dbFuture = _databaseHelper.initializeDatabase();
-    dbFuture.then((database) {
-      Future<List<Employee>> employeeListFuture =
-          _databaseHelper.getEmployeeList();
-      employeeListFuture.then((employeeList) => setState(
-          () => _employeeList.add(employeeList[_employeeList.length])));
+    //  Attempt 3.
+    // final Future<Database> dbFuture = _databaseHelper.initializeDatabase();
+    // dbFuture.then((database) {
+    //   Future<List<Employee>> employeeListFuture =
+    //       _databaseHelper.getEmployeeList();
+    //   employeeListFuture.then((employeeList) => setState(
+    //       () => _employeeList.add(employeeList[_employeeList.length])));
+    // });
+
+    // Attempt 4.
+    final List<Employee> employeeList = await _databaseHelper.getEmployeeList();
+    setState(() {
+      _employeeList = employeeList;
     });
   }
-
+  
   /// Event Handlers.
   void _handleSubmit([Employee employee]) async {
     final newEmployee = await Navigator.push(
@@ -92,7 +97,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     _deletedEmployee = employeeToDelete;
     int result = await _databaseHelper.deleteEmployee(employeeToDelete);
     if (result != 0) {
-      Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
+      // Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
       _updateListView();
     }
   }

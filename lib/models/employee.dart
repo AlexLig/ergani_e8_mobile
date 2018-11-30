@@ -16,11 +16,11 @@ class Employee {
   ///Named constructor. Returns a new Employee from sqflite Map.
   Employee.fromMap(Map<String, dynamic> map) {
     this._id = map['id'];
-    this._firstName = map['firstName'];
-    this._lastName = map['lastName'];
+    this._firstName = map['first_name'];
+    this._lastName = map['last_name'];
     this._afm = map['afm'];
-    this._workStart = map['workStart'];
-    this._workFinish = map['workFinish'];
+    this._workStart = stringToTime(map['work_start']);
+    this._workFinish = stringToTime(map['work_finish']);
   }
 
   String get firstName => this._firstName;

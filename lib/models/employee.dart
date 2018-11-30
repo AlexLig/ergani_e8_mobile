@@ -8,7 +8,7 @@ class Employee {
 
   Employee(this._firstName, this._lastName, this._afm,
       [this._workStart, this._workFinish]);
-      
+
   ///Named constructor
   Employee.withID(this._id, this._firstName, this._lastName, this._afm,
       this._workStart, this._workFinish);
@@ -66,8 +66,11 @@ class Employee {
     map['firstName'] = this._firstName;
     map['lastName'] = this._lastName;
     map['afm'] = this._afm;
-    map['workStart'] = '${this._workStart.hour}${this._workStart.minute}'; // TODO: Replace with proper formatting.
-    map['workFinish'] = '${this._workFinish.hour}${this._workFinish.minute}';
+    map['workStart'] = timeToString(this._workStart);
+    // '${this._workStart.hour}${this._workStart.minute}'
+    // TODO: Replace with proper formatting.
+    map['workFinish'] = timeToString(this._workFinish);
+    //'${this._workFinish.hour}${this._workFinish.minute}';
 
     return map;
   }

@@ -19,6 +19,14 @@ String timeToString(TimeOfDay timeOfDay) {
   return timeOfDay.toString().replaceAll(RegExp(r'[^{0-9}:]'), '');
 }
 
+TimeOfDay stringToTime(String timeString) {
+  var time = timeString.replaceAll(RegExp(r'[^{0-9}:]'), '');
+  if (time.length > 4) return TimeOfDay(hour: 00, minute: 00);
+  int hour = int.tryParse(time.substring(0, 2)) ?? 00;
+  int minute = int.tryParse(time.substring(2)) ?? 00;
+  return TimeOfDay(hour: hour, minute: minute);
+}
+
 String e8Parser(
     {Employer employer, Employee employee, TimeOfDay start, TimeOfDay finish}) {
   RegExp exp = RegExp(r'[^{0-9}]');
@@ -39,8 +47,6 @@ bool isNotNull(value) => value != null;
 void sendSms({@required message, @required number}) {
   print('$message send to $number');
 }
-
-
 
 validateAfm(String afm) => _validateVatNumber(afm, 9);
 validateAme(String ame) => _validateVatNumber(ame, 10);

@@ -19,8 +19,8 @@ class Employee {
     this._firstName = map['first_name'];
     this._lastName = map['last_name'];
     this._afm = map['afm'];
-    this._workStart = stringToTime(map['work_start']);
-    this._workFinish = stringToTime(map['work_finish']);
+    this._workStart = numericStringToTime(map['work_start']);
+    this._workFinish = numericStringToTime(map['work_finish']);
   }
 
   String get firstName => this._firstName;
@@ -43,8 +43,8 @@ class Employee {
     map['first_name'] = this._firstName;
     map['last_name'] = this._lastName;
     map['afm'] = this._afm;
-    map['work_start'] = timeToString(this._workStart);
-    map['work_finish'] = timeToString(this._workFinish);
+    map['work_start'] = timeToNumericString(this._workStart);
+    map['work_finish'] = timeToNumericString(this._workFinish);
     return map;
   }
 }

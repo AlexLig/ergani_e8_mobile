@@ -16,30 +16,30 @@ bool isLater(TimeOfDay timeA, TimeOfDay timeB) =>
     timeToMinutes(timeA) > timeToMinutes(timeB);
 
 String timeToString(TimeOfDay timeOfDay) {
-  return timeOfDay.toString().replaceAll(RegExp(r'[^{0-9}]'), '');
+  return timeOfDay.toString().replaceAll(RegExp(r'[^{0-9}:]'), '');
 }
 
-TimeOfDay stringToTime(String timeString) {
-  var time = timeString.replaceAll(RegExp(r'[^{0-9}:]'), '');
-  if (time.length > 4) return TimeOfDay(hour: 00, minute: 00);
-  int hour = int.tryParse(time.substring(0, 2)) ?? 00;
-  int minute = int.tryParse(time.substring(2)) ?? 00;
-  return TimeOfDay(hour: hour, minute: minute);
-}
+
 
 String e8Parser(
     {Employer employer, Employee employee, TimeOfDay start, TimeOfDay finish}) {
-  RegExp exp = RegExp(r'[^{0-9}]');
-  String overTime = start.toString().replaceAll(exp, '') +
-      finish.toString().replaceAll(exp, '');
-
   List<String> e8Data = [
     'Υ1',
     employer.afm + (employer.ame ?? ''),
     employee.afm,
-    overTime
+    timeToNumericString(start) + timeToNumericString(finish)
   ];
   return e8Data.join(" ");
+}
+
+String timeToNumericString(TimeOfDay timeOfDay) {
+  return timeOfDay.toString().replaceAll(RegExp(r'[^{0-9}]'), '');
+}
+TimeOfDay numericStringToTime(String timeString) {
+  if (timeString.length > 4) return TimeOfDay(hour: 00, minute: 00);
+  int hour = int.tryParse(timeString.substring(0, 2)) ?? 00;
+  int minute = int.tryParse(timeString.substring(2)) ?? 00;
+  return TimeOfDay(hour: hour, minute: minute);
 }
 
 bool isNotNull(value) => value != null;

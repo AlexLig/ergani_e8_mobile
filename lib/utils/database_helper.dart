@@ -1,4 +1,6 @@
 import 'package:ergani_e8/models/employee.dart';
+import 'package:ergani_e8/utilFunctions.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
@@ -77,24 +79,27 @@ class ErganiDatabase {
 
   /// Create operation. Post an Employee in the database.
   Future<int> createEmployee(Employee employee) async {
-    Database db = await this.db;
-    Map<String, dynamic> map = employee.toMap();
+    var result;
+    if (_validateEmployee(employee)) {
+      Database db = await this.db;
+      Map<String, dynamic> map = employee.toMap();
 
-    var result = await db.transaction((txn) async {
-      int employeeID = await txn.rawInsert(
-          'INSERT INTO $employeeTable ($colFirstName, $colLastName, $colAfm, $colWorkStart, $colWorkFinish)VALUES(?, ?, ?, ?, ?)',
-          [
-            map['first_name'],
-            map['last_name'],
-            map['afm'],
-            map['work_start'],
-            map['work_finish']
-          ]);
-      print('employee ID: $employeeID');
-    });
-
-    print('inserted $result');
-    return result;
+      result = await db.transaction((txn) async {
+        int employeeID = await txn.rawInsert(
+            'INSERT INTO $employeeTable ($colFirstName, $colLastName, $colAfm, $colWorkStart, $colWorkFinish)VALUES(?, ?, ?, ?, ?)',
+            [
+              map['first_name'],
+              map['last_name'],
+              map['afm'],
+              map['work_start'],
+              map['work_finish']
+            ]);
+        print('employee ID: $employeeID');
+      });
+      print('inserted $result');
+      return result;
+    } else
+      return result = 0;
   }
 
   /// Update opration. Modifiy an Employee in the database.
@@ -102,7 +107,7 @@ class ErganiDatabase {
   //   Database db = await this.db;
   //   Map<String, dynamic> map = employee.toMap();
   //   var result = await db.rawInsert(
-  //       'INSERT OR REPLACE INTO' 
+  //       'INSERT OR REPLACE INTO'
   //       '$employeeTable($colId,$colFirstName, $colLastName, $colAfm, $colWorkStart, $colWorkFinish)'
   //       ' VALUES(?, ?, ?, ?, ?, ?)',
   //       [
@@ -144,4 +149,14 @@ class ErganiDatabase {
   Future close() async => _db.close();
 
 //TODO: validations b4 writing into db. 1) upper limit for work time 2) afm lenght
+  bool _validateEmployee(Employee employee) {
+    return int.tryParse(employee.afm) != null &&
+        employee.afm.length == 9 &&
+        employee.firstName.length < 200 &&
+        employee.lastName.length < 200 &&
+        employee.workFinish is TimeOfDay &&
+        employee.workStart is TimeOfDay &&
+        timeToMinutes(employee.workFinish) < 1440 &&
+        isLater(employee.workFinish, employee.workStart);
+  }
 }

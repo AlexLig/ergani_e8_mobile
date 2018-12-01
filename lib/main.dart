@@ -1,7 +1,4 @@
-import 'package:ergani_e8/models/employee.dart';
-import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/contacts_route.dart';
-import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -17,31 +14,18 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // sliderTheme: SliderThemeData(
-        //   activeTrackColor: Colors.blueGrey[700],
-        //   inactiveTrackColor: Colors.blueGrey[400],
-        //   disabledActiveTrackColor: Colors.grey,
-        //   disabledInactiveTrackColor: Colors.grey[300],
-        //   activeTickMarkColor: Colors.teal[800],
-        //   inactiveTickMarkColor: Colors.teal[500],
-        //   disabledActiveTickMarkColor: Colors.grey,
-        //   disabledInactiveTickMarkColor: Colors.grey[300],
-        //   disabledThumbColor: Colors.grey,
-        //   overlayColor: Colors.teal[200],
-        //   showValueIndicator: ShowValueIndicator.onlyForDiscrete,
-        //   thumbColor: Colors.blueGrey[700],
-        //   thumbShape: PaddleSliderValueIndicatorShape(),
-        //   valueIndicatorColor: Colors.blueGrey[700],
-        //   valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-        //   valueIndicatorTextStyle: TextStyle(color: Colors.white),
-        // ),
-        brightness: Brightness.light,
-        disabledColor: Colors.blueGrey,
-        unselectedWidgetColor: Colors.grey,
-        primaryColor: Colors.blueGrey[700],
-        accentColor: Colors.teal[800],
-        buttonColor: Colors.teal[800],
+      
+        
+        primaryColorDark: Colors.blueGrey[700],
+        accentColor: Colors.teal[500],
+        buttonColor: Colors.teal[500],
+        primaryColor: Colors.blueGrey[500],
+        primaryColorLight: Colors.blueGrey[100],
+        // primaryTextTheme: Typography.blackMountainView,
+        // secondaryText
+        dividerColor: Colors.grey[500],
         cursorColor: Colors.blueGrey[700],
+        // backgroundColor: Colors.
       ),
       home: ContactsRoute(),
     );

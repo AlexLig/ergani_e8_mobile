@@ -101,7 +101,6 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       appBar: AppBar(
         title:
             Text('${_employee == null ? 'Προσθήκη' : 'Επεξεργασία'} υπαλλήλου'),
-        backgroundColor: Colors.blueGrey[800],
       ),
       body: Form(
         key: _formKey,
@@ -147,7 +146,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                         onPressed: () => this.submit(context),
                         child: Text(
                           'ΑΠΟΘΗΚΕΥΣΗ',
-                          style: TextStyle(color: Colors.white, fontSize: 16.0),
+                          style: TextStyle(fontSize: 16.0),
                         ),
                       ),
                     ),

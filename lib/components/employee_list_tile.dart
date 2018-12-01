@@ -41,7 +41,7 @@ class EmployeeListTile extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).accentColor,
-                fontSize: 24.0,
+                fontSize: 30.0,
               ),
             ),
           ),

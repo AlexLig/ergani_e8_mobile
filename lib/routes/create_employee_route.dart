@@ -299,14 +299,8 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     if (startTime is TimeOfDay)
       setState(() {
         _workStart = startTime;
-        if (!_isWorkFinishTouched) {
-          int finalHour = startTime.hour + 8;
-          
-          _workFinish = TimeOfDay(
-            hour: finalHour < 24 ? finalHour : 23,
-            minute: _workFinish.minute,
-          );
-        }
+        if (!_isWorkFinishTouched)
+          _workFinish = minutesToTime(timeToMinutes(startTime) + 8 * 60);
       });
   }
 

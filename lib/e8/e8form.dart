@@ -29,13 +29,8 @@ class E8formState extends State<E8form> {
   void initState() {
     super.initState();
     _sliderValue = 0.5;
-    // _isReset = false;
     _receiverController.text = '54001';
     _senderController.text = '${_employer.name}';
-    if (_isReset) {
-      _overtimeStart = TimeOfDay(hour: 00, minute: 00);
-      _overtimeFinish = TimeOfDay(hour: 00, minute: 00);
-    }
   }
 
   // TODO: Implement send SMS. Remove Dialog.
@@ -52,20 +47,44 @@ class E8formState extends State<E8form> {
     );
     if (shouldSend == true) sendSms(message: message, number: number);
   }
-
+ // TODO: fix  pop snackbar if u choose time b4 time.now
   Future<Null> _selectStartTime(BuildContext context) async {
     final TimeOfDay picked = await showTimePicker(
       context: context,
       initialTime: _overtimeStart,
     );
     if (picked != null && picked != _overtimeStart) {
-      setState(() {
-        _overtimeStart = picked;
-        _overtimeFinish = addToTimeOfDay(
-          _overtimeStart,
-          minute: (_sliderValue * 60).toInt(),
+      if (isLater(TimeOfDay.now(), picked)) {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Icon(Icons.warning),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                        'Η δήλωση υπερωρίας '),
+                    Text(
+                        'πρέπει να γίνεται ΠΡΙΝ την έναρξη της!'),
+                  ],
+                ),
+              ],
+            ),
+          ),
         );
-      });
+      } else
+        setState(() {
+          _overtimeStart = picked;
+          _overtimeFinish = addToTimeOfDay(
+            _overtimeStart,
+            minute: (_sliderValue * 60).toInt(),
+          );
+        });
     }
   }
 
@@ -79,12 +98,21 @@ class E8formState extends State<E8form> {
         Scaffold.of(context).showSnackBar(
           SnackBar(
             content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
+                  padding: const EdgeInsets.only(right: 16.0),
                   child: Icon(Icons.warning),
                 ),
-                Text('Επιλέξτε μεγαλύτερη ώρα λήξης.'),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                        'Η ώρα λήξης '),
+                    Text(
+                        'πρέπει να είναι μετά της έναρξης'),
+                  ],
+                ),
               ],
             ),
           ),
@@ -108,9 +136,8 @@ class E8formState extends State<E8form> {
     _employee = E8provider.of(context).employee;
 
     if (_isFirstBuild && !_isReset) {
-      _overtimeStart = _employee.workStart == null
-          ? TimeOfDay(hour: 16, minute: 00)
-          : _employee.workStart;
+      // _overtimeStart = _employee.workFinish ?? TimeOfDay(hour: 16, minute: 00);
+      _overtimeStart = TimeOfDay.now();
       _overtimeFinish =
           addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
 
@@ -129,7 +156,6 @@ class E8formState extends State<E8form> {
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              // EmployerListTile(employer: _employer),
               Card(
                 margin: EdgeInsets.only(top: 80.0, left: 10.0, right: 10.0),
                 child: Column(
@@ -221,7 +247,7 @@ class E8formState extends State<E8form> {
   _buildMessageBottomSheet() {
     return Align(
       alignment: Alignment.bottomCenter,
-          child: PhysicalModel(
+      child: PhysicalModel(
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
         color: Colors.white,
         elevation: 5.0,

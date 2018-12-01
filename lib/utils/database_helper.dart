@@ -97,31 +97,22 @@ class ErganiDatabase {
     return result;
   }
 
-  /*  /// Update opration. Modifiy an Employee in the database.
+  /// Update opration. Modifiy an Employee in the database.
   Future<int> updateEmployee(Employee employee) async {
     Database db = await this.db;
     Map<String, dynamic> map = employee.toMap();
-
-    var result = await db.rawUpdate('''
-      UPDATE $employeeTable
-      SET $colFirstName = ${map['first_name']},
-          $colLastName = ${map['last_name']},
-          $colAfm = ${map['afm']},
-          $colWorkStart = ${map['work_start']},
-          $colWorkFinish = ${map['work_finish']},
-      WHERE $colId = ${map['id']}
-    ''');
-    print('Updated $result');
-    return result;
-  } */
-
-  /// Create operation. Post an Employee in the database.
-  Future<int> updateEmployee(Employee employee) async {
-    Database db = await this.db;
-    var result = await db.transaction((txn) async {
-      await deleteEmployee(employee);
-      await createEmployee(employee);
-    });
+    var result = await db.rawInsert(
+        'INSERT OR REPLACE INTO '
+        '$employeeTable($colId,$colFirstName, $colLastName, $colAfm, $colWorkStart, $colWorkFinish)'
+        ' VALUES(?, ?, ?, ?, ?, ?)',
+        [
+          map['id'],
+          map['first_name'],
+          map['last_name'],
+          map['afm'],
+          map['work_start'],
+          map['work_finish']
+        ]);
 
     return result;
   }

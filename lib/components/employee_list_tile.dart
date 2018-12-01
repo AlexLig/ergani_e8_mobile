@@ -29,8 +29,8 @@ class EmployeeListTile extends StatelessWidget {
       onTap: this.onTap,
       child: ListTile(
         leading: Container(
-          height: 50.0,
-          width: 50.0,
+          height: 60.0,
+          width: 60.0,
           decoration: BoxDecoration(
             color: Color.fromRGBO(244, 244, 244, 1.0),
             shape: BoxShape.circle,
@@ -41,7 +41,7 @@ class EmployeeListTile extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).accentColor,
-                fontSize: 24.0,
+                fontSize: 30.0,
               ),
             ),
           ),

@@ -2,14 +2,44 @@ import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 
 class TimePickerButton extends StatelessWidget {
-  final TimeOfDay workHour;
-  final Function onPressed;
-  TimePickerButton({@required this.workHour, @required this.onPressed})
-      : assert(workHour != null),
-        assert(onPressed != null);
+  final TimeOfDay workStart, workFinish;
+  final Function onSelectStartTime, onSelectFinishTime;
+  final bool isReset;
+
+  TimePickerButton({
+    @required this.workStart,
+    @required this.workFinish,
+    @required this.isReset,
+    @required this.onSelectStartTime,
+    @required this.onSelectFinishTime,
+  })  : assert(workStart != null),
+        assert(workFinish != null),
+        assert(onSelectStartTime != null),
+        assert(onSelectFinishTime != null);
 
   @override
   Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        _buildButton(
+          workHour: this.workStart,
+          onPressed: isReset ? null : onSelectStartTime,
+        ),
+        Icon(Icons.arrow_forward,
+            color: isReset ? Colors.grey[400] : Colors.black),
+        _buildButton(
+          workHour: this.workFinish,
+          onPressed: isReset ? null : onSelectFinishTime,
+        ),
+      ],
+    );
+  }
+
+  _buildButton({
+    @required TimeOfDay workHour,
+    @required Function onPressed,
+  }) {
     return OutlineButton(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(50.0)),
@@ -26,7 +56,8 @@ class TimePickerButton extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 16.0),
-              child: Icon(Icons.alarm, color: Colors.grey[600]),
+              child: Icon(Icons.alarm,
+                  color: isReset ? Colors.grey[400] : Colors.grey[600]),
             ),
           ],
         ),

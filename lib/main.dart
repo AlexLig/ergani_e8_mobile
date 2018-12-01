@@ -1,7 +1,4 @@
-import 'package:ergani_e8/models/employee.dart';
-import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/contacts_route.dart';
-import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -12,17 +9,23 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
- 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: Colors.blueGrey[700],
-        accentColor: Colors.teal[800],
-        buttonColor: Colors.teal[800],
+      
+        
+        primaryColorDark: Colors.blueGrey[700],
+        accentColor: Colors.teal[500],
+        buttonColor: Colors.teal[500],
+        primaryColor: Colors.blueGrey[500],
+        primaryColorLight: Colors.blueGrey[100],
+        // primaryTextTheme: Typography.blackMountainView,
+        // secondaryText
+        dividerColor: Colors.grey[500],
         cursorColor: Colors.blueGrey[700],
+        // backgroundColor: Colors.
       ),
       home: ContactsRoute(),
     );

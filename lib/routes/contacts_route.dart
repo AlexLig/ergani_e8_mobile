@@ -119,7 +119,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     _scaffoldContext = context;
     return Container(
       // TODO: colors inhereted from theme.
-      color: _employeeList.length == 0 ? Colors.amber[200] : Colors.white,
+      color: _employeeList.length == 0 ? Colors.amber[200] : Theme.of(context).canvasColor,
       child: Column(
         children: <Widget>[
           Expanded(
@@ -148,9 +148,9 @@ class ContactsRouteState extends State<ContactsRoute> {
             i == _employeeList.length - 1
                 ? SizedBox(height: 100.0)
                 : Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Divider(
-                      indent: 60.0,
+                      indent: 40.0,
                     ),
                   ),
           ],

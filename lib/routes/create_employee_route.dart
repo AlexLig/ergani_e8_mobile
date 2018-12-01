@@ -35,6 +35,9 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   bool _shouldValidateOnChangeLastName = false;
   bool _shouldValidateOnChangeAfm = false;
 
+  bool _afmExist = false;
+  bool _isValidAfm = false;
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +49,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     _workStart = _employee?.workStart ?? TimeOfDay(hour: 08, minute: 00);
     _workFinish = _employee?.workFinish ?? TimeOfDay(hour: 16, minute: 00);
 
+    _afmController.addListener(checkIfAfmExist);
     // firstNameFocus.addListener(() {
     //   if (!firstNameFocus.hasFocus) {
     //     setState(() => _shouldValidateOnChangeFirstName = true);
@@ -59,6 +63,22 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     //   if (!afmFocus.hasFocus)
     //     setState(() => _shouldValidateOnChangeAfm = true);
     // });
+  }
+
+  void checkIfAfmExist() async {
+    // For async validation
+    if ((_isValidAfm || int.tryParse(_afmController.text) != null) &&
+        _afmController.text.length == 9) {
+      var employeeList =
+          await _erganiDatabase.getEmployeeByAfm(_afmController.text);
+      if (employeeList.isNotEmpty) {
+        _afmExist = true;
+        this._formKey.currentState.validate();
+      }else{
+        _afmExist = false ;
+        this._formKey.currentState.validate();
+      }
+    }
   }
 
   @override
@@ -84,9 +104,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
           _lastNameController.text, afm, _workStart, _workFinish);
 
       int result;
-      if (_employee == null)
+
+      if (_employee == null && !_afmExist) {
         result = await _erganiDatabase.createEmployee(employeeToSubmit);
-      else if (_employee is Employee) {
+      } else if (_employee is Employee && !_afmExist) {
         await _erganiDatabase.deleteEmployee(_employee);
         result = await _erganiDatabase.createEmployee(employeeToSubmit);
       }
@@ -265,6 +286,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         } else if (int.tryParse(afm) == null) {
           return ' Ο ΑΦΜ αποτελείται ΜΟΝΟ απο αριθμούς';
         }
+        if (_afmExist) {
+          return 'Ο ΑΦΜ χρησιμοποιείται ήδη';
+        }
+        _isValidAfm = true;
       },
       autovalidate: _shouldValidateOnChangeAfm,
       maxLength: 9,

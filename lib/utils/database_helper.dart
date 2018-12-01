@@ -77,6 +77,13 @@ class ErganiDatabase {
     return result;
   }
 
+  Future<List<Map<String, dynamic>>> getEmployeeByAfm(String afm) async {
+    Database db = await this.db;
+    var result =
+        db.rawQuery('SELECT * FROM $employeeTable WHERE $colAfm = $afm');
+    return result;
+  }
+
   /// Create operation. Post an Employee in the database.
   Future<int> createEmployee(Employee employee) async {
     var result;

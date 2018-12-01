@@ -261,8 +261,9 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         if (afm.isEmpty) {
           return 'Προσθέστε ΑΦΜ';
         } else if (afm.length != 9) {
-          return 'Προσθέστε 9 αριθμούς';
-        } else if (int.tryParse(afm) == null) {
+          return 'Εισάγετε 9 αριθμούς';
+        } else if (int.tryParse(afm) == null ||
+            int.tryParse(afm).abs().toString().length != 9) {
           return ' Ο ΑΦΜ αποτελείται ΜΟΝΟ απο αριθμούς';
         }
       },

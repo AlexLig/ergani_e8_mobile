@@ -192,6 +192,7 @@ class ContactsRouteState extends State<ContactsRoute> {
 
   SnackBar _successfulCreateSnackbar(context) {
     return SnackBar(
+      duration: Duration(seconds: 3),
       content: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[

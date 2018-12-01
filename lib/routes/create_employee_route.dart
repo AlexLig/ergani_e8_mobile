@@ -34,6 +34,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   bool _shouldValidateOnChangeFirstName = false;
   bool _shouldValidateOnChangeLastName = false;
   bool _shouldValidateOnChangeAfm = false;
+  bool _isWorkFinishTouched = false;
 
   @override
   void initState() {
@@ -295,7 +296,18 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       initialTime: _workStart,
     );
 
-    if (startTime is TimeOfDay) setState(() => _workStart = startTime);
+    if (startTime is TimeOfDay)
+      setState(() {
+        _workStart = startTime;
+        if (!_isWorkFinishTouched) {
+          int finalHour = startTime.hour + 8;
+          
+          _workFinish = TimeOfDay(
+            hour: finalHour < 24 ? finalHour : 23,
+            minute: _workFinish.minute,
+          );
+        }
+      });
   }
 
   void _selectWorkFinish(BuildContext context) async {
@@ -304,6 +316,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       initialTime: _workFinish,
     );
 
-    if (finishTime is TimeOfDay) setState(() => _workFinish = finishTime);
+    if (finishTime is TimeOfDay)
+      setState(() {
+        _isWorkFinishTouched = true;
+        _workFinish = finishTime;
+      });
   }
 }

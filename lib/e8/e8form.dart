@@ -47,7 +47,8 @@ class E8formState extends State<E8form> {
     );
     if (shouldSend == true) sendSms(message: message, number: number);
   }
- // TODO: fix  pop snackbar if u choose time b4 time.now
+
+  // TODO: fix  pop snackbar if u choose time b4 time.now
   Future<Null> _selectStartTime(BuildContext context) async {
     final TimeOfDay picked = await showTimePicker(
       context: context,
@@ -67,10 +68,8 @@ class E8formState extends State<E8form> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text(
-                        'Η δήλωση υπερωρίας '),
-                    Text(
-                        'πρέπει να γίνεται ΠΡΙΝ την έναρξη της!'),
+                    Text('Η δήλωση υπερωρίας '),
+                    Text('πρέπει να γίνεται ΠΡΙΝ την έναρξη της!'),
                   ],
                 ),
               ],
@@ -107,10 +106,8 @@ class E8formState extends State<E8form> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text(
-                        'Η ώρα λήξης '),
-                    Text(
-                        'πρέπει να είναι μετά της έναρξης'),
+                    Text('Η ώρα λήξης πρέπει να είναι'),
+                    Text('μετά την ώρα έναρξης'),
                   ],
                 ),
               ],

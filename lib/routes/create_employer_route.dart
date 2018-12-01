@@ -51,7 +51,7 @@ class EmployerFormState extends State<EmployerForm> {
       _formKey.currentState.save();
       var employerToSubmit = Employer(
         _afmController.text,
-        '${_nameController?.text[0].toUpperCase()}${_nameController.text.substring(1)}',
+        '${_nameController.text[0].toUpperCase()}${_nameController.text.substring(1)}',
         _ameController.text,
       );
 

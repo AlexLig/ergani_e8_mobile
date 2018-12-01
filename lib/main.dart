@@ -13,9 +13,13 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              alwaysUse24HourFormat: true,
+            ),
+            child: child,
+          ),
       theme: ThemeData(
-      
-        
         primaryColorDark: Colors.blueGrey[700],
         accentColor: Colors.teal[500],
         buttonColor: Colors.teal[500],

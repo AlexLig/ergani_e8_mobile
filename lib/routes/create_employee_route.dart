@@ -1,5 +1,6 @@
 import 'package:ergani_e8/components/time_picker.dart';
 import 'package:ergani_e8/models/employee.dart';
+import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,7 @@ class CreateEmployeeRoute extends StatefulWidget {
 
 class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   final _formKey = GlobalKey<FormState>();
+
   ErganiDatabase _erganiDatabase = ErganiDatabase();
   // FocusNode employeeFocusNode;
   Employee _employee;
@@ -95,6 +97,11 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       else
         Navigator.pop(context);
     }
+    setState(() {
+      _shouldValidateOnChangeFirstName = true;
+      _shouldValidateOnChangeLastName = true;
+      _shouldValidateOnChangeAfm = true;
+    });
   }
 
   @override
@@ -190,7 +197,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       textCapitalization: TextCapitalization.sentences,
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
-        FocusScope.of(context).requestFocus(lastNameFocus);
+        if (value.isEmpty)
+          setState(() => _shouldValidateOnChangeFirstName = true);
+        else
+          FocusScope.of(context).requestFocus(lastNameFocus);
       },
       autofocus: true,
       autovalidate: _shouldValidateOnChangeFirstName,
@@ -225,15 +235,12 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       decoration: InputDecoration(
         labelText: 'Επίθετο',
         border: OutlineInputBorder(),
-        // prefixIcon: Icon(Icons.perm_contact_calendar)
-        // prefixIcon: Icon(Icons.recent_actors)
         prefixIcon: Icon(Icons.contacts),
       ),
       validator: (value) {
         if (value.isEmpty) return 'Προσθέστε επίθετο';
       },
       autovalidate: _shouldValidateOnChangeLastName,
-      // onEditingComplete: () =>
       controller: _lastNameController,
     );
   }
@@ -248,12 +255,20 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         border: OutlineInputBorder(),
         prefixIcon: Icon(Icons.work),
       ),
-      // validator: (value) => validateAfm(value),
+      validator: (afm) {
+        if (afm.isEmpty) {
+          return 'Προσθέστε ΑΦΜ';
+        } else if (afm.length != 9) {
+          return 'Προσθέστε 9 αριθμούς';
+        } else if (int.tryParse(afm) == null) {
+          return ' Ο ΑΦΜ αποτελείται ΜΟΝΟ απο αριθμούς';
+        }
+      },
       autovalidate: _shouldValidateOnChangeAfm,
       maxLength: 9,
       onFieldSubmitted: (value) {
-        // if (isNotNumeric(value) || value.length != 9)
-        setState(() => _shouldValidateOnChangeAfm = true);
+        if (int.tryParse(value) == null || value.length != 9)
+          setState(() => _shouldValidateOnChangeAfm = true);
         // else
         // FocusScope.of(context).requestFocus();
       },

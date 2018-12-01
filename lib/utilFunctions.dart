@@ -19,8 +19,6 @@ String timeToString(TimeOfDay timeOfDay) {
   return timeOfDay.toString().replaceAll(RegExp(r'[^{0-9}:]'), '');
 }
 
-
-
 String e8Parser(
     {Employer employer, Employee employee, TimeOfDay start, TimeOfDay finish}) {
   List<String> e8Data = [
@@ -35,6 +33,7 @@ String e8Parser(
 String timeToNumericString(TimeOfDay timeOfDay) {
   return timeOfDay.toString().replaceAll(RegExp(r'[^{0-9}]'), '');
 }
+
 TimeOfDay numericStringToTime(String timeString) {
   if (timeString.length > 4) return TimeOfDay(hour: 00, minute: 00);
   int hour = int.tryParse(timeString.substring(0, 2)) ?? 00;
@@ -48,28 +47,22 @@ void sendSms({@required message, @required number}) {
   print('$message send to $number');
 }
 
-validateAfm(String afm) => _validateVatNumber(afm, 9);
-validateAme(String ame) => _validateVatNumber(ame, 10);
-_validateVatNumber(String vatNumber, int length) {
-  if (vatNumber.isEmpty) {
-    return 'Προσθέστε ${length == 9 ? 'ΑΦΜ' : 'ΑΜΕ'}';
-  } else if (isNotNumeric(vatNumber) || vatNumber.length != length) {
-    return 'O ${length == 9 ? 'ΑΦΜ' : 'ΑΜΕ'} αποτελείται από $length αριθμούς';
+validateAfm(afm) {
+  if (afm.isEmpty) {
+    return 'Προσθέστε ΑΦΜ';
+  } else if (afm.length != 9) {
+    return 'Προσθέστε 9 αριθμούς';
+  } else if (int.tryParse(afm) == null) {
+    return ' Ο ΑΦΜ αποτελείται ΜΟΝΟ απο αριθμούς';
   }
 }
 
-bool isNumeric(String value) => _isFullMatch(RegExp(r'[0-9]'), value);
-bool isNotNumeric(String value) => _isFullMatch(RegExp(r'[^{0-9}]'), value);
-bool _isFullMatch(RegExp regExp, String value) => regExp
-    .allMatches(value)
-    .map((match) => match.start == 0 && match.end == value.length)
-    .reduce((sum, nextValue) => sum && nextValue);
-
-/// Experimenting with currying
-// var isNotNumeric = _isFullMatch(RegExp(r'[^{0-9}]'));
-// var isNumeric = _isFullMatch(RegExp(r'[0-9]'));
-
-// Function _isFullMatch(RegExp regExp) => (String value) => regExp
-//     .allMatches(value)
-//     .map((match) => match.start == 0 && match.end == value.length)
-//     .reduce((sum, nextValue) => sum && nextValue);
+validateAme(ame) {
+  if (ame.isEmpty) {
+    return 'Προσθέστε ΑME';
+  } else if (ame.length != 10) {
+    return 'Προσθέστε 10 αριθμούς';
+  } else if (int.tryParse(ame) == null) {
+    return 'Ο ΑME αποτελείται ΜΟΝΟ απο αριθμούς';
+  }
+}

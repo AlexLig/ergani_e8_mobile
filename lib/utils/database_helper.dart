@@ -98,24 +98,24 @@ class ErganiDatabase {
   }
 
   /// Update opration. Modifiy an Employee in the database.
-  Future<int> updateEmployee(Employee employee) async {
-    Database db = await this.db;
-    Map<String, dynamic> map = employee.toMap();
-    var result = await db.rawInsert(
-        'INSERT OR REPLACE INTO '
-        '$employeeTable($colId,$colFirstName, $colLastName, $colAfm, $colWorkStart, $colWorkFinish)'
-        ' VALUES(?, ?, ?, ?, ?, ?)',
-        [
-          map['id'],
-          map['first_name'],
-          map['last_name'],
-          map['afm'],
-          map['work_start'],
-          map['work_finish']
-        ]);
+  // Future<int> updateEmployee(Employee employee) async {
+  //   Database db = await this.db;
+  //   Map<String, dynamic> map = employee.toMap();
+  //   var result = await db.rawInsert(
+  //       'INSERT OR REPLACE INTO' 
+  //       '$employeeTable($colId,$colFirstName, $colLastName, $colAfm, $colWorkStart, $colWorkFinish)'
+  //       ' VALUES(?, ?, ?, ?, ?, ?)',
+  //       [
+  //         map['id'],
+  //         map['first_name'],
+  //         map['last_name'],
+  //         map['afm'],
+  //         map['work_start'],
+  //         map['work_finish']
+  //       ]);
 
-    return result;
-  }
+  //   return result;
+  // }
 
   /// Delete operation. Delete an Employee from the database.
   Future<int> deleteEmployee(Employee employee) async {

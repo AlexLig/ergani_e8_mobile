@@ -83,13 +83,14 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       var employeeToSubmit = Employee(_firstNameController.text,
           _lastNameController.text, afm, _workStart, _workFinish);
 
-      
-
       int result;
       if (_employee == null)
         result = await _erganiDatabase.createEmployee(employeeToSubmit);
-      else
-        result = await _erganiDatabase.updateEmployee(employeeToSubmit);
+      else if (_employee is Employee) {
+        await _erganiDatabase.deleteEmployee(_employee);
+        result = await _erganiDatabase.createEmployee(employeeToSubmit);
+      }
+
       if (result != 0)
         Navigator.pop(context, employeeToSubmit);
       else

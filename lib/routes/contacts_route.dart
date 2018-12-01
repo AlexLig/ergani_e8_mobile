@@ -60,6 +60,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     );
   }
 
+// TODO: BUG crashes on cancel.
   void _handleDelete(context, Employee employee) async {
     final employeeToDelete = await showDialog(
       context: context,

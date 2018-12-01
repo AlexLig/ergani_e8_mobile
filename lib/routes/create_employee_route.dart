@@ -83,9 +83,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       var employeeToSubmit = Employee(_firstNameController.text,
           _lastNameController.text, afm, _workStart, _workFinish);
 
-      _firstNameController.clear();
-      _lastNameController.clear();
-      _afmController.clear();
+      
 
       int result;
       if (_employee == null)
@@ -96,6 +94,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         Navigator.pop(context, employeeToSubmit);
       else
         Navigator.pop(context);
+
+      _firstNameController.clear();
+      _lastNameController.clear();
+      _afmController.clear();
     }
     setState(() {
       _shouldValidateOnChangeFirstName = true;
@@ -155,7 +157,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                         onPressed: () => this._submit(context),
                         child: Text(
                           'ΑΠΟΘΗΚΕΥΣΗ',
-                          style: TextStyle(fontSize: 16.0),
+                          style: TextStyle(fontSize: 16.0, color: Colors.white),
                         ),
                       ),
                     ),

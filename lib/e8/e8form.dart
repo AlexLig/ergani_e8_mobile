@@ -17,12 +17,13 @@ class E8formState extends State<E8form> {
   double _sliderValue;
   TimeOfDay _overtimeStart;
   TimeOfDay _overtimeFinish;
-  Employer _employer = Employer('123456789', 'ΚυρΜπαμπηςΑΕ');
+  Employer _employer = Employer('123456789', 'ΚυρΜπαμπηςΑΕ', '0123456789');
   Employee _employee;
   String _erganiCode;
   bool _isFirstBuild = true;
   bool _isReset = false;
   TextEditingController _receiverController = TextEditingController();
+  TextEditingController _senderController = TextEditingController();
 
   @override
   void initState() {
@@ -30,12 +31,14 @@ class E8formState extends State<E8form> {
     _sliderValue = 0.5;
     // _isReset = false;
     _receiverController.text = '54001';
+    _senderController.text = '${_employer.name}';
     if (_isReset) {
       _overtimeStart = TimeOfDay(hour: 00, minute: 00);
       _overtimeFinish = TimeOfDay(hour: 00, minute: 00);
     }
   }
 
+  // TODO: Implement send SMS. Remove Dialog.
   _handleSend(
       {scaffoldContext, String message, @required String number}) async {
     final shouldSend = await showDialog(
@@ -75,8 +78,15 @@ class E8formState extends State<E8form> {
       if (!isLater(picked, _overtimeStart)) {
         Scaffold.of(context).showSnackBar(
           SnackBar(
-            backgroundColor: Colors.red,
-            content: Text('Η ώρα λήξης πρέπει να είναι αργότερα της έναρξης.'),
+            content: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Icon(Icons.warning),
+                ),
+                Text('Επιλέξτε μεγαλύτερη ώρα λήξης.'),
+              ],
+            ),
           ),
         );
       } else
@@ -117,11 +127,11 @@ class E8formState extends State<E8form> {
       body: Builder(
         builder: (context) {
           return Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              EmployerListTile(employer: _employer),
-              SizedBox(height: 100.0),
+              // EmployerListTile(employer: _employer),
               Card(
+                margin: EdgeInsets.only(top: 80.0, left: 10.0, right: 10.0),
                 child: Column(
                   children: [
                     EmployeeListTile(employee: _employee),
@@ -137,7 +147,7 @@ class E8formState extends State<E8form> {
                       title: Text(
                         'Ακύρωση προηγούμενης υποβολής',
                         style: TextStyle(
-                          color: _isReset ? Colors.black : Colors.grey,
+                          color: _isReset ? Colors.black : Colors.grey[400],
                         ),
                       ),
                     ),
@@ -153,8 +163,9 @@ class E8formState extends State<E8form> {
                           child: TimePickerButton(
                             workStart: _overtimeStart,
                             workFinish: _overtimeFinish,
-                            onSelectStartTime: ()=> _selectStartTime(context),
-                            onSelectFinishTime: ()=>_selectFinishTime(context),
+                            onSelectStartTime: () => _selectStartTime(context),
+                            onSelectFinishTime: () =>
+                                _selectFinishTime(context),
                             isReset: _isReset,
                           ),
                         ),
@@ -164,15 +175,17 @@ class E8formState extends State<E8form> {
                   ],
                 ),
               ),
+              _buildMessageBottomSheet(),
             ].where(isNotNull).toList(),
           );
         },
       ),
-      bottomSheet: _buildMessageBottomSheet(),
+      backgroundColor: Theme.of(context).canvasColor,
     );
   }
 
-  // TODO : set context to always use 24hr. Non intl
+  // TODO : set context to always use 24hr. Non intl.
+  // TODO: Prevent from choosing overtime later than Time.now()
   _buildActiveSlider() {
     var value = (_sliderValue * 2) % 2;
     var sliderValue = value == 0 ? _sliderValue.round() : _sliderValue;
@@ -180,10 +193,11 @@ class E8formState extends State<E8form> {
     return Column(
       children: <Widget>[
         Text(
-          'Ώρες υπερεργασίας',
+          'Ώρες Υπερωρίας',
           style: TextStyle(
             fontSize: 18.0,
-            color: !_isReset ? Colors.black : Colors.grey,
+            // color: _isReset ? Colors.blueGrey[100] : Colors.grey[900],
+            color: _isReset ? Colors.grey[400] : Colors.grey[900],
           ),
         ),
         Padding(
@@ -205,43 +219,51 @@ class E8formState extends State<E8form> {
   }
 
   _buildMessageBottomSheet() {
-    return PhysicalModel(
-      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-      color: Colors.white,
-      elevation: 5.0,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            TextField(
-              enabled: false,
-              controller: _receiverController,
-              decoration: InputDecoration(prefixText: 'ΠΡΟΣ    '),
-            ),
-            ListTile(
-              title: Text(_erganiCode),
-            ),
-            RaisedButton(
-              onPressed: () => null,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'ΑΠΟΣΤΟΛΗ',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  SizedBox(width: 10.0),
-                  Icon(
-                    Icons.send,
-                    color: Colors.white,
-                  ),
-                ],
+    return Align(
+      alignment: Alignment.bottomCenter,
+          child: PhysicalModel(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        color: Colors.white,
+        elevation: 5.0,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                enabled: false,
+                controller: _senderController,
+                decoration: InputDecoration(prefixText: 'ΑΠΟ      '),
               ),
-            )
-          ],
+              TextField(
+                enabled: false,
+                controller: _receiverController,
+                decoration: InputDecoration(prefixText: 'ΠΡΟΣ    '),
+              ),
+              ListTile(
+                title: Text(_erganiCode),
+              ),
+              RaisedButton(
+                onPressed: () => null,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'ΑΠΟΣΤΟΛΗ',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    SizedBox(width: 10.0),
+                    Icon(
+                      Icons.send,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

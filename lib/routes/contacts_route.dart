@@ -46,7 +46,8 @@ class ContactsRouteState extends State<ContactsRoute> {
       ),
     );
     if (newEmployee is Employee) {
-      Scaffold.of(_scaffoldContext).showSnackBar(_successfulCreateSnackbar(_scaffoldContext));
+      Scaffold.of(_scaffoldContext)
+          .showSnackBar(_successfulCreateSnackbar(_scaffoldContext));
       _updateListView();
     }
   }
@@ -66,10 +67,12 @@ class ContactsRouteState extends State<ContactsRoute> {
       barrierDismissible: true,
       builder: (context) => DeleteDialog(employee: employee),
     );
-    int result = await _deleteEmployee(employeeToDelete);
-    if (result != 0) {
-      Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
-      _updateListView();
+    if (employeeToDelete is Employee) {
+      int result = await _deleteEmployee(employeeToDelete);
+      if (result != 0) {
+        Scaffold.of(context).showSnackBar(_successfulDeleteSnackbar(context));
+        _updateListView();
+      }
     }
   }
 
@@ -119,7 +122,9 @@ class ContactsRouteState extends State<ContactsRoute> {
     _scaffoldContext = context;
     return Container(
       // TODO: colors inhereted from theme.
-      color: _employeeList.length == 0 ? Colors.amber[200] : Theme.of(context).canvasColor,
+      color: _employeeList.length == 0
+          ? Colors.amber[200]
+          : Theme.of(context).canvasColor,
       child: Column(
         children: <Widget>[
           Expanded(

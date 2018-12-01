@@ -12,13 +12,32 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
- 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        // sliderTheme: SliderThemeData(
+        //   activeTrackColor: Colors.blueGrey[700],
+        //   inactiveTrackColor: Colors.blueGrey[400],
+        //   disabledActiveTrackColor: Colors.grey,
+        //   disabledInactiveTrackColor: Colors.grey[300],
+        //   activeTickMarkColor: Colors.teal[800],
+        //   inactiveTickMarkColor: Colors.teal[500],
+        //   disabledActiveTickMarkColor: Colors.grey,
+        //   disabledInactiveTickMarkColor: Colors.grey[300],
+        //   disabledThumbColor: Colors.grey,
+        //   overlayColor: Colors.teal[200],
+        //   showValueIndicator: ShowValueIndicator.onlyForDiscrete,
+        //   thumbColor: Colors.blueGrey[700],
+        //   thumbShape: PaddleSliderValueIndicatorShape(),
+        //   valueIndicatorColor: Colors.blueGrey[700],
+        //   valueIndicatorShape: PaddleSliderValueIndicatorShape(),
+        //   valueIndicatorTextStyle: TextStyle(color: Colors.white),
+        // ),
         brightness: Brightness.light,
+        disabledColor: Colors.blueGrey,
+        unselectedWidgetColor: Colors.grey,
         primaryColor: Colors.blueGrey[700],
         accentColor: Colors.teal[800],
         buttonColor: Colors.teal[800],

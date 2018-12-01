@@ -258,19 +258,12 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   }
 
   _buildWorkHours(context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        TimePickerButton(
-          workHour: _workStart,
-          onPressed: () => _selectWorkStart(context),
-        ),
-        Icon(Icons.arrow_forward),
-        TimePickerButton(
-          workHour: _workFinish,
-          onPressed: () => _selectWorkFinish(context),
-        ),
-      ],
+    return TimePickerButton(
+      isReset: false,
+      workStart: _workStart,
+      workFinish: _workFinish,
+      onSelectStartTime: () => _selectWorkStart(context),
+      onSelectFinishTime: () => _selectWorkFinish(context),
     );
   }
 

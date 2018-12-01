@@ -24,7 +24,7 @@ class DeleteDialog extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           child: Text(
             'ΑΚΥΡΟ',
-            style: TextStyle(color: Colors.blue),
+            // style: TextStyle(color: Colors.blue),
           ),
         ),
         FlatButton(

@@ -68,16 +68,17 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   void checkIfAfmExist() async {
     // For async validation
     if ((_isValidAfm || int.tryParse(_afmController.text) != null) &&
-        _afmController.text.length == 9) {
+        _afmController.text.length == 9 &&
+        _employee?.afm != _afmController.text) {
       var employeeList =
           await _erganiDatabase.getEmployeeByAfm(_afmController.text);
       if (employeeList.isNotEmpty) {
         _afmExist = true;
         this._formKey.currentState.validate();
-      }else{
-        _afmExist = false ;
-        this._formKey.currentState.validate();
       }
+    } else if (_afmController.text.length < 9 && _afmExist) {
+      _afmExist = false;
+      this._formKey.currentState.validate();
     }
   }
 

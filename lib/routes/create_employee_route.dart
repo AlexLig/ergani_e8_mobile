@@ -2,6 +2,7 @@ import 'package:ergani_e8/components/time_picker.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
+import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -121,72 +122,79 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  // FIRSTNAME Textfield
-                  Expanded(
-                      child: Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
-                    child: _buildFirstName(context),
-                  )),
-
-                  // LASTNAME textfield
-                  Expanded(
-                      child: Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: _buildLastName(context),
-                  )),
-                ],
-              ),
-              // VATNUMBER textfield
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: _buildVatNumber(context),
-              ),
-              // TIMETOSTART
-              _buildWorkHours(context),
+                padding: const EdgeInsets.only(top: 6.0),
+                child: Column(children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      // FIRSTNAME Textfield
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: _buildFirstName(context),
+                      )),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 30.0),
-                      child: RaisedButton(
-                        onPressed: () => this._submit(context),
-                        child: Text(
-                          'ΑΠΟΘΗΚΕΥΣΗ',
-                          style: TextStyle(fontSize: 16.0, color: Colors.white),
+                      // LASTNAME textfield
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: _buildLastName(context),
+                      )),
+                    ],
+                  ),
+                  // VATNUMBER textfield
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: _buildVatNumber(context),
+                  ),
+                  // TIMETOSTART
+                  _buildWorkHours(context),
+                ]),
+              ),
+              Column(children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 30.0),
+                        child: RaisedButton(
+                          onPressed: () => this._submit(context),
+                          child: Text(
+                            'ΑΠΟΘΗΚΕΥΣΗ',
+                            style:
+                                TextStyle(fontSize: 16.0, color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 2.0),
-                      child: FlatButton(
-                        // shape: OutlineInputBorder(
-                        //   borderSide:
-                        //       BorderSide(color: Theme.of(context).buttonColor),
-                        // ),
-                        child: Text(
-                          'ΑΚΥΡΟ',
-                          style:
-                              TextStyle(color: Theme.of(context).buttonColor),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 2.0),
+                        child: FlatButton(
+                          // shape: OutlineInputBorder(
+                          //   borderSide:
+                          //       BorderSide(color: Theme.of(context).buttonColor),
+                          // ),
+                          child: Text(
+                            'ΑΚΥΡΟ',
+                            style:
+                                TextStyle(color: Theme.of(context).buttonColor),
+                          ),
+                          onPressed: () => Navigator.pop(context),
                         ),
-                        onPressed: () => Navigator.pop(context),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ])
             ],
           ),
         ),
@@ -264,7 +272,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         } else if (afm.length != 9) {
           return 'Εισάγετε 9 αριθμούς';
         } else if (int.tryParse(afm) == null ||
-            int.tryParse(afm).abs().toString().length != 9) {
+            getIntLength(int.tryParse(afm)) != 9) {
           return ' Ο ΑΦΜ αποτελείται ΜΟΝΟ απο αριθμούς';
         }
       },

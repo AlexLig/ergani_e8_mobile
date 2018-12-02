@@ -18,7 +18,8 @@ class ContactsRoute extends StatefulWidget {
 class ContactsRouteState extends State<ContactsRoute> {
   BuildContext _scaffoldContext;
   ErganiDatabase _erganiDatabase = ErganiDatabase();
-  List<Employee> _employeeList = <Employee>[];
+  // List<Employee> _employeeList = <Employee>[];
+  List<Employee> _employeeList;
   Employer _employer;
 
   bool isLoading = false;
@@ -61,7 +62,6 @@ class ContactsRouteState extends State<ContactsRoute> {
     );
   }
 
-
   void _handleDelete(context, Employee employee) async {
     final employeeToDelete = await showDialog(
       context: context,
@@ -84,25 +84,8 @@ class ContactsRouteState extends State<ContactsRoute> {
   }
 
   Widget build(BuildContext context) {
-    print('_employeeList.length: ${_employeeList.length}');
-    print('_employeeList: $_employeeList');
-    print('_employeeList type: ${_employeeList is Map}');
-
     return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: FlexibleSpaceBar(
-          collapseMode: CollapseMode.pin,
-        ),
-        title: Text('Υπάλληλοι'),
-        actions: <Widget>[
-          IconButton(
-            tooltip: 'Αναζήτηση Υπαλλήλου',
-            icon: Icon(Icons.search),
-            // TODO: implement search
-            onPressed: () => null,
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text('Υπάλληλοι')),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _handleSubmit(context),
         child: Icon(Icons.person_add),
@@ -118,20 +101,19 @@ class ContactsRouteState extends State<ContactsRoute> {
     );
   }
 
-  /// Build helpers.
+  // Build helpers.
   _buildBody(context) {
     _scaffoldContext = context;
+    // _employeeList ?? _updateListView();
     return Container(
-      // TODO: colors inhereted from theme.
-      color: _employeeList.length == 0
-          ? Colors.amber[200]
-          : Theme.of(context).canvasColor,
       child: Column(
         children: <Widget>[
           Expanded(
-            child: _employeeList.length == 0
-                ? AddContactsIndicator()
-                : _buildEmployeeListView(),
+            child: _employeeList == null
+                ? Container()
+                : _employeeList.length == 0
+                    ? AddContactsIndicator()
+                    : _buildEmployeeListView(),
           ),
         ],
       ),
@@ -178,7 +160,6 @@ class ContactsRouteState extends State<ContactsRoute> {
         ],
       ),
       action: SnackBarAction(
-        textColor: Colors.blue,
         label: 'ΑΝΑΙΡΕΣΗ',
         onPressed: () async {
           await _erganiDatabase.createEmployee(_deletedEmployee);
@@ -192,16 +173,10 @@ class ContactsRouteState extends State<ContactsRoute> {
 
   SnackBar _successfulCreateSnackbar(context) {
     return SnackBar(
-      duration: Duration(seconds: 3),
-      content: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Icon(Icons.info),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text('Ο υπάλληλος αποθηκεύθηκε.'),
-          ),
-        ],
+      duration: Duration(seconds: 1),
+      content: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: Text('Ο υπάλληλος αποθηκεύθηκε.'),
       ),
     );
   }

@@ -22,17 +22,11 @@ class DeleteDialog extends StatelessWidget {
       actions: <Widget>[
         FlatButton(
           onPressed: () => Navigator.pop(context),
-          child: Text(
-            'ΑΚΥΡΟ',
-            // style: TextStyle(color: Colors.blue),
-          ),
+          child: Text('ΑΚΥΡΟ'),
         ),
         FlatButton(
           onPressed: () => Navigator.pop(context, this.employee),
-          child: Text(
-            'ΔΙΑΓΡΑΦΗ',
-            style: TextStyle(color: Colors.blue),
-          ),
+          child: Text('ΔΙΑΓΡΑΦΗ'),
         ),
       ],
     );

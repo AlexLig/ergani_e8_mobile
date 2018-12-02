@@ -17,7 +17,7 @@ class EmployeeListTile extends StatelessWidget {
   }) : super(key: key);
 
   String _getInitials() {
-    return this.employee.lastName[0].toUpperCase() + //TODO: FIX method was called on null (this.employee is null)
+    return this.employee.lastName[0].toUpperCase() +
         this.employee.firstName[0].toUpperCase();
   }
 
@@ -59,30 +59,35 @@ class EmployeeListTile extends StatelessWidget {
         ),
         trailing: onDelete != null && onEdit != null
             ? PopupMenuButton<ContactActions>(
-                onSelected: (ContactActions selection) {
-                  switch (selection) {
-                    case ContactActions.edit:
-                      this.onEdit();
-                      break;
-                    case ContactActions.delete:
-                      this.onDelete();
-                      break;
-                    default:
-                      print(selection);
-                  }
-                },
-                itemBuilder: (BuildContext context) =>
-                    <PopupMenuEntry<ContactActions>>[
-                      PopupMenuItem<ContactActions>(
-                        value: ContactActions.edit,
-                        child: Text('Επεξεργασία'),
-                      ),
-                      PopupMenuItem<ContactActions>(
-                        value: ContactActions.delete,
-                        child: Text('Διαγραφή'),
-                      )
-                    ],
-              )
+              icon: Icon(
+                Icons.more_vert,
+                size: 28.0,
+              ),
+              tooltip: 'Επιλογές',
+              onSelected: (ContactActions selection) {
+                switch (selection) {
+                  case ContactActions.edit:
+                    this.onEdit();
+                    break;
+                  case ContactActions.delete:
+                    this.onDelete();
+                    break;
+                  default:
+                    print(selection);
+                }
+              },
+              itemBuilder: (BuildContext context) =>
+                  <PopupMenuEntry<ContactActions>>[
+                    PopupMenuItem<ContactActions>(
+                      value: ContactActions.edit,
+                      child: Text('Επεξεργασία'),
+                    ),
+                    PopupMenuItem<ContactActions>(
+                      value: ContactActions.delete,
+                      child: Text('Διαγραφή'),
+                    )
+                  ],
+            )
             : null,
       ),
     );

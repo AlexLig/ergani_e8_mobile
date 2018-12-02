@@ -1,5 +1,4 @@
 import 'package:ergani_e8/components/employee_list_tile.dart';
-import 'package:ergani_e8/components/send_dialog.dart';
 import 'package:ergani_e8/components/time_picker.dart';
 import 'package:ergani_e8/e8/e8provider.dart';
 import 'package:ergani_e8/models/employee.dart';
@@ -32,9 +31,9 @@ class E8formState extends State<E8form> {
   void initState() {
     super.initState();
     _sliderValue = 0.5;
-    _receiverController.text = '54001';
-    _senderController.text = '${_employer.name}';
     _updateEmployer();
+    _receiverController.text = _employer?.smsNumber;
+    _senderController.text = _employer?.name;
   }
 
   void _updateEmployer() async {

@@ -1,4 +1,6 @@
 import 'package:ergani_e8/routes/contacts_route.dart';
+import 'package:ergani_e8/routes/create_employer_route.dart';
+import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -9,6 +11,21 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
+  ErganiDatabase _erganiDatabase = ErganiDatabase();
+  bool _employerExist;
+  @override
+  void initState() {
+    super.initState();
+    _checkEmployerExist();
+  }
+
+  _checkEmployerExist() async {
+    int employersCount = await _erganiDatabase.getEmployerCount();
+    setState(() {
+      _employerExist = employersCount > 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,7 +48,7 @@ class MyAppState extends State<MyApp> {
         cursorColor: Colors.blueGrey[700],
         // backgroundColor: Colors.
       ),
-      home: ContactsRoute(),
+      home: _employerExist ? ContactsRoute() : EmployerForm(),
     );
   }
 }

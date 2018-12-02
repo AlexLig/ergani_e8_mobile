@@ -273,7 +273,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     return TextFormField(
       keyboardType: TextInputType.number,
       focusNode: afmFocus,
-      textInputAction: TextInputAction.next,
+      textInputAction: TextInputAction.done,
       decoration: InputDecoration(
         labelText: 'ΑΦΜ',
         border: OutlineInputBorder(),
@@ -297,8 +297,6 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       onFieldSubmitted: (value) {
         if (int.tryParse(value) == null || value.length != 9)
           setState(() => _shouldValidateOnChangeAfm = true);
-        // else
-        // FocusScope.of(context).requestFocus();
       },
       controller: _afmController,
     );

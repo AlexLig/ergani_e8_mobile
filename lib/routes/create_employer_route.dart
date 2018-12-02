@@ -1,5 +1,6 @@
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/utilFunctions.dart';
+import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
 
 class EmployerForm extends StatefulWidget {
@@ -28,12 +29,13 @@ class EmployerFormState extends State<EmployerForm> {
   @override
   void initState() {
     super.initState();
-    _hasAme = false;
+
     _employer = widget.employer;
 
     _nameController.text = _employer?.name;
     _afmController.text = _employer?.afm;
     _ameController.text = _employer?.ame;
+    _hasAme = _employer?.ame ?? false;
   }
 
   @override
@@ -52,7 +54,7 @@ class EmployerFormState extends State<EmployerForm> {
       var employerToSubmit = Employer(
         _afmController.text,
         '${_nameController.text[0].toUpperCase()}${_nameController.text.substring(1)}',
-        _ameController.text,
+        _hasAme ? _ameController.text : null, //TODO: can pass null?
       );
 
       _nameController.clear();
@@ -66,33 +68,44 @@ class EmployerFormState extends State<EmployerForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Εταιρικό Προφίλ'),
+      ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              const Color(0xFF999999),
-              const Color(0xFFFFFFEE),
-            ], // whitish to gray
-            tileMode: TileMode.clamp,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   gradient: LinearGradient(
+        //     begin: Alignment.topCenter,
+        //     end: Alignment.bottomCenter,
+        //     colors: [
+        //       Colors.white,
+        //       Colors.white,
+        //       Colors.white,
+        //       Theme.of(context).canvasColor,
+        //       Theme.of(context).primaryColorLight,
+        //     ],
+        //     tileMode: TileMode.repeated,
+        // ),
+        // ),
         child: Form(
           key: _formKey,
-          child: Center(
+          child: Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                buildMainTextFields(),
-                buildAmeRow(),
-                OutlineButton(
-                    child: new Text('Επόμενο'),
-                    // TODO: navigate to next screen.
-                    onPressed: null,
-                    shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(30.0))),
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      buildMainTextFields(),
+                      buildAmeRow(),
+                      OutlineButton(
+                          child: new Text('Επόμενο'),
+                          // TODO: navigate to next screen.
+                          onPressed: null,
+                          shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(30.0))),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -130,33 +143,63 @@ class EmployerFormState extends State<EmployerForm> {
             if (_hasAme) FocusScope.of(context).requestFocus(_ameFocus);
           },
           maxLength: 9,
-          validator: (value) => validateAfm(value),
+          validator: (afm) {
+            if (afm.isEmpty) {
+              return 'Προσθέστε ΑΦΜ';
+            } else if (afm.length != 9) {
+              return 'Προσθέστε 9 αριθμούς';
+            } else if (int.tryParse(afm) == null ||
+                getIntLength(int.tryParse(afm)) != 9) {
+              return ' Ο ΑΦΜ αποτελείται ΜΟΝΟ απο αριθμούς';
+            }
+          },
         ),
       ],
     );
   }
 
-  Row buildAmeRow() => Row(
-        children: <Widget>[
-          Switch(
-            value: _hasAme,
-            onChanged: (bool newValue) {
-              setState(() {
-                _hasAme = newValue;
-              });
-            },
-          ),
-          // AME textfield
-          TextFormField(
-            decoration: InputDecoration(labelText: 'ΑΜΕ'),
+  buildAmeRow() {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
+
+      // mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Checkbox(
+          value: _hasAme,
+          onChanged: (val) => setState(() {
+                _hasAme = val;
+                // if(!_hasAme) _ameController.text = '';
+              }),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 34.0),
+          child: Text('AME', style: TextStyle(fontSize: 16.0)),
+        ),
+        Expanded(
+          child: TextFormField(
+            decoration: InputDecoration(hasFloatingPlaceholder: false, contentPadding: EdgeInsets.only(bottom: 5.0, top: 20.0)),
+            style:
+                TextStyle(color: _hasAme ? Colors.grey[900] : Colors.grey[300]),
             enabled: _hasAme,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
             focusNode: _ameFocus,
             controller: _ameController,
             maxLength: 10,
-            validator: (ame) => validateAme(ame),
+            validator: (ame) {
+              if (ame.isEmpty) {
+                return 'Προσθέστε ΑME';
+              } else if (ame.length != 10) {
+                return 'Προσθέστε 10 αριθμούς';
+              } else if (int.tryParse(ame) == null ||
+                  getIntLength(int.tryParse(ame)) != 10) {
+                return 'Ο ΑME αποτελείται ΜΟΝΟ απο αριθμούς';
+              }
+            },
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 }

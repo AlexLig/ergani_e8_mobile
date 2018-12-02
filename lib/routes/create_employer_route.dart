@@ -1,3 +1,4 @@
+import 'package:ergani_e8/components/buttons/submit_max_width.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +39,8 @@ class EmployerFormState extends State<EmployerForm> {
     _nameController.text = _employer?.name;
     _afmController.text = _employer?.afm;
     _ameController.text = _employer?.ame;
-    _receiverController.text = _employer?.smsNumber ??
-        '54001'; //TODO: Add receiver number to Employer
+    _receiverController.text =
+        _employer?.smsNumber ?? '54001'; //TODO: Add receiver number to Employer
 
     _hasAme = _employer?.ame ?? false;
   }
@@ -77,50 +78,81 @@ class EmployerFormState extends State<EmployerForm> {
       appBar: AppBar(
         title: Text('Εταιρικό Προφίλ'),
       ),
-      body: Container(
-        // decoration: BoxDecoration(
-        //   gradient: LinearGradient(
-        //     begin: Alignment.topCenter,
-        //     end: Alignment.bottomCenter,
-        //     colors: [
-        //       Colors.white,
-        //       Colors.white,
-        //       Colors.white,
-        //       Theme.of(context).canvasColor,
-        //       Theme.of(context).primaryColorLight,
-        //     ],
-        //     tileMode: TileMode.repeated,
-        // ),
-        // ),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    _buildMainTextFields(),
-                    _buildAmeField(),
-                    Divider(),
-                    Expanded(child:_buildReceiverField(context)),
-                  ],
+      body: Center(
+          child: ListView(children: [
+        Container(
+          // decoration: BoxDecoration(
+          //   gradient: LinearGradient(
+          //     begin: Alignment.topCenter,
+          //     end: Alignment.bottomCenter,
+          //     colors: [
+          //       Colors.white,
+          //       Colors.white,
+          //       Colors.white,
+          //       Theme.of(context).canvasColor,
+          //       Theme.of(context).primaryColorLight,
+          //     ],
+          //     tileMode: TileMode.repeated,
+          // ),
+          // ),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          children: <Widget>[
+                            _buildMainTextFields(),
+                            Divider(),
+                            _buildAmeField(),
+                            _buildSmsNumberField(context),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        children: <Widget>[
+                          OutlineButton(
+                            child: new Text('Επόμενο'),
+                            // TODO: navigate to next screen.
+                            onPressed: null,
+                            shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(30.0),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 30.0),
+                                  child: RaisedButton(
+                                    onPressed: () => print(context),
+                                    child: Text(
+                                      'ΑΠΟΘΗΚΕΥΣΗ',
+                                      style: TextStyle(
+                                          fontSize: 16.0, color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SubmitButtonMaxWidth(
+                            onSubmit: () => print('hi'),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Column(
-                children: <Widget>[
-                  OutlineButton(
-                      child: new Text('Επόμενο'),
-                      // TODO: navigate to next screen.
-                      onPressed: null,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0))),
-                ],
-              )
-            ],
+              ],
+            ),
           ),
         ),
-      ),
+      ])),
     );
   }
 
@@ -218,29 +250,36 @@ class EmployerFormState extends State<EmployerForm> {
     );
   }
 
-  _buildReceiverField(BuildContext context) {
+  _buildSmsNumberField(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Expanded(child: Text('Αποστολή SMS στο:')),
         Expanded(
-                  child: TextFormField(
+            child: Text(
+          'Αποστολή SMS στο:',
+          style: TextStyle(fontSize: 16.0),
+        )),
+        Expanded(
+          child: TextFormField(
             decoration: InputDecoration(
               suffixIcon: IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () => _employer?.smsNumber == '54001'
-                    ? _handleEditSmsNumber(context)
-                    : setState(() => _isReceiverEditable = true),
-              ),
+                  icon: Icon(Icons.edit),
+                  onPressed: () => _handleEditSmsNumber(context)
+                  // onPressed: () => _employer?.smsNumber == '54001'
+                  //     ? _handleEditSmsNumber(context)
+                  //     : setState(() => _isReceiverEditable = true),
+                  ),
             ),
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
-            enabled: _isReceiverEditable,
+            enabled: true,
             focusNode: _receiverFocus,
             controller: _receiverController,
-            validator: (number){
-              if(number.isEmpty) return 'Προσθέστε αριθμό παραλήπτη';
-              else return int.tryParse(number) ?? 'Εισάγετε μόνο αριθμούς';
+            validator: (number) {
+              if (number.isEmpty)
+                return 'Προσθέστε αριθμό παραλήπτη';
+              else
+                return int.tryParse(number) ?? 'Εισάγετε μόνο αριθμούς';
             },
           ),
         ),
@@ -249,32 +288,39 @@ class EmployerFormState extends State<EmployerForm> {
   }
 
   _handleEditSmsNumber(BuildContext context) async {
-    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    // SystemChannels.textInput.invokeMethod('TextInput.hide');
 
-    final _shouldEdit = await showDialog(
+    final allowEdit = await showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (context) => AlertDialog(
-            title: Text('Επεξεργασία αριθμού;'),
-            content: Column(
-              children: [
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Επεξεργασία αριθμού;'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
                 Text(
                     'Ο αριθμός 54001 ορίζεται από οδηγία του υπουργείου Εργασίας.'),
-                Text('Θέλετε να τον επεξεργαστείτε;'),
+                Text('\nΘέλετε να τον επεξεργαστείτε;'),
               ],
             ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('ΑΚΥΡΟ'),
-                onPressed: () => Navigator.pop(context),
-              ),
-              FlatButton(
-                child: Text('ΑΚΥΡΟ'),
-                onPressed: () => Navigator.pop(context, true),
-              ),
-            ],
           ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('ΑΚΥΡΟ'),
+              onPressed: () => Navigator.pop(context),
+            ),
+            FlatButton(
+              child: Text('ΕΠΕΞΕΡΓΑΣΙΑ'),
+              onPressed: () => Navigator.pop(context, true),
+            ),
+          ],
+        );
+      },
     );
-    if (_shouldEdit) setState(() => _isReceiverEditable = true);
+    if (allowEdit != null) {
+      setState(() => _isReceiverEditable = true);
+      FocusScope.of(context).requestFocus(_receiverFocus);
+    }
   }
 }

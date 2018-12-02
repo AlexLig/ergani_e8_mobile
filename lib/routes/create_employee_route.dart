@@ -1,3 +1,5 @@
+import 'package:ergani_e8/components/buttons/cancel_max_width.dart';
+import 'package:ergani_e8/components/buttons/submit_max_width.dart';
 import 'package:ergani_e8/components/time_picker.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/utilFunctions.dart';
@@ -178,44 +180,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                 ]),
               ),
               Column(children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 30.0),
-                        child: RaisedButton(
-                          onPressed: () => this._submit(context),
-                          child: Text(
-                            'ΑΠΟΘΗΚΕΥΣΗ',
-                            style:
-                                TextStyle(fontSize: 16.0, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                SubmitButtonMaxWidth(
+                  onSubmit: () => _submit(context),
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 2.0),
-                        child: FlatButton(
-                          // shape: OutlineInputBorder(
-                          //   borderSide:
-                          //       BorderSide(color: Theme.of(context).buttonColor),
-                          // ),
-                          child: Text(
-                            'ΑΚΥΡΟ',
-                            style:
-                                TextStyle(color: Theme.of(context).buttonColor),
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                CancelButtonMaxWidth(),
               ])
             ],
           ),

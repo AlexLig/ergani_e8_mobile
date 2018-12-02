@@ -16,15 +16,21 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _checkEmployerExist();
-  }
 
-  _checkEmployerExist() async {
-    int employersCount = await _erganiDatabase.getEmployerCount();
-    setState(() {
-      _employerExist = employersCount > 0;
+    _erganiDatabase.getEmployerCount().then((employersCount) {
+      setState(() {
+        _employerExist = employersCount > 0;
+      });
     });
   }
+
+  // _checkEmployerExistAndBuild() async {
+  //   int employersCount = await _erganiDatabase.getEmployerCount();
+  //   setState(() {
+  //     _employerExist = employersCount > 0;
+  //   });
+  //   return await _erganiDatabase.getEmployerCount() > 0 ?
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +54,18 @@ class MyAppState extends State<MyApp> {
         cursorColor: Colors.blueGrey[700],
         // backgroundColor: Colors.
       ),
-      home: _employerExist ? ContactsRoute() : EmployerForm(),
+      home: FutureBuilder(
+        future: _erganiDatabase.getEmployerCount(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data > 0)
+              return ContactsRoute();
+            else
+              return EmployerForm();
+          } else
+            return Container(color: Theme.of(context).canvasColor,);
+        },
+      ),
     );
   }
 }

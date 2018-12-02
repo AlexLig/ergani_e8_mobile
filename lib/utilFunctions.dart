@@ -1,5 +1,6 @@
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
+import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
 
 TimeOfDay addToTimeOfDay(TimeOfDay timeOfDay, {int hour = 0, int minute = 0}) =>
@@ -52,17 +53,19 @@ validateAfm(afm) {
     return 'Προσθέστε ΑΦΜ';
   } else if (afm.length != 9) {
     return 'Προσθέστε 9 αριθμούς';
-  } else if (int.tryParse(afm) == null) {
+  } else if (int.tryParse(afm) == null ||
+            getIntLength(int.tryParse(afm)) != 9) {
     return ' Ο ΑΦΜ αποτελείται ΜΟΝΟ απο αριθμούς';
   }
 }
 
-validateAme(ame) {
+validateAme(String ame) {
   if (ame.isEmpty) {
     return 'Προσθέστε ΑME';
   } else if (ame.length != 10) {
     return 'Προσθέστε 10 αριθμούς';
-  } else if (int.tryParse(ame) == null) {
+  } else if (int.tryParse(ame) == null ||
+            getIntLength(int.tryParse(ame)) != 10) {
     return 'Ο ΑME αποτελείται ΜΟΝΟ απο αριθμούς';
   }
 }

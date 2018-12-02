@@ -1,3 +1,4 @@
+import 'package:ergani_e8/routes/create_employer_route.dart';
 import 'package:flutter/material.dart';
 
 class ContactsDrawer extends StatelessWidget {
@@ -34,7 +35,13 @@ class ContactsDrawer extends StatelessWidget {
             ),
           ),
           _buildDrawerTile(
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EmployerForm()),
+              );
+            },
             icon: Icon(Icons.settings),
             title: 'Ρυθμίσεις',
           ),

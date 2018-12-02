@@ -23,13 +23,13 @@ class TimePickerButton extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         _buildButton(
-          workHour: this.workStart,
+          workHour: isReset ? TimeOfDay(hour: 00, minute: 00) : this.workStart,
           onPressed: isReset ? null : onSelectStartTime,
         ),
         Icon(Icons.arrow_forward,
             color: isReset ? Colors.grey[400] : Colors.black),
         _buildButton(
-          workHour: this.workFinish,
+          workHour: isReset ? TimeOfDay(hour: 00, minute: 00) :this.workFinish,
           onPressed: isReset ? null : onSelectFinishTime,
         ),
       ],

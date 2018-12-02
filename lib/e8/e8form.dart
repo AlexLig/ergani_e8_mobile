@@ -1,5 +1,4 @@
 import 'package:ergani_e8/components/employee_list_tile.dart';
-import 'package:ergani_e8/components/employer_list_tile.dart';
 import 'package:ergani_e8/components/send_dialog.dart';
 import 'package:ergani_e8/components/time_picker.dart';
 import 'package:ergani_e8/e8/e8provider.dart';
@@ -118,8 +117,8 @@ class E8formState extends State<E8form> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text('Η ώρα λήξης '),
-                    Text('πρέπει να είναι μετά της έναρξης'),
+                    Text('Η ώρα λήξης πρέπει να είναι'),
+                    Text('μετά την ώρα έναρξης'),
                   ],
                 ),
               ],
@@ -182,7 +181,7 @@ class E8formState extends State<E8form> {
                       title: Text(
                         'Ακύρωση προηγούμενης υποβολής',
                         style: TextStyle(
-                          color: _isReset ? Colors.black : Colors.grey[400],
+                          color: _isReset ? Colors.grey[900] : Colors.grey[400],
                         ),
                       ),
                     ),
@@ -278,6 +277,7 @@ class E8formState extends State<E8form> {
               ),
               ListTile(
                 title: Text(_erganiCode),
+                leading: Icon(Icons.message),
               ),
               RaisedButton(
                 onPressed: () => null,

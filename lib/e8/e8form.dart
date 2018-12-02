@@ -266,6 +266,7 @@ class E8formState extends State<E8form> {
               ),
               ListTile(
                 title: Text(_erganiCode),
+                leading: Icon(Icons.message),
               ),
               RaisedButton(
                 onPressed: () => null,

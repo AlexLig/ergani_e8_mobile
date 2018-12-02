@@ -2,6 +2,7 @@ import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class EmployerForm extends StatefulWidget {
   final Employer employer;
@@ -17,14 +18,17 @@ class EmployerFormState extends State<EmployerForm> {
 
   Employer _employer;
   bool _hasAme;
+  var _isReceiverEditable = false;
 
   var _nameFocus = FocusNode();
   var _afmFocus = FocusNode();
   var _ameFocus = FocusNode();
+  var _receiverFocus = FocusNode();
 
   var _nameController = TextEditingController();
   var _afmController = TextEditingController();
   var _ameController = TextEditingController();
+  var _receiverController = TextEditingController();
 
   @override
   void initState() {
@@ -35,6 +39,9 @@ class EmployerFormState extends State<EmployerForm> {
     _nameController.text = _employer?.name;
     _afmController.text = _employer?.afm;
     _ameController.text = _employer?.ame;
+    _receiverController.text = _employer?.receiverNumber ??
+        '54001'; //TODO: Add receiver number to Employer
+
     _hasAme = _employer?.ame ?? false;
   }
 
@@ -88,33 +95,36 @@ class EmployerFormState extends State<EmployerForm> {
         // ),
         child: Form(
           key: _formKey,
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      buildMainTextFields(),
-                      buildAmeRow(),
-                      OutlineButton(
-                          child: new Text('Επόμενο'),
-                          // TODO: navigate to next screen.
-                          onPressed: null,
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(30.0))),
-                    ],
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    _buildMainTextFields(),
+                    _buildAmeField(),
+                    Divider(),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Column(
+                children: <Widget>[
+                  OutlineButton(
+                      child: new Text('Επόμενο'),
+                      // TODO: navigate to next screen.
+                      onPressed: null,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0))),
+                ],
+              )
+            ],
           ),
         ),
       ),
     );
   }
 
-  Column buildMainTextFields() {
+  _buildMainTextFields() {
     return Column(
       children: <Widget>[
         // NAME Textfield
@@ -158,7 +168,7 @@ class EmployerFormState extends State<EmployerForm> {
     );
   }
 
-  buildAmeRow() {
+  _buildAmeField() {
     return Row(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -178,12 +188,17 @@ class EmployerFormState extends State<EmployerForm> {
         ),
         Expanded(
           child: TextFormField(
-            decoration: InputDecoration(hasFloatingPlaceholder: false, contentPadding: EdgeInsets.only(bottom: 5.0, top: 20.0)),
+            decoration: InputDecoration(
+              hasFloatingPlaceholder: false,
+              contentPadding: EdgeInsets.only(bottom: 5.0, top: 20.0),
+            ),
             style:
                 TextStyle(color: _hasAme ? Colors.grey[900] : Colors.grey[300]),
             enabled: _hasAme,
             keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.done,
+            textInputAction: _isReceiverEditable
+                ? TextInputAction.next
+                : TextInputAction.done,
             focusNode: _ameFocus,
             controller: _ameController,
             maxLength: 10,
@@ -201,5 +216,62 @@ class EmployerFormState extends State<EmployerForm> {
         ),
       ],
     );
+  }
+
+  _buildReceiverField(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Text('Αποστολή SMS στο:'),
+        TextFormField(
+          decoration: InputDecoration(
+            suffixIcon: IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () => _employer?.receiverNumber == '54001'
+                  ? _handleEditReceiverNumber(context)
+                  : setState(() => _isReceiverEditable = true),
+            ),
+          ),
+          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.done,
+          enabled: _isReceiverEditable,
+          focusNode: _receiverFocus,
+          controller: _receiverController,
+          validator: (number){
+            if(number.isEmpty) return 'Προσθέστε αριθμό παραλήπτη';
+            else return int.tryParse(number) ?? 'Εισάγετε μόνο αριθμούς';
+          },
+        ),
+      ],
+    );
+  }
+
+  _handleEditReceiverNumber(BuildContext context) async {
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+
+    final _shouldEdit = await showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => AlertDialog(
+            title: Text('Επεξεργασία αριθμού;'),
+            content: Column(
+              children: [
+                Text(
+                    'Ο αριθμός 54001 ορίζεται από οδηγία του υπουργείου Εργασίας.'),
+                Text('Θέλετε να τον επεξεργαστείτε;'),
+              ],
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('ΑΚΥΡΟ'),
+                onPressed: () => Navigator.pop(context),
+              ),
+              FlatButton(
+                child: Text('ΑΚΥΡΟ'),
+                onPressed: () => Navigator.pop(context, true),
+              ),
+            ],
+          ),
+    );
+    if (_shouldEdit) setState(() => _isReceiverEditable = true);
   }
 }

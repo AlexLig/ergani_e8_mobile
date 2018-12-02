@@ -7,6 +7,7 @@ import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:sms/sms.dart';
 
 class E8form extends StatefulWidget {
   @override
@@ -45,21 +46,88 @@ class E8formState extends State<E8form> {
   }
 
   // TODO: Implement send SMS. Remove Dialog.
-  _handleSend(
-      {scaffoldContext, String message, @required String number}) async {
-    final shouldSend = await showDialog(
-      context: scaffoldContext,
-      barrierDismissible: true,
-      builder: (context) => SendDialog(
-            isReset: _isReset,
-            erganiCode: message,
-            number: number,
-          ),
-    );
-    if (shouldSend == true) sendSms(message: message, number: number);
+  _handleSend(scaffoldContext) async {
+    if (_employer != null) {
+      SmsSender sender = SmsSender();
+      String address = _employer.smsNumber;
+      SmsMessage message = SmsMessage(address, _erganiCode);
+      message.onStateChanged.listen((state) {
+        if (state == SmsMessageState.Sent) {
+          _sendingSmsSnackBar(scaffoldContext,'Αποστολή μηνύματος...');
+        } else if (state == SmsMessageState.Delivered) {
+          _sucessSmsSnackBar(
+              scaffoldContext, 'Το μήνυμα παραδόθηκε με επιτυχία');
+        } else if (state == SmsMessageState.Fail) {
+          _warningSmsSnackBar(scaffoldContext, 'Αποτυχία αποστολής μηνύματος');
+        }
+      });
+      sender.sendSms(message);
+    } else {
+      _warningSmsSnackBar(
+          scaffoldContext, 'Κάτι δεν πήγε καλά. Ξαναπροσπαθήστε');
+    }
   }
 
-  // TODO: fix  pop snackbar if u choose time b4 time.now
+  void _sendingSmsSnackBar(scaffoldContext, String message) {
+    Scaffold.of(scaffoldContext).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 1),
+        content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Text(message),
+            ]),
+      ),
+    );
+  }
+
+  void _sucessSmsSnackBar(scaffoldContext, String message) {
+    Scaffold.of(scaffoldContext).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 1),
+        backgroundColor: Colors.green,
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Icon(Icons.check),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _warningSmsSnackBar(scaffoldContext, String message) {
+    Scaffold.of(scaffoldContext).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 1),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Icon(Icons.warning),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<Null> _selectStartTime(BuildContext context) async {
     final TimeOfDay picked = await showTimePicker(
       context: context,
@@ -280,7 +348,7 @@ class E8formState extends State<E8form> {
                 leading: Icon(Icons.message),
               ),
               RaisedButton(
-                onPressed: () => null,
+                onPressed: () => _handleSend(context),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,

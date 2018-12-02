@@ -94,7 +94,7 @@ class ErganiDatabase {
     return result;
   }
 
-  Future<List<Map<String, dynamic>>> getEmployeeByAfm(String afm) async {
+  Future<List<Map<String, dynamic>>> getEmployeeMapListByAfm(String afm) async {
     Database db = await this.db;
     var result =
         db.rawQuery('SELECT * FROM $employeeTable WHERE $colAfm = $afm');
@@ -206,40 +206,37 @@ class ErganiDatabase {
     return result;
   }
 
-  Future<List<Map<String, dynamic>>> getEmployerByAfm(String afm) async {
+  Future<List<Map<String, dynamic>>> getEmployersMapListByAfm(String afm) async {
     Database db = await this.db;
-    var result =
-        db.rawQuery('SELECT * FROM $employerTable WHERE $colEmployerAfm = $afm');
+    var result = db
+        .rawQuery('SELECT * FROM $employerTable WHERE $colEmployerAfm = $afm');
     return result;
   }
-  
-  Future<List<Map<String, dynamic>>> getNewestEmployer() async {
+
+  Future<Employer> getNewestEmployer() async {
     Database db = await this.db;
-    var result =
-        db.rawQuery('SELECT * FROM $employerTable ORDER BY $colEmployerId DESC LIMIT 1');
-    return result;
+    var mapList = await db.rawQuery(
+        'SELECT * FROM $employerTable ORDER BY $colEmployerId DESC LIMIT 1');
+    var list = mapList.map((mapObj) => Employer.fromMap(mapObj)).toList();
+
+    return list.first;
   }
 
   /// Create operation. Post an Employee in the database.
   Future<int> createEmployer(Employer employer) async {
     var result;
     // if (_validateEmployer(employer)) {
-      Database db = await this.db;
-      Map<String, dynamic> map = employer.toMap();
+    Database db = await this.db;
+    Map<String, dynamic> map = employer.toMap();
 
-      result = await db.transaction((txn) async {
-        int employerID = await txn.rawInsert(
-            'INSERT INTO $employerTable ($colEmployerName, $colEmployerAfm, $colEmployerAme, $colSmsReceiver)VALUES(?, ?, ?, ?)',
-            [
-              map['name'],
-              map['afm'],
-              map['ame'],
-              map['sms_number']
-            ]);
-        print('employer ID: $employerID');
-      });
-      print('inserted $result');
-      return result;
+    result = await db.transaction((txn) async {
+      int employerID = await txn.rawInsert(
+          'INSERT INTO $employerTable ($colEmployerName, $colEmployerAfm, $colEmployerAme, $colSmsReceiver)VALUES(?, ?, ?, ?)',
+          [map['name'], map['afm'], map['ame'], map['sms_number']]);
+      print('employer ID: $employerID');
+    });
+    print('inserted $result');
+    return result;
     // } else
     //   return result = 0;
   }
@@ -267,5 +264,4 @@ class ErganiDatabase {
     return Sqflite.firstIntValue(
         await db.rawQuery('SELECT COUNT (*) from $employerTable'));
   }
-
 }

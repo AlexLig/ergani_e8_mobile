@@ -6,6 +6,7 @@ import 'package:ergani_e8/e8/e8provider.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/utilFunctions.dart';
+import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 
 class E8form extends StatefulWidget {
@@ -14,11 +15,13 @@ class E8form extends StatefulWidget {
 }
 
 class E8formState extends State<E8form> {
+  ErganiDatabase _erganiDatabase = ErganiDatabase();
+  Employer _employer;
+  Employee _employee;
+
   double _sliderValue;
   TimeOfDay _overtimeStart;
   TimeOfDay _overtimeFinish;
-  Employer _employer = Employer('123456789', 'ΚυρΜπαμπηςΑΕ', '0123456789');
-  Employee _employee;
   String _erganiCode;
   bool _isFirstBuild = true;
   bool _isReset = false;
@@ -31,6 +34,15 @@ class E8formState extends State<E8form> {
     _sliderValue = 0.5;
     _receiverController.text = '54001';
     _senderController.text = '${_employer.name}';
+    _updateEmployer();
+  }
+
+  void _updateEmployer() async {
+    final Employer employer = await _erganiDatabase.getNewestEmployer();
+
+    setState(() {
+      _employer = employer;
+    });
   }
 
   // TODO: Implement send SMS. Remove Dialog.
@@ -47,7 +59,8 @@ class E8formState extends State<E8form> {
     );
     if (shouldSend == true) sendSms(message: message, number: number);
   }
- // TODO: fix  pop snackbar if u choose time b4 time.now
+
+  // TODO: fix  pop snackbar if u choose time b4 time.now
   Future<Null> _selectStartTime(BuildContext context) async {
     final TimeOfDay picked = await showTimePicker(
       context: context,
@@ -67,10 +80,8 @@ class E8formState extends State<E8form> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text(
-                        'Η δήλωση υπερωρίας '),
-                    Text(
-                        'πρέπει να γίνεται ΠΡΙΝ την έναρξη της!'),
+                    Text('Η δήλωση υπερωρίας '),
+                    Text('πρέπει να γίνεται ΠΡΙΝ την έναρξη της!'),
                   ],
                 ),
               ],
@@ -107,10 +118,8 @@ class E8formState extends State<E8form> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text(
-                        'Η ώρα λήξης '),
-                    Text(
-                        'πρέπει να είναι μετά της έναρξης'),
+                    Text('Η ώρα λήξης '),
+                    Text('πρέπει να είναι μετά της έναρξης'),
                   ],
                 ),
               ],

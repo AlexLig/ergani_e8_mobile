@@ -1,4 +1,5 @@
 import 'package:ergani_e8/models/employee.dart';
+import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -20,6 +21,13 @@ class ErganiDatabase {
   String colAfm = 'afm';
   String colWorkStart = 'work_start';
   String colWorkFinish = 'work_finish';
+
+  String employerTable = 'employer';
+  String colEmployerId = 'id';
+  String colEmployerName = 'name';
+  String colEmployerAfm = 'afm';
+  String colEmployerAme = 'ame';
+  String colSmsReceiver = 'sms_number';
 
   /// Named constrcutor to create instance.
   ErganiDatabase._internal();
@@ -52,6 +60,15 @@ class ErganiDatabase {
       $colAfm TEXT NOT NULL UNIQUE, 
       $colWorkStart TEXT NOT NULL, 
       $colWorkFinish TEXT NOT NULL
+    )
+    ''');
+    await db.execute('''
+    CREATE TABLE $employeeTable (
+      $colId INTEGER PRIMARY KEY AUTOINCREMENT, 
+      $colEmployerName TEXT NOT NULL, 
+      $colEmployerAfm TEXT NOT NULL,  
+      $colEmployerAme TEXT, 
+      $colSmsReceiver TEXT NOT NULL
     )
     ''');
   }
@@ -158,7 +175,7 @@ class ErganiDatabase {
 //TODO: validations b4 writing into db. 1) upper limit for work time 2) afm lenght
   bool _validateEmployee(Employee employee) {
     return int.tryParse(employee.afm) != null &&
-        employee.afm.length == 9 &&
+        int.tryParse(employee.afm).abs().toString().length == 9 &&
         employee.firstName.length < 200 &&
         employee.lastName.length < 200 &&
         employee.workFinish is TimeOfDay &&
@@ -166,4 +183,89 @@ class ErganiDatabase {
         timeToMinutes(employee.workFinish) < 1440 &&
         isLater(employee.workFinish, employee.workStart);
   }
+
+  // Employer Table operations
+  /// Read operation. Returns a List of all Employers in the database.
+  Future<List<Employer>> getEmployerList() async {
+    var employerMapList = await _getEmployerMapList();
+
+    var list =
+        employerMapList.map((mapObj) => Employer.fromMap(mapObj)).toList();
+    print('Formatted list: $list');
+    return list;
+  }
+
+  /// Retrieve all entries in employerTable as a List of Maps.
+  Future<List<Map<String, dynamic>>> _getEmployerMapList() async {
+    Database db = await this.db;
+
+    var result = await db
+        .rawQuery('SELECT * FROM $employerTable ORDER BY $colEmployerName ASC');
+
+    print('retrieved $result');
+    return result;
+  }
+
+  Future<List<Map<String, dynamic>>> getEmployerByAfm(String afm) async {
+    Database db = await this.db;
+    var result =
+        db.rawQuery('SELECT * FROM $employerTable WHERE $colEmployerAfm = $afm');
+    return result;
+  }
+  
+  Future<List<Map<String, dynamic>>> getNewestEmployer() async {
+    Database db = await this.db;
+    var result =
+        db.rawQuery('SELECT * FROM $employerTable ORDER BY $colEmployerId DESC LIMIT 1');
+    return result;
+  }
+
+  /// Create operation. Post an Employee in the database.
+  Future<int> createEmployer(Employer employer) async {
+    var result;
+    // if (_validateEmployer(employer)) {
+      Database db = await this.db;
+      Map<String, dynamic> map = employer.toMap();
+
+      result = await db.transaction((txn) async {
+        int employerID = await txn.rawInsert(
+            'INSERT INTO $employerTable ($colEmployerName, $colEmployerAfm, $colEmployerAme, $colSmsReceiver)VALUES(?, ?, ?, ?)',
+            [
+              map['name'],
+              map['afm'],
+              map['ame'],
+              map['sms_number']
+            ]);
+        print('employer ID: $employerID');
+      });
+      print('inserted $result');
+      return result;
+    // } else
+    //   return result = 0;
+  }
+
+  /// Delete operation. Delete an Employer from the database.
+  Future<int> deleteEmployer(Employer employer) async {
+    Database db = await this.db;
+    Map<String, dynamic> map = employer.toMap();
+
+    var result = await db.rawDelete('''
+      DELETE
+      FROM
+        $employerTable
+      WHERE
+       $colEmployerId = ${map['id']}
+    ''');
+
+    print('deleted $result');
+    return result;
+  }
+
+  Future<int> getEmployerCount() async {
+    Database db = await this.db;
+
+    return Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT (*) from $employerTable'));
+  }
+
 }

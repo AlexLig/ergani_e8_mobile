@@ -63,7 +63,7 @@ class ErganiDatabase {
     )
     ''');
     await db.execute('''
-    CREATE TABLE $employeeTable (
+    CREATE TABLE $employerTable (
       $colId INTEGER PRIMARY KEY AUTOINCREMENT, 
       $colEmployerName TEXT NOT NULL, 
       $colEmployerAfm TEXT NOT NULL,  

@@ -1,5 +1,4 @@
 import 'package:ergani_e8/models/employer.dart';
-import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,7 +38,7 @@ class EmployerFormState extends State<EmployerForm> {
     _nameController.text = _employer?.name;
     _afmController.text = _employer?.afm;
     _ameController.text = _employer?.ame;
-    _receiverController.text = _employer?.receiverNumber ??
+    _receiverController.text = _employer?.smsNumber ??
         '54001'; //TODO: Add receiver number to Employer
 
     _hasAme = _employer?.ame ?? false;
@@ -104,6 +103,7 @@ class EmployerFormState extends State<EmployerForm> {
                     _buildMainTextFields(),
                     _buildAmeField(),
                     Divider(),
+                    Expanded(child:_buildReceiverField(context)),
                   ],
                 ),
               ),
@@ -220,32 +220,35 @@ class EmployerFormState extends State<EmployerForm> {
 
   _buildReceiverField(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Text('Αποστολή SMS στο:'),
-        TextFormField(
-          decoration: InputDecoration(
-            suffixIcon: IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () => _employer?.receiverNumber == '54001'
-                  ? _handleEditReceiverNumber(context)
-                  : setState(() => _isReceiverEditable = true),
+        Expanded(child: Text('Αποστολή SMS στο:')),
+        Expanded(
+                  child: TextFormField(
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () => _employer?.smsNumber == '54001'
+                    ? _handleEditSmsNumber(context)
+                    : setState(() => _isReceiverEditable = true),
+              ),
             ),
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
+            enabled: _isReceiverEditable,
+            focusNode: _receiverFocus,
+            controller: _receiverController,
+            validator: (number){
+              if(number.isEmpty) return 'Προσθέστε αριθμό παραλήπτη';
+              else return int.tryParse(number) ?? 'Εισάγετε μόνο αριθμούς';
+            },
           ),
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.done,
-          enabled: _isReceiverEditable,
-          focusNode: _receiverFocus,
-          controller: _receiverController,
-          validator: (number){
-            if(number.isEmpty) return 'Προσθέστε αριθμό παραλήπτη';
-            else return int.tryParse(number) ?? 'Εισάγετε μόνο αριθμούς';
-          },
         ),
       ],
     );
   }
 
-  _handleEditReceiverNumber(BuildContext context) async {
+  _handleEditSmsNumber(BuildContext context) async {
     SystemChannels.textInput.invokeMethod('TextInput.hide');
 
     final _shouldEdit = await showDialog(

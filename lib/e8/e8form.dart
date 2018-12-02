@@ -170,7 +170,7 @@ class E8formState extends State<E8form> {
                       title: Text(
                         'Ακύρωση προηγούμενης υποβολής',
                         style: TextStyle(
-                          color: _isReset ? Colors.black : Colors.grey[400],
+                          color: _isReset ? Colors.grey[900] : Colors.grey[400],
                         ),
                       ),
                     ),

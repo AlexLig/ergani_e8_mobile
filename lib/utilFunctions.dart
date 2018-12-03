@@ -48,24 +48,3 @@ void sendSms({@required message, @required number}) {
   print('$message send to $number');
 }
 
-validateAfm(afm) {
-  if (afm.isEmpty) {
-    return 'Προσθέστε ΑΦΜ';
-  } else if (afm.length != 9) {
-    return 'Προσθέστε 9 αριθμούς';
-  } else if (int.tryParse(afm) == null ||
-            getIntLength(int.tryParse(afm)) != 9) {
-    return ' Ο ΑΦΜ αποτελείται ΜΟΝΟ απο αριθμούς';
-  }
-}
-
-validateAme(String ame) {
-  if (ame.isEmpty) {
-    return 'Προσθέστε ΑME';
-  } else if (ame.length != 10) {
-    return 'Προσθέστε 10 αριθμούς';
-  } else if (int.tryParse(ame) == null ||
-            getIntLength(int.tryParse(ame)) != 10) {
-    return 'Ο ΑME αποτελείται ΜΟΝΟ απο αριθμούς';
-  }
-}

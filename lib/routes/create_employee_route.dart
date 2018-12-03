@@ -142,7 +142,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                   physics: BouncingScrollPhysics(),
                   children: <Widget>[
                     _buildNamesListTile(),
-                    _buildAfmField(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 0.0),
+                      child: _buildAfmField(),
+                    ),
                     _buildWorkHours(),
                   ],
                 ),
@@ -267,12 +270,35 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   _buildWorkHours() {
     return ListTile(
-      title: TimePickerButton(
-        isReset: false,
-        workStart: _workStart,
-        workFinish: _workFinish,
-        onSelectStartTime: () => _selectWorkStart(context),
-        onSelectFinishTime: () => _selectWorkFinish(context),
+      title: DecoratedBox(
+        decoration: BoxDecoration(
+          // color: Colors.grey[100],
+          border: Border.all(color: Colors.grey[300]),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  'Ωράριο Εργασίας',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              ListTile(
+                title: TimePickerButton(
+                  isReset: false,
+                  workStart: _workStart,
+                  workFinish: _workFinish,
+                  onSelectStartTime: () => _selectWorkStart(context),
+                  onSelectFinishTime: () => _selectWorkFinish(context),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

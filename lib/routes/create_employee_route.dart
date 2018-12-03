@@ -54,19 +54,6 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     _workFinish = _employee?.workFinish ?? TimeOfDay(hour: 16, minute: 00);
 
     _afmController.addListener(checkIfAfmExist);
-    // firstNameFocus.addListener(() {
-    //   if (!firstNameFocus.hasFocus) {
-    //     setState(() => _shouldValidateOnChangeFirstName = true);
-    //   }
-    // });
-    // lastNameFocus.addListener(() {
-    //   if (!lastNameFocus.hasFocus)
-    //     setState(() => _shouldValidateOnChangeLastName = true);
-    // });
-    // afmFocus.addListener(() {
-    //   if (!afmFocus.hasFocus)
-    //     setState(() => _shouldValidateOnChangeAfm = true);
-    // });
   }
 
   void checkIfAfmExist() async {
@@ -91,9 +78,11 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     firstNameFocus.dispose();
     lastNameFocus.dispose();
     afmFocus.dispose();
+
     _firstNameController.dispose();
     _lastNameController.dispose();
     _afmController.dispose();
+
     super.dispose();
   }
 
@@ -142,57 +131,47 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       ),
       body: Form(
         key: _formKey,
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 6.0),
-                child: Column(children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      // FIRSTNAME Textfield
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: _buildFirstName(context),
-                      )),
-
-                      // LASTNAME textfield
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: _buildLastName(context),
-                      )),
-                    ],
-                  ),
-                  // VATNUMBER textfield
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: _buildVatNumber(context),
-                  ),
-                  // TIMETOSTART
-                  _buildWorkHours(context),
-                ]),
-              ),
-              Column(children: [
-                SubmitButtonMaxWidth(
-                  onSubmit: () => _submit(context),
+        child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 14.0),
+                child: ListView(
+                  physics: BouncingScrollPhysics(),
+                  children: <Widget>[
+                    _buildNamesListTile(),
+                    _buildAfmField(),
+                    _buildWorkHours(),
+                  ],
                 ),
+              ),
+            ),
+            Column(
+              children: [
+                SubmitButtonMaxWidth(onSubmit: () => _submit(context)),
                 CancelButtonMaxWidth(),
-              ])
-            ],
-          ),
+              ],
+            )
+          ],
         ),
       ),
     );
   }
 
-  _buildFirstName(context) {
+  _buildNamesListTile() {
+    return ListTile(
+        title: Row(
+      children: <Widget>[
+        Expanded(child: _buildFirstName()),
+        SizedBox(width: 8.0),
+        Expanded(child: _buildLastName()),
+      ],
+    ));
+  }
+
+  _buildFirstName() {
     return TextFormField(
       keyboardType: TextInputType.text,
       textCapitalization: TextCapitalization.sentences,
@@ -221,7 +200,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     );
   }
 
-  TextFormField _buildLastName(context) {
+  _buildLastName() {
     return TextFormField(
       keyboardType: TextInputType.text,
       textCapitalization: TextCapitalization.sentences,
@@ -246,47 +225,55 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     );
   }
 
-  TextFormField _buildVatNumber(context) {
-    return TextFormField(
-      keyboardType: TextInputType.number,
-      focusNode: afmFocus,
-      textInputAction: TextInputAction.done,
-      decoration: InputDecoration(
-        labelText: 'ΑΦΜ',
-        border: OutlineInputBorder(),
-        prefixIcon: Icon(Icons.work),
+  _buildAfmField() {
+    final length = 9;
+    return ListTile(
+      title: TextFormField(
+        keyboardType: TextInputType.number,
+        focusNode: afmFocus,
+        textInputAction: TextInputAction.done,
+        decoration: InputDecoration(
+          //DONE
+          labelText: 'ΑΦΜ',
+          border: OutlineInputBorder(), //
+          prefixIcon: Icon(Icons.work),
+        ),
+        validator: (afm) {
+          if (afm.isEmpty) {
+            return 'Προσθέστε ΑΦΜ';
+          } else if (afm.length != length) {
+            return 'Εισάγετε $length αριθμούς';
+          } else if (int.tryParse(afm) == null ||
+              getIntLength(int.tryParse(afm)) != length) {
+            return 'Ο ΑΦΜ αποτελείται μόνο απο αριθμούς';
+          }
+          if (_afmExist) {
+            return 'Ο ΑΦΜ χρησιμοποιείται ήδη';
+          }
+          // else
+          //   return validateNumericInput(numValue: afm, label: 'ΑΦΜ', length: length);
+          _isValidAfm = true;
+        },
+        autovalidate: _shouldValidateOnChangeAfm,
+        maxLength: length,
+        onFieldSubmitted: (value) {
+          if (isNotValidInt(value, length))
+            setState(() => _shouldValidateOnChangeAfm = true); //
+        },
+        controller: _afmController,
       ),
-      validator: (afm) {
-        if (afm.isEmpty) {
-          return 'Προσθέστε ΑΦΜ';
-        } else if (afm.length != 9) {
-          return 'Εισάγετε 9 αριθμούς';
-        } else if (int.tryParse(afm) == null ||
-            getIntLength(int.tryParse(afm)) != 9) {
-          return ' Ο ΑΦΜ αποτελείται ΜΟΝΟ απο αριθμούς';
-        }
-        if (_afmExist) {
-          return 'Ο ΑΦΜ χρησιμοποιείται ήδη';
-        }
-        _isValidAfm = true;
-      },
-      autovalidate: _shouldValidateOnChangeAfm,
-      maxLength: 9,
-      onFieldSubmitted: (value) {
-        if (int.tryParse(value) == null || value.length != 9)
-          setState(() => _shouldValidateOnChangeAfm = true);
-      },
-      controller: _afmController,
     );
   }
 
-  _buildWorkHours(context) {
-    return TimePickerButton(
-      isReset: false,
-      workStart: _workStart,
-      workFinish: _workFinish,
-      onSelectStartTime: () => _selectWorkStart(context),
-      onSelectFinishTime: () => _selectWorkFinish(context),
+  _buildWorkHours() {
+    return ListTile(
+      title: TimePickerButton(
+        isReset: false,
+        workStart: _workStart,
+        workFinish: _workFinish,
+        onSelectStartTime: () => _selectWorkStart(context),
+        onSelectFinishTime: () => _selectWorkFinish(context),
+      ),
     );
   }
 

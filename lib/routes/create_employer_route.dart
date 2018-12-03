@@ -1,6 +1,7 @@
 import 'package:ergani_e8/components/buttons/cancel_max_width.dart';
 import 'package:ergani_e8/components/buttons/submit_max_width.dart';
 import 'package:ergani_e8/models/employer.dart';
+import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class EmployerFormState extends State<EmployerForm> {
   @override
   void initState() {
     super.initState();
-    
+
     _employer = widget.employer;
 
     _nameController.text = _employer?.name;
@@ -129,9 +130,11 @@ class EmployerFormState extends State<EmployerForm> {
                   children: <Widget>[
                     _buildNameField(),
                     _buildAfmField(),
+                    // SizedBox(height: 20.0,),
                     _buildAmeTile(),
                     _buildSmsNumberField(context),
-                  ],
+                    /* !_canEditSmsNumber ? null : */ _buildInfoTile(),
+                  ].where((val) => val != null).toList(),
                 ),
               ),
               Column(
@@ -171,33 +174,27 @@ class EmployerFormState extends State<EmployerForm> {
   }
 
   _buildAfmField() {
+    final length = 9;
     return ListTile(
       title: TextFormField(
         keyboardType: TextInputType.number,
         focusNode: _afmFocus,
+        textInputAction: _hasAme ? TextInputAction.next : TextInputAction.done,
         decoration: InputDecoration(
           labelText: 'ΑΦΜ',
+          // border: OutlineInputBorder(),
           prefixIcon: Icon(Icons.work),
         ),
-        validator: (afm) {
-          if (afm.isEmpty) {
-            return 'Προσθέστε ΑΦΜ';
-          } else if (afm.length != 9) {
-            return 'Εισάγετε 9 αριθμούς';
-          } else if (int.tryParse(afm) == null ||
-              getIntLength(int.tryParse(afm)) != 9) {
-            return ' Ο ΑΦΜ αποτελείται ΜΟΝΟ απο αριθμούς';
-          }
-        },
+        validator: (afm) =>
+            validateNumericInput(numValue: afm, length: length, label: 'ΑΦΜ'),
         autovalidate: _shouldValidateOnChangeAfm,
-        maxLength: 9,
+        maxLength: length,
         onFieldSubmitted: (value) {
-          if (int.tryParse(value) == null || value.length != 9)
+          if (isNotValidInt(value, length))
             setState(() => _shouldValidateOnChangeAfm = true);
           else if (_hasAme) FocusScope.of(context).requestFocus(_ameFocus);
         },
         controller: _afmController,
-        textInputAction: _hasAme ? TextInputAction.next : TextInputAction.done,
       ),
     );
   }
@@ -209,37 +206,35 @@ class EmployerFormState extends State<EmployerForm> {
           children: <Widget>[
             Checkbox(
               value: _hasAme,
-              onChanged: (val) => setState(() {
-                    _hasAme = val;
-                    // if(!_hasAme) _ameController.text = '';
-                  }),
+              onChanged: (val) {
+                setState(() => _hasAme = val);
+                if (!_hasAme) _ameController.clear();
+              },
             ),
-            Text('AME', style: TextStyle(fontSize: 16.0))
+            Text('AME',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    color: _hasAme ? Colors.grey[900] : Colors.grey))
           ],
         ),
         title: _buildAmeField());
   }
 
   _buildAmeField() {
+    final length = 10;
     return TextFormField(
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.number, //
       validator: (ame) {
-        if (_hasAme) {
-          if (ame.isEmpty) {
-            return 'Προσθέστε ΑME';
-          } else if (ame.length != 10) {
-            return 'Προσθέστε 10 αριθμούς';
-          } else if (int.tryParse(ame) == null ||
-              getIntLength(int.tryParse(ame)) != 10) {
-            return 'Ο ΑME αποτελείται ΜΟΝΟ απο αριθμούς';
-          }
-        }
+        if (_hasAme)
+          return validateNumericInput(
+              numValue: ame, length: length, label: 'ΑΜΕ');
       },
-      autovalidate: _shouldValidateOnChangeAme,
+      autovalidate: _shouldValidateOnChangeAme, //
       onFieldSubmitted: (value) {
-        if (int.tryParse(value) == null || value.length != 9)
+        if (isNotValidInt(value, length))
           setState(() => _shouldValidateOnChangeAme = true);
-        else if (_hasAme) FocusScope.of(context).requestFocus(_ameFocus);
+        else if (_canEditSmsNumber)
+          FocusScope.of(context).requestFocus(_smsNumberFocus);
       },
       decoration: InputDecoration(
         hasFloatingPlaceholder: false,
@@ -251,64 +246,58 @@ class EmployerFormState extends State<EmployerForm> {
           _canEditSmsNumber ? TextInputAction.next : TextInputAction.done,
       focusNode: _ameFocus,
       controller: _ameController,
-      maxLength: 10,
+      maxLength: length,
     );
   }
 
   _buildSmsNumberField(BuildContext context) {
     return ListTile(
-        // mainAxisSize: MainAxisSize.min,
-        // children: <Widget>[
-        leading: Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: Text(
-            'Παραλήπτης SMS:',
-            style: TextStyle(fontSize: 16.0),
-          ),
+      leading: Padding(
+        padding: const EdgeInsets.only(right: 8.0),
+        child: Text(
+          'Παραλήπτης SMS:',
+          style: TextStyle(fontSize: 16.0),
         ),
-        title: Stack(
-          alignment: Alignment(0.9, 1.0),
-          children: [
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextFormField(
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.grey[900],
-                    ),
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.done,
-                    enabled: _canEditSmsNumber,
-                    focusNode: _smsNumberFocus,
-                    controller: _smsNumberController,
-                    validator: (number) {
-                      if (number.isEmpty)
-                        return 'Προσθέστε αριθμό παραλήπτη';
-                      else if (int.tryParse(number) == null)
-                        return 'Εισάγετε μόνο αριθμούς';
-                    },
-                  ),
+      ),
+      title: Stack(
+        alignment: Alignment(1.1, 1.0),
+        children: [
+          Row(
+            children: <Widget>[
+              SizedBox(width: 90.0),
+              Expanded(
+                child: TextFormField(
+                  style: TextStyle(fontSize: 18.0, color: Colors.grey[900]),
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.done,
+                  enabled: _canEditSmsNumber,
+                  focusNode: _smsNumberFocus,
+                  controller: _smsNumberController,
+                  validator: (number) {
+                    if (number.isEmpty)
+                      return 'Προσθέστε αριθμό παραλήπτη';
+                    else if (int.tryParse(number) == null)
+                      return 'Εισάγετε μόνο αριθμούς';
+                  },
                 ),
-              ],
-            ),
-            IconButton(
-                icon: Icon(Icons.edit, color: Theme.of(context).primaryColorDark,),
-                disabledColor: Theme.of(context).primaryColorLight,
-                
-                onPressed: _canEditSmsNumber
-                    ? null
-                    : () => _handleEditSmsNumber(context)
-                // onPressed: () => _employer?.smsNumber == '54001'
-                //     ? _handleEditSmsNumber(context)
-                //     : setState(() => _isReceiverEditable = true),
-                ),
-          ],
-        ),);
+              ),
+            ],
+          ),
+          !_canEditSmsNumber
+              ? IconButton(
+                  icon: Icon(Icons.edit, color: Colors.grey[900]),
+                  onPressed: () => _handleEditSmsNumber(context)
+                  // onPressed: () => _employer?.smsNumber == '54001'
+                  //     ? _handleEditSmsNumber(context)
+                  //     : setState(() => _isReceiverEditable = true),
+                  )
+              : null,
+        ].where((val) => val != null).toList(),
+      ),
+    );
   }
 
   _handleEditSmsNumber(BuildContext context) async {
-
     final bool allowEdit = await showDialog(
       context: context,
       barrierDismissible: true,
@@ -341,5 +330,31 @@ class EmployerFormState extends State<EmployerForm> {
       setState(() => _canEditSmsNumber = true);
       FocusScope.of(context).requestFocus(_smsNumberFocus);
     }
+  }
+
+  _buildInfoTile() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14.0),
+      child: ListTile(
+        title: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).primaryColorLight),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: ListTile(
+              selected: true,
+              leading: Icon(Icons.info_outline),
+              subtitle: Text(
+                'Για την υποβολή Ε8 με SMS, η αποστολή μηνύματος γίνεται στον αριθμό 54001.',
+                textAlign: TextAlign.center,
+              ),
+              // contentPadding: EdgeInsets.symmetric(horizontal: 40.0),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

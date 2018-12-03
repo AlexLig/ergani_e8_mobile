@@ -97,7 +97,7 @@ class ContactsRouteState extends State<ContactsRoute> {
       body: Builder(
         builder: (context) => _buildBody(context),
       ),
-      drawer: ContactsDrawer(),
+      drawer: ContactsDrawer(),// Pass employer of context
     );
   }
 
@@ -176,7 +176,7 @@ class ContactsRouteState extends State<ContactsRoute> {
       duration: Duration(seconds: 1),
       content: Padding(
         padding: const EdgeInsets.only(left: 8.0),
-        child: Text('Ο υπάλληλος αποθηκεύθηκε.'),
+        child: Text('Ο υπάλληλος αποθηκεύτηκε.'),
       ),
     );
   }

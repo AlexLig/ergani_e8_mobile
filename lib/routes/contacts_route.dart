@@ -101,7 +101,6 @@ class ContactsRouteState extends State<ContactsRoute> {
     );
   }
 
-  // Build helpers.
   _buildBody(context) {
     _scaffoldContext = context;
     // _employeeList ?? _updateListView();
@@ -173,7 +172,7 @@ class ContactsRouteState extends State<ContactsRoute> {
 
   SnackBar _successfulCreateSnackbar(context) {
     return SnackBar(
-      duration: Duration(seconds: 1),
+      duration: Duration(seconds: 2),
       content: Padding(
         padding: const EdgeInsets.only(left: 8.0),
         child: Text('Ο υπάλληλος αποθηκεύτηκε.'),

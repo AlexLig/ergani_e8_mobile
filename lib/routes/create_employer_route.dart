@@ -1,6 +1,7 @@
 import 'package:ergani_e8/components/buttons/cancel_max_width.dart';
 import 'package:ergani_e8/components/buttons/submit_max_width.dart';
 import 'package:ergani_e8/models/employer.dart';
+import 'package:ergani_e8/routes/contacts_route.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:ergani_e8/utils/input_utils.dart';
@@ -93,17 +94,20 @@ class EmployerFormState extends State<EmployerForm> {
         result = await _erganiDatabase.createEmployer(employerToSubmit);
       }
 
-      if (result != 0)
+      if (result != 0){
         Navigator.pop(context, employerToSubmit);
+      }
       else
-        Navigator.pop(context);
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Σφάλμα αποθήκευσης'),
+        ));
 
       _nameController.clear();
       _afmController.clear();
       _ameController.clear();
       _smsNumberController.clear();
 
-      Navigator.pop(context, employerToSubmit);
+      // Navigator.pop(context, employerToSubmit);
     }
     setState(() {
       _shouldValidateOnChangeName = true;

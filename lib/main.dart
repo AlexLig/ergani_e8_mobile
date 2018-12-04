@@ -1,5 +1,7 @@
 import 'package:ergani_e8/routes/contacts_route.dart';
+import 'package:ergani_e8/routes/create_employee_route.dart';
 import 'package:ergani_e8/routes/create_employer_route.dart';
+import 'package:ergani_e8/routes/e8form.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,6 +60,14 @@ class MyAppState extends State<MyApp> {
         cursorColor: Colors.blueGrey[700],
         // backgroundColor: Colors.
       ),
+      routes: <String, WidgetBuilder> {
+        '/main': (BuildContext context) => MyApp(),
+        '/contacts': (BuildContext context) => ContactsRoute(),
+        '/employer' : (BuildContext context) => EmployerForm(),
+        '/employee' : (BuildContext context) => CreateEmployeeRoute(),
+        '/e8' : (BuildContext context) => E8form(),
+        
+      },
       home: FutureBuilder(
         future: _erganiDatabase.getEmployerCount(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -75,21 +85,3 @@ class MyAppState extends State<MyApp> {
     );
   }
 }
-
-class TestButton extends StatelessWidget {
-  final Widget route;
-  final String title;
-
-  TestButton({@required this.title, this.route});
-
-  @override
-  Widget build(BuildContext context) {
-    return RaisedButton(
-      child: Text(this.title),
-      onPressed: _onPressedTemporary(context, this.route),
-    );
-  }
-}
-
-Function _onPressedTemporary(context, Widget widget) => () =>
-    Navigator.push(context, MaterialPageRoute(builder: (context) => widget));

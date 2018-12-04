@@ -1,20 +1,22 @@
 import 'package:ergani_e8/components/employee_list_tile.dart';
 import 'package:ergani_e8/components/time_picker.dart';
-import 'package:ergani_e8/e8/e8provider.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/utilFunctions.dart';
-import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:sms/sms.dart';
 
 class E8form extends StatefulWidget {
+  final Employee employee;
+  final Employer employer;
+
+  E8form({Key key, @required this.employer, @required this.employee})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() => E8formState();
 }
 
 class E8formState extends State<E8form> {
-  ErganiDatabase _erganiDatabase = ErganiDatabase();
   Employer _employer;
   Employee _employee;
 
@@ -30,18 +32,11 @@ class E8formState extends State<E8form> {
   @override
   void initState() {
     super.initState();
+    _employee = widget.employee;
+    _employer = widget.employer;
     _sliderValue = 0.5;
-    _updateEmployer();
-    _receiverController.text = _employer?.smsNumber;
-    _senderController.text = _employer?.name;
-  }
-
-  void _updateEmployer() async {
-    final Employer employer = await _erganiDatabase.getNewestEmployer();
-
-    setState(() {
-      _employer = employer;
-    });
+    _receiverController.text = _employer.smsNumber;
+    _senderController.text = _employer.name;
   }
 
   // TODO: Implement send SMS. Remove Dialog.
@@ -52,7 +47,7 @@ class E8formState extends State<E8form> {
       SmsMessage message = SmsMessage(address, _erganiCode);
       message.onStateChanged.listen((state) {
         if (state == SmsMessageState.Sent) {
-          _sendingSmsSnackBar(scaffoldContext,'Αποστολή μηνύματος...');
+          _sendingSmsSnackBar(scaffoldContext, 'Αποστολή μηνύματος...');
         } else if (state == SmsMessageState.Delivered) {
           _sucessSmsSnackBar(
               scaffoldContext, 'Το μήνυμα παραδόθηκε με επιτυχία');
@@ -207,9 +202,6 @@ class E8formState extends State<E8form> {
 
   @override
   Widget build(BuildContext context) {
-    // _employer = E8provider.of(context).employer;
-    _employee = E8provider.of(context).employee;
-
     if (_isFirstBuild && !_isReset) {
       // _overtimeStart = _employee.workFinish ?? TimeOfDay(hour: 16, minute: 00);
       _overtimeStart = TimeOfDay.now();

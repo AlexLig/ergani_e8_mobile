@@ -2,10 +2,11 @@ import 'package:ergani_e8/components/drawer.dart';
 import 'package:ergani_e8/components/empty_contacts_indicator.dart';
 import 'package:ergani_e8/components/delete_dialog.dart';
 import 'package:ergani_e8/components/employee_list_tile.dart';
+import 'package:ergani_e8/e8/e8form.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/create_employee_route.dart';
-import 'package:ergani_e8/routes/e8route.dart';
+
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -33,8 +34,10 @@ class ContactsRouteState extends State<ContactsRoute> {
 
   void _updateListView() async {
     final List<Employee> employeeList = await _erganiDatabase.getEmployeeList();
+    final Employer employer = await _erganiDatabase.getNewestEmployer();
     setState(() {
       _employeeList = employeeList;
+      _employer = employer;
     });
   }
 
@@ -57,7 +60,7 @@ class ContactsRouteState extends State<ContactsRoute> {
     final e8FormCompleted = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => E8route(employee: employee, employer: _employer),
+        builder: (context) => E8form(employee: employee, employer: _employer),
       ),
     );
   }
@@ -97,7 +100,7 @@ class ContactsRouteState extends State<ContactsRoute> {
       body: Builder(
         builder: (context) => _buildBody(context),
       ),
-      drawer: ContactsDrawer(),// Pass employer of context
+      drawer: ContactsDrawer(employer:_employer), // Pass employer of context
     );
   }
 

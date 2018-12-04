@@ -1,6 +1,6 @@
 import 'package:ergani_e8/components/buttons/cancel_max_width.dart';
 import 'package:ergani_e8/components/buttons/submit_max_width.dart';
-import 'package:ergani_e8/components/time_picker.dart';
+import 'package:ergani_e8/components/time_picker_tile.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
@@ -142,7 +142,12 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                   physics: BouncingScrollPhysics(),
                   children: <Widget>[
                     _buildNamesListTile(),
-                    _buildAfmField(),
+                    ListTile(title: _buildFirstName()),
+                    ListTile(title: _buildLastName()),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 0.0),
+                      child: _buildAfmField(),
+                    ),
                     _buildWorkHours(),
                   ],
                 ),
@@ -187,8 +192,8 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       focusNode: firstNameFocus,
       decoration: InputDecoration(
         labelText: 'Όνομα',
-        border: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).accentColor)),
+        // border: OutlineInputBorder(
+        //     borderSide: BorderSide(color: Theme.of(context).accentColor)),
         prefixIcon: Icon(Icons.person),
       ),
       validator: (value) {
@@ -214,8 +219,9 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       focusNode: lastNameFocus,
       decoration: InputDecoration(
         labelText: 'Επίθετο',
-        border: OutlineInputBorder(),
-        prefixIcon: Icon(Icons.contacts),
+        // border: OutlineInputBorder(),
+        suffixIcon: Icon(Icons.contacts),
+        prefixIcon: Icon(Icons.perm_contact_calendar),
       ),
       validator: (value) {
         if (value.isEmpty) return 'Προσθέστε επίθετο';
@@ -235,7 +241,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         decoration: InputDecoration(
           //DONE
           labelText: 'ΑΦΜ',
-          border: OutlineInputBorder(), //
+          // border: OutlineInputBorder(), //
           prefixIcon: Icon(Icons.work),
         ),
         validator: (afm) {
@@ -267,12 +273,33 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   _buildWorkHours() {
     return ListTile(
-      title: TimePickerButton(
-        isReset: false,
-        workStart: _workStart,
-        workFinish: _workFinish,
-        onSelectStartTime: () => _selectWorkStart(context),
-        onSelectFinishTime: () => _selectWorkFinish(context),
+      title: DecoratedBox(
+        decoration: BoxDecoration(
+          // color: Colors.grey[100],
+          border: Border.all(color: Colors.grey[300]),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  'Ωράριο Εργασίας',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              TimePickerTile(
+                isReset: false,
+                workStart: _workStart,
+                workFinish: _workFinish,
+                onSelectStartTime: () => _selectWorkStart(context),
+                onSelectFinishTime: () => _selectWorkFinish(context),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

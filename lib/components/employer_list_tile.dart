@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class EmployerListTile extends StatelessWidget {
   final Employer employer;
   String textValue;
-  EmployerListTile({this.employer});
+  EmployerListTile({Key key, this.employer}) : super (key: key);
 
   @override
   Widget build(BuildContext context) {

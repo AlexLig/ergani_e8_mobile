@@ -1,5 +1,6 @@
 import 'package:ergani_e8/components/buttons/cancel_max_width.dart';
 import 'package:ergani_e8/components/buttons/submit_max_width.dart';
+import 'package:ergani_e8/components/info_tile.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/contacts_route.dart';
 import 'package:ergani_e8/utilFunctions.dart';
@@ -340,28 +341,9 @@ class EmployerFormState extends State<EmployerForm> {
   }
 
   _buildInfoTile() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14.0),
-      child: ListTile(
-        title: DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(color: Theme.of(context).primaryColorLight),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: ListTile(
-              selected: true,
-              leading: Icon(Icons.info_outline),
-              subtitle: Text(
-                'Για την υποβολή Ε8 με SMS, η αποστολή μηνύματος γίνεται στον αριθμό 54001.',
-                textAlign: TextAlign.center,
-              ),
-              // contentPadding: EdgeInsets.symmetric(horizontal: 40.0),
-            ),
-          ),
-        ),
-      ),
+    return InfoTile(
+      text:
+          'Για την υποβολή Ε8 με SMS, η αποστολή μηνύματος γίνεται στον αριθμό 54001.',
     );
   }
 }

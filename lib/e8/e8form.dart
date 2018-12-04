@@ -1,5 +1,6 @@
 import 'package:ergani_e8/components/employee_list_tile.dart';
-import 'package:ergani_e8/components/time_picker.dart';
+import 'package:ergani_e8/components/message_bottom_sheet.dart';
+import 'package:ergani_e8/components/time_picker_tile.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/utilFunctions.dart';
@@ -26,7 +27,7 @@ class E8formState extends State<E8form> {
   String _erganiCode;
   bool _isFirstBuild = true;
   bool _isReset = false;
-  TextEditingController _receiverController = TextEditingController();
+  TextEditingController _smsNumberController = TextEditingController();
   TextEditingController _senderController = TextEditingController();
 
   @override
@@ -35,7 +36,7 @@ class E8formState extends State<E8form> {
     _employee = widget.employee;
     _employer = widget.employer;
     _sliderValue = 0.5;
-    _receiverController.text = _employer.smsNumber;
+    _smsNumberController.text = _employer.smsNumber;
     _senderController.text = _employer.name;
   }
 
@@ -141,8 +142,8 @@ class E8formState extends State<E8form> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text('Η δήλωση υπερωρίας '),
-                    Text('πρέπει να γίνεται ΠΡΙΝ την έναρξη της!'),
+                    Text('Η δήλωση υπερωρίας γίνεται μόνο '),
+                    Text('πριν την έναρξη της.'),
                   ],
                 ),
               ],
@@ -179,8 +180,8 @@ class E8formState extends State<E8form> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text('Η ώρα λήξης πρέπει να είναι'),
-                    Text('μετά την ώρα έναρξης'),
+                    Text('Η ώρα λήξης δεν μπορεί να είναι'),
+                    Text('πριν την ώρα έναρξης'),
                   ],
                 ),
               ],
@@ -204,7 +205,15 @@ class E8formState extends State<E8form> {
   Widget build(BuildContext context) {
     if (_isFirstBuild && !_isReset) {
       // _overtimeStart = _employee.workFinish ?? TimeOfDay(hour: 16, minute: 00);
-      _overtimeStart = TimeOfDay.now();
+      final remainder = TimeOfDay.now().minute.remainder(10);
+      _overtimeStart = addToTimeOfDay(
+        TimeOfDay.now(),
+        minute: remainder == 0
+            ? 5
+            : 10 - remainder < 5
+                ? 10 - remainder + 5
+                : 10 - remainder, // Add 5 up to 9 mins.
+      );
       _overtimeFinish =
           addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
 
@@ -220,60 +229,86 @@ class E8formState extends State<E8form> {
     return Scaffold(
       body: Builder(
         builder: (context) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Card(
-                margin: EdgeInsets.only(top: 80.0, left: 10.0, right: 10.0),
-                child: Column(
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              // color: Theme.of(context).accentColor,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).accentColor,
+                  // Theme.of(context).primaryColorDark,
+                ],
+                tileMode: TileMode.mirror,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: ListView(
+                    physics: BouncingScrollPhysics(),
+                    children: <Widget>[
+                      _buildCard(),
+                    ],
+                  ),
+                ),
+                Column(
                   children: [
-                    EmployeeListTile(employee: _employee),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Divider(),
+                    MessageBottomSheet(
+                      handleSend: () => _handleSend(context),
+                      message: _erganiCode,
+                      senderController: _senderController,
+                      smsNumberController: _smsNumberController,
                     ),
-                    SwitchListTile(
-                      onChanged: (bool newValue) =>
-                          setState(() => _isReset = newValue),
-                      value: _isReset,
-                      // secondary: const Icon(Icons.cancel),
-                      title: Text(
-                        'Ακύρωση προηγούμενης υποβολής',
-                        style: TextStyle(
-                          color: _isReset ? Colors.grey[900] : Colors.grey[400],
-                        ),
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 15.0,
-                            right: 15.0,
-                            bottom: 50.0,
-                            top: 20.0,
-                          ),
-                          child: TimePickerButton(
-                            workStart: _overtimeStart,
-                            workFinish: _overtimeFinish,
-                            onSelectStartTime: () => _selectStartTime(context),
-                            onSelectFinishTime: () =>
-                                _selectFinishTime(context),
-                            isReset: _isReset,
-                          ),
-                        ),
-                        _buildActiveSlider()
-                      ],
-                    )
                   ],
                 ),
-              ),
-              _buildMessageBottomSheet(),
-            ].where(isNotNull).toList(),
+              ],
+            ),
           );
         },
       ),
       backgroundColor: Theme.of(context).canvasColor,
+    );
+  }
+
+  _buildCard() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Card(
+        elevation: 1.0,
+        margin: EdgeInsets.only(top: 40.0),
+        child: Column(
+          children: [
+            EmployeeListTile(employee: _employee),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Divider(),
+            ),
+            SwitchListTile(
+              onChanged: (bool newValue) => setState(() => _isReset = newValue),
+              value: _isReset,
+              // secondary: const Icon(Icons.cancel),
+              title: Text(
+                'Ακύρωση προηγούμενης υποβολής',
+                style: TextStyle(
+                  color: _isReset ? Colors.grey[900] : Colors.grey[400],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            TimePickerTile(
+              workStart: _overtimeStart,
+              workFinish: _overtimeFinish,
+              onSelectStartTime: () => _selectStartTime(context),
+              onSelectFinishTime: () => _selectFinishTime(context),
+              isReset: _isReset,
+            ),
+            _buildActiveSlider()
+          ],
+        ),
+      ),
     );
   }
 
@@ -285,81 +320,35 @@ class E8formState extends State<E8form> {
 
     return Column(
       children: <Widget>[
-        Text(
-          'Ώρες Υπερωρίας',
-          style: TextStyle(
-            fontSize: 18.0,
-            // color: _isReset ? Colors.blueGrey[100] : Colors.grey[900],
-            color: _isReset ? Colors.grey[400] : Colors.grey[900],
+        ListTile(
+          title: Text(
+            'Ώρες Υπερωρίας',
+            style: TextStyle(
+              fontSize: 18.0,
+              // color: _isReset ? Colors.blueGrey[100] : Colors.grey[900],
+              color: _isReset ? Colors.grey[400] : Colors.grey[900],
+            ),
+            textAlign: TextAlign.center,
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Slider(
-            divisions: 5,
-            min: 0.5,
-            max: 3.0,
-            label: _sliderValue == 1 || _sliderValue == 1.5
-                ? '$sliderValue ώρα'
-                : '$sliderValue ώρες',
-            value: _sliderValue,
-            onChanged: _isReset ? null : (value) => _handleSliderChange(value),
-            // inactiveColor: Colors.grey[200],
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: ListTile(
+            title: Slider(
+              divisions: 5,
+              min: 0.5,
+              max: 3.0,
+              label: _sliderValue == 1 || _sliderValue == 1.5
+                  ? '$sliderValue ώρα'
+                  : '$sliderValue ώρες',
+              value: _sliderValue,
+              onChanged:
+                  _isReset ? null : (value) => _handleSliderChange(value),
+              // inactiveColor: Colors.grey[200],
+            ),
           ),
         )
       ],
-    );
-  }
-
-  _buildMessageBottomSheet() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: PhysicalModel(
-        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-        color: Colors.white,
-        elevation: 5.0,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                enabled: false,
-                controller: _senderController,
-                decoration: InputDecoration(prefixText: 'ΑΠΟ      '),
-              ),
-              TextField(
-                enabled: false,
-                controller: _receiverController,
-                decoration: InputDecoration(prefixText: 'ΠΡΟΣ    '),
-              ),
-              ListTile(
-                title: Text(_erganiCode),
-                leading: Icon(Icons.message),
-              ),
-              RaisedButton(
-                onPressed: () => _handleSend(context),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'ΑΠΟΣΤΟΛΗ',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(width: 10.0),
-                    Icon(
-                      Icons.send,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

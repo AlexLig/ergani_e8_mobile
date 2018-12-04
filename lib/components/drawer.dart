@@ -21,7 +21,7 @@ class ContactsDrawer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'Όνομα Εταιρείας',
+                      employer.name ?? 'Όνομα Εταιρείας',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -29,7 +29,11 @@ class ContactsDrawer extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'ΑΦΜ Εταιρείας',
+                      'ΑΦΜ: ${employer.afm ?? ''} ',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      employer.ame != null && employer.ame.isNotEmpty ? 'ΑΜΕ: ${employer.ame}' : '',
                       style: TextStyle(color: Colors.white),
                     ),
                   ],

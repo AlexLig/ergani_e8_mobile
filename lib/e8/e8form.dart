@@ -213,7 +213,15 @@ class E8formState extends State<E8form> {
 
     if (_isFirstBuild && !_isReset) {
       // _overtimeStart = _employee.workFinish ?? TimeOfDay(hour: 16, minute: 00);
-      _overtimeStart = TimeOfDay.now();
+      final remainder = TimeOfDay.now().minute.remainder(10);
+      _overtimeStart = addToTimeOfDay(
+        TimeOfDay.now(),
+        minute: remainder == 0
+            ? 5
+            : 10 - remainder < 5
+                ? 10 - remainder + 5
+                : 10 - remainder, // Add 5 up to 9 mins.
+      );
       _overtimeFinish =
           addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
 
@@ -264,7 +272,7 @@ class E8formState extends State<E8form> {
                     ),
                   ],
                 ),
-              ].where(isNotNull).toList(),
+              ],
             ),
           );
         },

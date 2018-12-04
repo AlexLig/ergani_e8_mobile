@@ -227,6 +227,9 @@ class E8formState extends State<E8form> {
     );
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Έντυπο Ε8'),
+      ),
       body: Builder(
         builder: (context) {
           return DecoratedBox(
@@ -236,8 +239,18 @@ class E8formState extends State<E8form> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).accentColor,
+                  // Theme.of(context).primaryColor,
+                  // Theme.of(context).accentColor,
+                  Theme.of(context).canvasColor,
+                  Theme.of(context).canvasColor,
+                  // Colors.white,
+                  // Colors.white,
+                  // Theme.of(context).primaryColorLight,
+                  // Theme.of(context).primaryColorLight,
+                  //Colors.teal[50],
+                  // Colors.grey[150],
+                  // Colors.grey[150],
+                  // Theme.of(context).accentColor,
                   // Theme.of(context).primaryColorDark,
                 ],
                 tileMode: TileMode.mirror,
@@ -275,10 +288,9 @@ class E8formState extends State<E8form> {
 
   _buildCard() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.only(top: 10.0),
       child: Card(
-        elevation: 1.0,
-        margin: EdgeInsets.only(top: 40.0),
+        elevation: 0.4,
         child: Column(
           children: [
             EmployeeListTile(employee: _employee),

@@ -26,22 +26,28 @@ class EmployeeListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: this.onTap,
+      onTap: onTap,
       child: ListTile(
-        leading: Container(
-          height: 60.0,
-          width: 60.0,
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(244, 244, 244, 1.0),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Text(
-              '${_getInitials()}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).accentColor,
-                fontSize: 30.0,
+        leading: Hero(
+          tag: 'heroEmployee${employee.id}',
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              height: 60.0,
+              width: 60.0,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(244, 244, 244, 1.0),
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  '${_getInitials()}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).accentColor,
+                    fontSize: 30.0,
+                  ),
+                ),
               ),
             ),
           ),
@@ -59,35 +65,35 @@ class EmployeeListTile extends StatelessWidget {
         ),
         trailing: onDelete != null && onEdit != null
             ? PopupMenuButton<ContactActions>(
-              icon: Icon(
-                Icons.more_vert,
-                size: 28.0,
-              ),
-              tooltip: 'Επιλογές',
-              onSelected: (ContactActions selection) {
-                switch (selection) {
-                  case ContactActions.edit:
-                    this.onEdit();
-                    break;
-                  case ContactActions.delete:
-                    this.onDelete();
-                    break;
-                  default:
-                    print(selection);
-                }
-              },
-              itemBuilder: (BuildContext context) =>
-                  <PopupMenuEntry<ContactActions>>[
-                    PopupMenuItem<ContactActions>(
-                      value: ContactActions.edit,
-                      child: Text('Επεξεργασία'),
-                    ),
-                    PopupMenuItem<ContactActions>(
-                      value: ContactActions.delete,
-                      child: Text('Διαγραφή'),
-                    )
-                  ],
-            )
+                icon: Icon(
+                  Icons.more_vert,
+                  size: 28.0,
+                ),
+                tooltip: 'Επιλογές',
+                onSelected: (ContactActions selection) {
+                  switch (selection) {
+                    case ContactActions.edit:
+                      this.onEdit();
+                      break;
+                    case ContactActions.delete:
+                      this.onDelete();
+                      break;
+                    default:
+                      print(selection);
+                  }
+                },
+                itemBuilder: (BuildContext context) =>
+                    <PopupMenuEntry<ContactActions>>[
+                      PopupMenuItem<ContactActions>(
+                        value: ContactActions.edit,
+                        child: Text('Επεξεργασία'),
+                      ),
+                      PopupMenuItem<ContactActions>(
+                        value: ContactActions.delete,
+                        child: Text('Διαγραφή'),
+                      )
+                    ],
+              )
             : null,
       ),
     );

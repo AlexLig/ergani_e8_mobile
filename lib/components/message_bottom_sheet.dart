@@ -18,7 +18,7 @@ class MessageBottomSheet extends StatelessWidget {
     return PhysicalModel(
       borderRadius: BorderRadius.all(Radius.circular(5.0)),
       color: Colors.white,
-      elevation: 8.0,
+      elevation: 7.0,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: Column(

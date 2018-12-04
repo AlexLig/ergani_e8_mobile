@@ -114,12 +114,12 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       _firstNameController.clear();
       _lastNameController.clear();
       _afmController.clear();
-    }
-    setState(() {
-      _shouldValidateOnChangeFirstName = true;
-      _shouldValidateOnChangeLastName = true;
-      _shouldValidateOnChangeAfm = true;
-    });
+    } else
+      setState(() {
+        _shouldValidateOnChangeFirstName = true;
+        _shouldValidateOnChangeLastName = true;
+        _shouldValidateOnChangeAfm = true;
+      });
   }
 
   @override

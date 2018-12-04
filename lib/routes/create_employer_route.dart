@@ -44,14 +44,18 @@ class EmployerFormState extends State<EmployerForm> {
     super.initState();
 
     _employer = widget.employer;
-
-    _nameController.text = _employer?.name;
-    _afmController.text = _employer?.afm;
-    _ameController.text = _employer?.ame;
-    _smsNumberController.text = _employer?.smsNumber ?? '54001';
-
+    if (_employer != null) {
+      _nameController.text = _employer.name;
+      _afmController.text = _employer.afm;
+      _ameController.text = _employer.ame ?? '';
+      _smsNumberController.text = _employer.smsNumber ?? '54001';
+      _hasAme = _ameController.text.isNotEmpty ? true : false;
+    } else {
+      _hasAme = false;
+      _smsNumberController.text = '54001';
+    }
+    
     _canEditSmsNumber = _smsNumberController.text != '54001';
-    _hasAme = _employer?.ame ?? false;
   }
 
   @override
@@ -94,10 +98,9 @@ class EmployerFormState extends State<EmployerForm> {
         result = await _erganiDatabase.createEmployer(employerToSubmit);
       }
 
-      if (result != 0){
+      if (result != 0) {
         Navigator.pop(context, employerToSubmit);
-      }
-      else
+      } else
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text('Σφάλμα αποθήκευσης'),
         ));

@@ -2,23 +2,21 @@ import 'package:ergani_e8/components/buttons/cancel_max_width.dart';
 import 'package:ergani_e8/components/buttons/submit_max_width.dart';
 import 'package:ergani_e8/components/info_tile.dart';
 import 'package:ergani_e8/models/employer.dart';
-import 'package:ergani_e8/routes/contacts_route.dart';
-import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class EmployerForm extends StatefulWidget {
+class UpdateEmployer extends StatefulWidget {
   final Employer employer;
 
-  const EmployerForm({BuildContext context, Key key, this.employer})
+  const UpdateEmployer({BuildContext context, Key key, this.employer})
       : super(key: key);
   @override
-  State<StatefulWidget> createState() => EmployerFormState();
+  State<StatefulWidget> createState() => UpdateEmployerState();
 }
 
-class EmployerFormState extends State<EmployerForm> {
+class UpdateEmployerState extends State<UpdateEmployer> {
   final _formKey = GlobalKey<FormState>();
   ErganiDatabase _erganiDatabase = ErganiDatabase();
 

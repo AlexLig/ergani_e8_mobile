@@ -1,5 +1,5 @@
 import 'package:ergani_e8/models/employer.dart';
-import 'package:ergani_e8/routes/create_employer_route.dart';
+import 'package:ergani_e8/routes/settings_route.dart';
 import 'package:flutter/material.dart';
 
 class ContactsDrawer extends StatelessWidget {
@@ -47,7 +47,7 @@ class ContactsDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => EmployerForm(
+                    builder: (context) => UpdateEmployer(
                           employer: employer,
                         )),
               );

@@ -1,6 +1,6 @@
 import 'package:ergani_e8/routes/contacts_route.dart';
 import 'package:ergani_e8/routes/create_employee_route.dart';
-import 'package:ergani_e8/routes/create_employer_route.dart';
+import 'package:ergani_e8/routes/settings_route.dart';
 import 'package:ergani_e8/routes/e8form.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +63,7 @@ class MyAppState extends State<MyApp> {
       routes: <String, WidgetBuilder> {
         '/main': (BuildContext context) => MyApp(),
         '/contacts': (BuildContext context) => ContactsRoute(),
-        '/employer' : (BuildContext context) => EmployerForm(),
+        '/employer' : (BuildContext context) => UpdateEmployer(),
         '/employee' : (BuildContext context) => CreateEmployeeRoute(),
         '/e8' : (BuildContext context) => E8form(),
         
@@ -75,7 +75,7 @@ class MyAppState extends State<MyApp> {
             if (snapshot.data > 0)
               return ContactsRoute();
             else
-              return EmployerForm();
+              return UpdateEmployer();
           } else
             return Container(
               color: Theme.of(context).canvasColor,

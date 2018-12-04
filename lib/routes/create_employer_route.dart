@@ -55,7 +55,7 @@ class EmployerFormState extends State<EmployerForm> {
       _hasAme = false;
       _smsNumberController.text = '54001';
     }
-    
+
     _canEditSmsNumber = _smsNumberController.text != '54001';
   }
 
@@ -95,8 +95,9 @@ class EmployerFormState extends State<EmployerForm> {
       if (_employer == null)
         result = await _erganiDatabase.createEmployer(employerToSubmit);
       else if (_employer is Employer) {
-        await _erganiDatabase.deleteEmployer(_employer);
         result = await _erganiDatabase.createEmployer(employerToSubmit);
+        if (result != 0)
+          result = await _erganiDatabase.deleteEmployer(_employer);
       }
 
       if (result != 0) {

@@ -92,7 +92,7 @@ class ContactsRouteState extends State<ContactsRoute> {
       ),
       // Needed to open a snackbar.
       // This happens because you are using the context of the widget that instantiated Scaffold.
-      // Not the context of a child of Scaffold.
+      // Not the context of a child of Scaffold. 
       // You can solve this by simply using a different context :
       body: Builder(
         builder: (context) => _buildBody(context),

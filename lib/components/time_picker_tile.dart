@@ -1,12 +1,12 @@
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 
-class TimePickerButton extends StatelessWidget {
+class TimePickerTile extends StatelessWidget {
   final TimeOfDay workStart, workFinish;
   final Function onSelectStartTime, onSelectFinishTime;
   final bool isReset;
 
-  TimePickerButton({
+  TimePickerTile({
     @required this.workStart,
     @required this.workFinish,
     @required this.isReset,
@@ -19,20 +19,22 @@ class TimePickerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        _buildButton(
-          workHour: isReset ? TimeOfDay(hour: 00, minute: 00) : this.workStart,
-          onPressed: isReset ? null : onSelectStartTime,
-        ),
-        Icon(Icons.arrow_forward,
-            color: isReset ? Colors.grey[400] : Colors.black),
-        _buildButton(
-          workHour: isReset ? TimeOfDay(hour: 00, minute: 00) :this.workFinish,
-          onPressed: isReset ? null : onSelectFinishTime,
-        ),
-      ],
+    return ListTile(
+          title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          _buildButton(
+            workHour: isReset ? TimeOfDay(hour: 00, minute: 00) : this.workStart,
+            onPressed: isReset ? null : onSelectStartTime,
+          ),
+          Icon(Icons.arrow_forward,
+              color: isReset ? Colors.grey[400] : Colors.black),
+          _buildButton(
+            workHour: isReset ? TimeOfDay(hour: 00, minute: 00) :this.workFinish,
+            onPressed: isReset ? null : onSelectFinishTime,
+          ),
+        ],
+      ),
     );
   }
 

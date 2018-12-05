@@ -88,6 +88,11 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   Future _submit(context) async {
     if (this._formKey.currentState.validate()) {
+      setState(() {
+        _shouldValidateOnChangeFirstName = false;
+        _shouldValidateOnChangeLastName = false;
+        _shouldValidateOnChangeAfm = false;
+      });
       // close keyboard
       SystemChannels.textInput.invokeMethod('TextInput.hide');
 

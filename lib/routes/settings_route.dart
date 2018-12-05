@@ -75,6 +75,12 @@ class UpdateEmployerState extends State<UpdateEmployer> {
 
   void submit(context) async {
     if (this._formKey.currentState.validate()) {
+      setState(() {
+        _shouldValidateOnChangeName = false;
+        _shouldValidateOnChangeAfm = false;
+        _shouldValidateOnChangeAme = false;
+        _shouldValidateOnChangeSmsNumber = false;
+      });
       SystemChannels.textInput.invokeMethod('TextInput.hide');
 
       _formKey.currentState.save();
@@ -118,7 +124,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
         _shouldValidateOnChangeName = true;
         _shouldValidateOnChangeAfm = true;
         _shouldValidateOnChangeAme = true;
-        _shouldValidateOnChangeSmsNumber = true; 
+        _shouldValidateOnChangeSmsNumber = true;
       });
   }
 
@@ -233,7 +239,6 @@ class UpdateEmployerState extends State<UpdateEmployer> {
   _buildAmeField() {
     final length = 10;
     return TextFormField(
-
       keyboardType: TextInputType.number, //
       validator: (ame) {
         if (_hasAme)
@@ -250,7 +255,8 @@ class UpdateEmployerState extends State<UpdateEmployer> {
         hasFloatingPlaceholder: false,
         contentPadding: EdgeInsets.only(bottom: 5.0, top: 20.0),
       ),
-      style: TextStyle(color: _hasAme ? Colors.grey[900] : Colors.grey[300], fontSize: 16.0),
+      style: TextStyle(
+          color: _hasAme ? Colors.grey[900] : Colors.grey[300], fontSize: 16.0),
       enabled: _hasAme,
       textInputAction:
           _canEditSmsNumber ? TextInputAction.next : TextInputAction.done,
@@ -286,7 +292,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
                   autovalidate: _shouldValidateOnChangeSmsNumber,
                   validator: (number) {
                     if (number.isEmpty)
-                      return 'Προσθέστε αριθμό παραλήπτη';
+                      return 'Προσθέστε αριθμό';
                     else if (!hasOnlyInt(number))
                       return 'Εισάγετε μόνο αριθμούς';
                   },

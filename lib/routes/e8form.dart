@@ -270,6 +270,7 @@ class E8formState extends State<E8form> {
         } else if (state == SmsMessageState.Delivered) {
           _sucessSmsSnackBar(
               scaffoldContext, 'Το μήνυμα παραδόθηκε με επιτυχία');
+          print('DELIVERY SUCESS');
         } else if (state == SmsMessageState.Fail) {
           _warningSmsSnackBar(scaffoldContext, 'Αποτυχία αποστολής μηνύματος');
         }

@@ -74,26 +74,28 @@ class E8formState extends State<E8form> {
       body: Builder(
         builder: (context) {
           _scaffoldContext = context;
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: ListView(
-                  physics: BouncingScrollPhysics(),
-                  children: <Widget>[_buildCard()],
-                ),
-              ),
-              Column(
-                children: [
-                  MessageBottomSheet(
-                    handleSend: () => _handleSend(context),
-                    message: _erganiCode,
-                    senderController: _senderController,
-                    smsNumberController: _smsNumberController,
+          return SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: ListView(
+                    physics: BouncingScrollPhysics(),
+                    children: <Widget>[_buildCard()],
                   ),
-                ],
-              ),
-            ],
+                ),
+                Column(
+                  children: [
+                    MessageBottomSheet(
+                      handleSend: () => _handleSend(context),
+                      message: _erganiCode,
+                      senderController: _senderController,
+                      smsNumberController: _smsNumberController,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           );
         },
       ),

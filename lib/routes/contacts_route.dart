@@ -107,17 +107,19 @@ class ContactsRouteState extends State<ContactsRoute> {
   _buildBody(context) {
     _scaffoldContext = context;
     // _employeeList ?? _updateListView();
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: _employeeList == null
-                ? Container()
-                : _employeeList.length == 0
-                    ? AddContactsIndicator()
-                    : _buildEmployeeListView(),
-          ),
-        ],
+    return SafeArea(
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: _employeeList == null
+                  ? Container()
+                  : _employeeList.length == 0
+                      ? AddContactsIndicator()
+                      : _buildEmployeeListView(),
+            ),
+          ],
+        ),
       ),
     );
   }

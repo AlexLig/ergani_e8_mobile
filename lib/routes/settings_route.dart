@@ -134,32 +134,34 @@ class UpdateEmployerState extends State<UpdateEmployer> {
       appBar: AppBar(
         title: Text('Ρυθμίσεις'),
       ),
-      body: Center(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.only(top: 20.0),
-                  physics: BouncingScrollPhysics(),
+      body: SafeArea(
+        child: Center(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.only(top: 20.0),
+                    physics: BouncingScrollPhysics(),
+                    children: <Widget>[
+                      _buildNameField(),
+                      _buildAfmField(),
+                      // SizedBox(height: 20.0,),
+                      _buildAmeTile(),
+                      _buildSmsNumberField(context),
+                      /* !_canEditSmsNumber ? null : */ _buildInfoTile(),
+                    ].where((val) => val != null).toList(),
+                  ),
+                ),
+                Column(
                   children: <Widget>[
-                    _buildNameField(),
-                    _buildAfmField(),
-                    // SizedBox(height: 20.0,),
-                    _buildAmeTile(),
-                    _buildSmsNumberField(context),
-                    /* !_canEditSmsNumber ? null : */ _buildInfoTile(),
+                    SubmitButtonMaxWidth(onSubmit: () => submit(context)),
+                    _employer != null ? CancelButtonMaxWidth() : null,
                   ].where((val) => val != null).toList(),
                 ),
-              ),
-              Column(
-                children: <Widget>[
-                  SubmitButtonMaxWidth(onSubmit: () => submit(context)),
-                  _employer != null ? CancelButtonMaxWidth() : null,
-                ].where((val) => val != null).toList(),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

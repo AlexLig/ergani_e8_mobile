@@ -136,37 +136,39 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       ),
       body: Builder(builder: (context) {
         _scaffoldContext = context;
-        return Form(
-          key: _formKey,
-          child: Column(
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 25.0),
-                  child: ListView(
-                    physics: BouncingScrollPhysics(),
-                    children: <Widget>[
-                      _buildNamesListTile(),
-                      // ListTile(title: _buildFirstName()),
-                      // ListTile(title: _buildLastName()),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 0.0),
-                        child: _buildAfmField(),
-                      ),
-                      _buildWorkHours(),
-                    ],
+        return SafeArea(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: ListView(
+                      physics: BouncingScrollPhysics(),
+                      children: <Widget>[
+                        _buildNamesListTile(),
+                        // ListTile(title: _buildFirstName()),
+                        // ListTile(title: _buildLastName()),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0.0),
+                          child: _buildAfmField(),
+                        ),
+                        _buildWorkHours(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Column(
-                children: [
-                  SubmitButtonMaxWidth(onSubmit: () => _submit(context)),
-                  CancelButtonMaxWidth(),
-                ],
-              )
-            ],
+                Column(
+                  children: [
+                    SubmitButtonMaxWidth(onSubmit: () => _submit(context)),
+                    CancelButtonMaxWidth(),
+                  ],
+                )
+              ],
+            ),
           ),
         );
       }),
@@ -321,7 +323,8 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     );
 
     if (startTime is TimeOfDay) {
-      final int difference = timeToMinutes(_workFinish) - timeToMinutes(_workStart);
+      final int difference =
+          timeToMinutes(_workFinish) - timeToMinutes(_workStart);
       setState(() {
         _workStart = startTime;
         if (!_isWorkFinishTouched) {

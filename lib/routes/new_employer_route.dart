@@ -111,13 +111,13 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
       _smsNumberController.clear();
 
       // Navigator.pop(context, employerToSubmit);
-    }
-    setState(() {
-      _shouldValidateOnChangeName = true;
-      _shouldValidateOnChangeAfm = true;
-      _shouldValidateOnChangeAme = true;
-      // _shouldValidateOnChangeSmsNumber = true; //TODO: no empty
-    });
+    } else
+      setState(() {
+        _shouldValidateOnChangeName = true;
+        _shouldValidateOnChangeAfm = true;
+        _shouldValidateOnChangeAme = true;
+        // _shouldValidateOnChangeSmsNumber = true; //TODO: no empty
+      });
   }
 
   @override

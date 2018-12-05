@@ -1,7 +1,8 @@
+import 'package:ergani_e8/components/drawer.dart';
 import 'package:ergani_e8/routes/contacts_route.dart';
-import 'package:ergani_e8/routes/create_employee_route.dart';
-import 'package:ergani_e8/routes/settings_route.dart';
-import 'package:ergani_e8/routes/e8form.dart';
+
+import 'package:ergani_e8/routes/new_employer_route.dart';
+
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,25 +19,6 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   ErganiDatabase _erganiDatabase = ErganiDatabase();
-  bool _employerExist;
-  @override
-  void initState() {
-    super.initState();
-
-    _erganiDatabase.getEmployerCount().then((employersCount) {
-      setState(() {
-        _employerExist = employersCount > 0;
-      });
-    });
-  }
-
-  // _checkEmployerExistAndBuild() async {
-  //   int employersCount = await _erganiDatabase.getEmployerCount();
-  //   setState(() {
-  //     _employerExist = employersCount > 0;
-  //   });
-  //   return await _erganiDatabase.getEmployerCount() > 0 ?
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +42,8 @@ class MyAppState extends State<MyApp> {
         cursorColor: Colors.blueGrey[700],
         // backgroundColor: Colors.
       ),
-      routes: <String, WidgetBuilder> {
-        '/main': (BuildContext context) => MyApp(),
+      routes: <String, WidgetBuilder>{
         '/contacts': (BuildContext context) => ContactsRoute(),
-        '/employer' : (BuildContext context) => UpdateEmployer(),
-        '/employee' : (BuildContext context) => CreateEmployeeRoute(),
-        '/e8' : (BuildContext context) => E8form(),
-        
       },
       home: FutureBuilder(
         future: _erganiDatabase.getEmployerCount(),
@@ -75,7 +52,7 @@ class MyAppState extends State<MyApp> {
             if (snapshot.data > 0)
               return ContactsRoute();
             else
-              return UpdateEmployer();
+              return CreateNewEmployer();
           } else
             return Container(
               color: Theme.of(context).canvasColor,

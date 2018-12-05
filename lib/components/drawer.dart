@@ -33,7 +33,9 @@ class ContactsDrawer extends StatelessWidget {
                       style: TextStyle(color: Colors.white),
                     ),
                     Text(
-                      employer.ame != null && employer.ame.isNotEmpty ? 'ΑΜΕ: ${employer.ame}' : '',
+                      employer.ame != null && employer.ame.isNotEmpty
+                          ? 'ΑΜΕ: ${employer.ame}'
+                          : '',
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -43,7 +45,7 @@ class ContactsDrawer extends StatelessWidget {
           ),
           _buildDrawerTile(
             onTap: () {
-              // Navigator.pop(context);
+              Navigator.of(context).pop();
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -51,6 +53,7 @@ class ContactsDrawer extends StatelessWidget {
                           employer: employer,
                         )),
               );
+              
             },
             icon: Icon(Icons.business),
             title: 'Εταιρικό Προφίλ',

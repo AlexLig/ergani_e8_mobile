@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
 class MessageBottomSheet extends StatelessWidget {
-  final Function handleSend;
+  final Function onSend;
   final TextEditingController smsNumberController, senderController;
   final String message;
+  bool isLoading;
 
   MessageBottomSheet({
     Key key,
     this.senderController,
     this.smsNumberController,
     this.message,
-    this.handleSend,
+    this.onSend,
+    this.isLoading,
   }) : super(key: key);
 
   @override
@@ -29,7 +31,7 @@ class MessageBottomSheet extends StatelessWidget {
               leading: Text('ΑΠΟ'),
               title: TextField(
                 enabled: false,
-                controller: senderController, //
+                controller: senderController,
                 // decoration: InputDecoration(prefixText: 'ΑΠΟ      '),
               ),
             ),
@@ -37,36 +39,50 @@ class MessageBottomSheet extends StatelessWidget {
               leading: Text('ΠΡΟΣ'),
               title: TextField(
                 enabled: false,
-                controller: smsNumberController, //
+                controller: smsNumberController,
                 // decoration: InputDecoration(prefixText: 'ΠΡΟΣ    '),
               ),
             ),
             ListTile(
-              title: Text(message), //
+              title: Text(message),
               leading: Icon(Icons.message),
             ),
             ListTile(
               trailing: RaisedButton(
-                onPressed: handleSend, //
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'ΑΠΟΣΤΟΛΗ',
-                      style: TextStyle(color: Colors.white),
+                onPressed: isLoading ? null : onSend,
+                disabledColor: Theme.of(context).primaryColorLight,
+                child: Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'ΑΠΟΣΤΟΛΗ',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Icon(
+                            Icons.send,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Icon(
-                        Icons.send,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                    isLoading
+                        ? Container(
+                            height: 30,
+                            width: 30,
+                            child: CircularProgressIndicator(),
+                          )
+                        : null,
+                  ].where((val) => val != null).toList(),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

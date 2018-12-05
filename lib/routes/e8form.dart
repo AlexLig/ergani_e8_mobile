@@ -30,6 +30,7 @@ class E8formState extends State<E8form> {
   TextEditingController _smsNumberController = TextEditingController();
   TextEditingController _senderController = TextEditingController();
 
+  bool _isLoading = false;
   BuildContext _scaffoldContext;
 
   @override
@@ -86,11 +87,24 @@ class E8formState extends State<E8form> {
                 ),
                 Column(
                   children: [
+                    // Row(
+                    //   children: <Widget>[
+                    //     FlatButton(
+                    //       child: Text('LOAD'),
+                    //       onPressed: () => setState(() => _isLoading = true),
+                    //     ),
+                    //     FlatButton(
+                    //       child: Text('DONT LOAD'),
+                    //       onPressed: () => setState(() => _isLoading = false),
+                    //     ),
+                    //   ],
+                    // ),
                     MessageBottomSheet(
-                      handleSend: () => _handleSend(context),
+                      onSend: () => _handleSend(context),
                       message: _erganiCode,
                       senderController: _senderController,
                       smsNumberController: _smsNumberController,
+                      isLoading: _isLoading,
                     ),
                   ],
                 ),
@@ -225,7 +239,6 @@ class E8formState extends State<E8form> {
             'Ώρες Υπερωρίας',
             style: TextStyle(
               fontSize: 18.0,
-              // color: _isReset ? Colors.blueGrey[100] : Colors.grey[900],
               color: _isReset ? Colors.grey[400] : Colors.grey[900],
             ),
             textAlign: TextAlign.center,
@@ -268,17 +281,21 @@ class E8formState extends State<E8form> {
       SmsMessage message = SmsMessage(address, _erganiCode);
       message.onStateChanged.listen((state) {
         if (state == SmsMessageState.Sent) {
+          setState(() => _isLoading = true);
           _sendingSmsSnackBar(scaffoldContext, 'Αποστολή μηνύματος...');
         } else if (state == SmsMessageState.Delivered) {
+          setState(() => _isLoading = false);
           _sucessSmsSnackBar(
               scaffoldContext, 'Το μήνυμα παραδόθηκε με επιτυχία');
           print('DELIVERY SUCESS');
         } else if (state == SmsMessageState.Fail) {
+          setState(() => _isLoading = false);
           _warningSmsSnackBar(scaffoldContext, 'Αποτυχία αποστολής μηνύματος');
         }
       });
       sender.sendSms(message);
     } else {
+      setState(() => _isLoading = false);
       _warningSmsSnackBar(
           scaffoldContext, 'Κάτι δεν πήγε καλά. Ξαναπροσπαθήστε');
     }

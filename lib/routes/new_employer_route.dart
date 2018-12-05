@@ -37,6 +37,7 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
   bool _shouldValidateOnChangeName = false;
   bool _shouldValidateOnChangeAfm = false;
   bool _shouldValidateOnChangeAme = false;
+  bool _shouldValidateOnChangeSmsNumber = false;
 
   @override
   void initState() {
@@ -116,7 +117,7 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
         _shouldValidateOnChangeName = true;
         _shouldValidateOnChangeAfm = true;
         _shouldValidateOnChangeAme = true;
-        // _shouldValidateOnChangeSmsNumber = true; //TODO: no empty
+        _shouldValidateOnChangeSmsNumber = true;
       });
   }
 
@@ -276,6 +277,7 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
                   enabled: _canEditSmsNumber,
                   focusNode: _smsNumberFocus,
                   controller: _smsNumberController,
+                  autovalidate: _shouldValidateOnChangeSmsNumber,
                   validator: (number) {
                     if (number.isEmpty)
                       return 'Προσθέστε αριθμό παραλήπτη';

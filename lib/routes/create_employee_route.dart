@@ -320,12 +320,16 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       initialTime: _workStart,
     );
 
-    if (startTime is TimeOfDay)
+    if (startTime is TimeOfDay) {
+      final int difference = timeToMinutes(_workFinish) - timeToMinutes(_workStart);
       setState(() {
         _workStart = startTime;
-        if (!_isWorkFinishTouched)
-          _workFinish = addToTimeOfDay(_workStart, hour: 8);
+        if (!_isWorkFinishTouched) {
+          print(difference);
+          _workFinish = addToTimeOfDay(_workStart, minute: difference);
+        }
       });
+    }
   }
 
   void _selectWorkFinish(BuildContext context) async {

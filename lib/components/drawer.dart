@@ -61,49 +61,38 @@ class ContactsDrawer extends StatelessWidget {
                   : '',
               style: TextStyle(color: Colors.white),
             ),
-            _buildDrawerTile(
+            InkWell(
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => UpdateEmployer(
-                            employer: employer,
-                          )),
+                    builder: (context) => UpdateEmployer(
+                          employer: employer,
+                        ),
+                  ),
                 );
               },
-              icon: Icon(Icons.business),
-              title: 'Εταιρικό Προφίλ',
+              child: ListTile(
+                leading: Icon(Icons.business),
+                title: Text('Εταιρικό Προφίλ'),
+              ),
             ),
             Divider(),
-            _buildDrawerTile(
+            InkWell(
               onTap: () => Navigator.pop(context),
-              title: 'Οδηγίες συμπλήρωσης Ε8',
+              child: ListTile(title: Text('Οδηγίες συμπλήρωσης Ε8')),
             ),
-            _buildDrawerTile(
+            InkWell(
               onTap: () => Navigator.pop(context),
-              title: 'Disclaimer',
+              child: ListTile(title: Text('About Us')),
             ),
-            _buildDrawerTile(
+            InkWell(
               onTap: () => Navigator.pop(context),
-              title: 'About us',
+              child: ListTile(title: Text('Disclaimer')),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  _buildDrawerTile({
-    @required Function onTap,
-    @required String title,
-    Icon icon,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: ListTile(
-        title: Text(title),
-        leading: icon,
       ),
     );
   }

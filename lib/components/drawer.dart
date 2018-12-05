@@ -1,3 +1,4 @@
+import 'package:ergani_e8/components/e8Instructions.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/settings_route.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +81,15 @@ class ContactsDrawer extends StatelessWidget {
             ),
             Divider(),
             InkWell(
-              onTap: () => Navigator.pop(context),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => E8Instructions(),
+                  ),
+                );
+              },
               child: ListTile(title: Text('Οδηγίες συμπλήρωσης Ε8')),
             ),
             InkWell(

@@ -7,29 +7,23 @@ class SubmitButtonMaxWidth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-          title: RaisedButton(
+      title: RaisedButton(
         onPressed: onSubmit,
-        child: Text(
-          'ΑΠΟΘΗΚΕΥΣΗ',
-          style: TextStyle(fontSize: 16.0, color: Colors.white),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.save, color: Colors.white, size: 22.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'ΑΠΟΘΗΚΕΥΣΗ',
+                style: TextStyle(fontSize: 16.0, color: Colors.white),
+              ),
+            ),
+          ],
         ),
       ),
     );
-    // return Row(
-    //   children: [
-    //     Expanded(
-    //       child: Padding(
-    //         padding: EdgeInsets.only(top: 30.0),
-    //         child: RaisedButton(
-    //           onPressed: onSubmit,
-    //           child: Text(
-    //             'ΑΠΟΘΗΚΕΥΣΗ',
-    //             style: TextStyle(fontSize: 16.0, color: Colors.white),
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   ],
-    // );
   }
 }

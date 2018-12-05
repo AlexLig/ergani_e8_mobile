@@ -77,7 +77,7 @@ class ContactsDrawer extends StatelessWidget {
               child: ListTile(
                 title: Text('Οδηγίες Συμπλήρωσης Ε8'),
                 leading: Icon(
-                  Icons.info_outline,
+                  Icons.help,
                   // color: Colors.grey[600],
                   color: Theme.of(context).primaryColor,
                 ),

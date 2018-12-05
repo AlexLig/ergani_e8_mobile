@@ -68,64 +68,48 @@ class EmployeeListTile extends StatelessWidget {
             ),
           ),
         ),
-        title: Hero(
-            tag: 'heroEmployeeTitle${employee.id}',
-            child: Material(
-                color: Colors.transparent,
-                child: Text('${employee.lastName} ${employee.firstName}'))),
+        title: Text('${employee.lastName} ${employee.firstName}'),
         isThreeLine: true,
-        subtitle: Hero(
-          tag: 'heroEmployeeSub${employee.id}',
-          child: Material(
-            color: Colors.transparent,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('ΑΦΜ: ${employee.afm}'),
-                Text(
-                  'Ωράριο: ${timeToString(employee.workStart)} - ${timeToString(employee.workFinish)}',
-                ),
-              ],
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('ΑΦΜ: ${employee.afm}'),
+            Text(
+              'Ωράριο: ${timeToString(employee.workStart)} - ${timeToString(employee.workFinish)}',
             ),
-          ),
+          ],
         ),
         trailing: onDelete != null && onEdit != null
-            ? Hero(
-                tag: 'heroEmployeeIcon${employee.id}',
-                child: Material(
-                  color: Colors.transparent,
-                  child: PopupMenuButton<ContactActions>(
-                    icon: Icon(
-                      Icons.more_vert,
-                      size: 28.0,
+            ? PopupMenuButton<ContactActions>(
+              icon: Icon(
+                Icons.more_vert,
+                size: 28.0,
+              ),
+              tooltip: 'Επιλογές',
+              onSelected: (ContactActions selection) {
+                switch (selection) {
+                  case ContactActions.edit:
+                    this.onEdit();
+                    break;
+                  case ContactActions.delete:
+                    this.onDelete();
+                    break;
+                  default:
+                    print(selection);
+                }
+              },
+              itemBuilder: (BuildContext context) =>
+                  <PopupMenuEntry<ContactActions>>[
+                    PopupMenuItem<ContactActions>(
+                      value: ContactActions.edit,
+                      child: Text('Επεξεργασία'),
                     ),
-                    tooltip: 'Επιλογές',
-                    onSelected: (ContactActions selection) {
-                      switch (selection) {
-                        case ContactActions.edit:
-                          this.onEdit();
-                          break;
-                        case ContactActions.delete:
-                          this.onDelete();
-                          break;
-                        default:
-                          print(selection);
-                      }
-                    },
-                    itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<ContactActions>>[
-                          PopupMenuItem<ContactActions>(
-                            value: ContactActions.edit,
-                            child: Text('Επεξεργασία'),
-                          ),
-                          PopupMenuItem<ContactActions>(
-                            value: ContactActions.delete,
-                            child: Text('Διαγραφή'),
-                          )
-                        ],
-                  ),
-                ),
-              )
+                    PopupMenuItem<ContactActions>(
+                      value: ContactActions.delete,
+                      child: Text('Διαγραφή'),
+                    )
+                  ],
+            )
             : null,
       ),
     );

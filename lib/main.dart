@@ -24,11 +24,9 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Subito E8',
       builder: (context, child) => MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              alwaysUse24HourFormat: true,
-            ),
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
             child: child,
           ),
       theme: ThemeData(

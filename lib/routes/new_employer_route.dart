@@ -139,11 +139,11 @@ class CreateNewEmployerState extends State<CreateNewEmployer> {
                 child: ListView(
                   physics: BouncingScrollPhysics(),
                   children: <Widget>[
-                    Container(
-                      color: Colors.grey[300],
-                      height: 150.0,
-                      child: Center(child: Text('LOGO', style: TextStyle(color: Colors.white))),
-                    ),
+                    // Container(
+                    //   color: Colors.grey[300],
+                    //   height: 150.0,
+                    //   child: Center(child: Text('LOGO', style: TextStyle(color: Colors.white))),
+                    // ),
                     _buildNameField(),
                     _buildAfmField(),
                     // SizedBox(height: 20.0,),

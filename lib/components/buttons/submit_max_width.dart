@@ -13,7 +13,7 @@ class SubmitButtonMaxWidth extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.save, color: Colors.white, size: 22.0),
+            //Icon(Icons.save, color: Colors.white, size: 22.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(

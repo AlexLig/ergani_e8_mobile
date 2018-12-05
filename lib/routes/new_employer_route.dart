@@ -100,7 +100,7 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
       }
 
       if (result != 0) {
-        Navigator.pop(context, employerToSubmit);
+        Navigator.pushReplacementNamed(context, '/contacts');
       } else
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text('Σφάλμα αποθήκευσης'),

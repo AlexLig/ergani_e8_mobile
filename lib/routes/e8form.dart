@@ -79,7 +79,7 @@ class E8formState extends State<E8form> {
   void _sucessSmsSnackBar(scaffoldContext, String message) {
     Scaffold.of(scaffoldContext).showSnackBar(
       SnackBar(
-        duration: Duration(seconds: 1),
+        duration: Duration(seconds: 2),
         backgroundColor: Colors.green,
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,

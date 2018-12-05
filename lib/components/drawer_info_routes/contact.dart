@@ -30,7 +30,7 @@ class Contact extends StatelessWidget {
                       onTap: () =>
                           _sendMail(scaffoldContext, 'libekonst@gmail.com'),
                       child: ListTile(
-                          title: Text('Λυμπερόπουλος Κωσταντίνος'),
+                          title: Text('Λυμπερόπουλος Κωνσταντίνος'),
                           subtitle: Text('libekonst@gmail.com')),
                     ),
                   ],

@@ -21,17 +21,17 @@ class Contact extends StatelessWidget {
                         title: Text('Επικοινωνήστε με τους προγραμματιστές:')),
                     InkWell(
                       onTap: () =>
-                          _sendMail(scaffoldContext, 'email@gmail.com'),
+                          _sendMail(scaffoldContext, 'ligkalex@gmail.com'),
                       child: ListTile(
-                          title: Text('First'),
-                          subtitle: Text('email@gmail.com')),
+                          title: Text('Λίγκας Αλέξανδρος'),
+                          subtitle: Text('ligkalex@gmail.com')),
                     ),
                     InkWell(
                       onTap: () =>
-                          _sendMail(scaffoldContext, 'email@gmail.com'),
+                          _sendMail(scaffoldContext, 'libekonst@gmail.com'),
                       child: ListTile(
-                          title: Text('Second'),
-                          subtitle: Text('email@gmail.com')),
+                          title: Text('Λυμπερόπουλος Κωσταντίνος'),
+                          subtitle: Text('libekonst@gmail.com')),
                     ),
                   ],
                 ),

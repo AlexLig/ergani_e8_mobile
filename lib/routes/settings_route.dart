@@ -99,7 +99,8 @@ class UpdateEmployerState extends State<UpdateEmployer> {
       }
 
       if (result != 0) {
-        Navigator.pop(context, employerToSubmit);
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/contacts', (Route<dynamic> route) => false);
       } else
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text('Σφάλμα αποθήκευσης'),

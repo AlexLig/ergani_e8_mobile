@@ -1,3 +1,5 @@
+import 'package:ergani_e8/components/drawer_info_routes/contact.dart';
+import 'package:ergani_e8/components/drawer_info_routes/disclaimer.dart';
 import 'package:ergani_e8/components/e8Instructions.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/settings_route.dart';
@@ -14,17 +16,7 @@ class ContactsDrawer extends StatelessWidget {
           // padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(
-                // gradient: LinearGradient(
-                //   colors: [
-                //     Theme.of(context).primaryColorDark,
-                //     Theme.of(context).primaryColor,
-                //   ],
-                //   begin: Alignment.topCenter,
-                //   end: Alignment.bottomCenter,
-                // ),
-                color: Theme.of(context).primaryColor,
-              ),
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: Container(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -52,16 +44,6 @@ class ContactsDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            Text(
-              'ΑΦΜ: ${employer.afm ?? ''} ',
-              style: TextStyle(color: Colors.white),
-            ),
-            Text(
-              employer.ame != null && employer.ame.isNotEmpty
-                  ? 'ΑΜΕ: ${employer.ame}'
-                  : '',
-              style: TextStyle(color: Colors.white),
-            ),
             InkWell(
               onTap: () {
                 Navigator.of(context).pop();
@@ -75,11 +57,13 @@ class ContactsDrawer extends StatelessWidget {
                 );
               },
               child: ListTile(
-                leading: Icon(Icons.business),
-                title: Text('Εταιρικό Προφίλ'),
+                leading: Icon(
+                  Icons.settings,
+                  color: Theme.of(context).primaryColor,
+                ),
+                title: Text('Ρυθμίσεις'),
               ),
             ),
-            Divider(),
             InkWell(
               onTap: () {
                 Navigator.pop(context);
@@ -90,15 +74,39 @@ class ContactsDrawer extends StatelessWidget {
                   ),
                 );
               },
-              child: ListTile(title: Text('Οδηγίες συμπλήρωσης Ε8')),
+              child: ListTile(
+                title: Text('Οδηγίες Συμπλήρωσης Ε8'),
+                leading: Icon(
+                  Icons.info_outline,
+                  // color: Colors.grey[600],
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+            Divider(),
+            InkWell(
+              child: ListTile(title: Text('Αποποίηση Ευθύνης')),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Disclaimer(),
+                  ),
+                );
+              },
             ),
             InkWell(
-              onTap: () => Navigator.pop(context),
-              child: ListTile(title: Text('About Us')),
-            ),
-            InkWell(
-              onTap: () => Navigator.pop(context),
-              child: ListTile(title: Text('Disclaimer')),
+              child: ListTile(title: Text('Επικοινωνία')),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Contact(),
+                  ),
+                );
+              },
             ),
           ],
         ),

@@ -290,7 +290,8 @@ class E8formState extends State<E8form> {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       child: Card(
-        elevation: 0.4,
+        // color: Colors.grey[200],
+        elevation: 0.3,
         child: Column(
           children: [
             EmployeeListTile(employee: _employee),

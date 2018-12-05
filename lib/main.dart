@@ -49,11 +49,11 @@ class MyAppState extends State<MyApp> {
             child: child,
           ),
       theme: ThemeData(
-        primaryColorDark: Colors.blueGrey[900],
-        accentColor: Colors.teal[700],
-        buttonColor: Colors.teal[700],
-        primaryColor: Colors.blueGrey[800],
-        primaryColorLight: Colors.blueGrey[300],
+        primaryColorDark: Colors.blueGrey[800],
+        accentColor: Colors.teal[500],
+        buttonColor: Colors.teal[500],
+        primaryColor: Colors.blueGrey[700],
+        primaryColorLight: Colors.blueGrey[100],
         // primaryTextTheme: Typography.blackMountainView,
         // secondaryText
         dividerColor: Colors.grey[500],

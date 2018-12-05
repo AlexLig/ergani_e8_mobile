@@ -7,68 +7,82 @@ class ContactsDrawer extends StatelessWidget {
   ContactsDrawer({Key key, this.employer}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        // padding: EdgeInsets.zero,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.zero,
-            child: DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      employer.name ?? 'Όνομα Εταιρείας',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
+    return SafeArea(
+      child: Drawer(
+        child: ListView(
+          // padding: EdgeInsets.zero,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.zero,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  // gradient: LinearGradient(
+                  //   colors: [
+                  //     Theme.of(context).primaryColorDark,
+                  //     Theme.of(context).primaryColor,
+                  //   ],
+                  //   begin: Alignment.topCenter,
+                  //   end: Alignment.bottomCenter,
+                  // ),
+                  color: Theme.of(context).primaryColor,
+                ),
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        employer.name ?? 'Όνομα Εταιρείας',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
                       ),
-                    ),
-                    Text(
-                      'ΑΦΜ: ${employer.afm ?? ''} ',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    Text(
-                      employer.ame != null && employer.ame.isNotEmpty ? 'ΑΜΕ: ${employer.ame}' : '',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
+                      Text(
+                        'ΑΦΜ: ${employer.afm ?? ''} ',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Text(
+                        employer.ame != null && employer.ame.isNotEmpty
+                            ? 'ΑΜΕ: ${employer.ame}'
+                            : '',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          _buildDrawerTile(
-            onTap: () {
-              // Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => UpdateEmployer(
-                          employer: employer,
-                        )),
-              );
-            },
-            icon: Icon(Icons.business),
-            title: 'Εταιρικό Προφίλ',
-          ),
-          Divider(),
-          _buildDrawerTile(
-            onTap: () => Navigator.pop(context),
-            title: 'Οδηγίες συμπλήρωσης Ε8',
-          ),
-          _buildDrawerTile(
-            onTap: () => Navigator.pop(context),
-            title: 'Disclaimer',
-          ),
-          _buildDrawerTile(
-            onTap: () => Navigator.pop(context),
-            title: 'About us',
-          ),
-        ],
+            _buildDrawerTile(
+              onTap: () {
+                // Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => UpdateEmployer(
+                            employer: employer,
+                          )),
+                );
+              },
+              icon: Icon(Icons.settings),
+              title: 'Ρυθμίσεις',
+            ),
+            Divider(),
+            _buildDrawerTile(
+              onTap: () => Navigator.pop(context),
+              title: 'Οδηγίες συμπλήρωσης Ε8',
+            ),
+            _buildDrawerTile(
+              onTap: () => Navigator.pop(context),
+              title: 'Disclaimer',
+            ),
+            _buildDrawerTile(
+              onTap: () => Navigator.pop(context),
+              title: 'About us',
+            ),
+          ],
+        ),
       ),
     );
   }

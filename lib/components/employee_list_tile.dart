@@ -19,7 +19,7 @@ class EmployeeListTile extends StatelessWidget {
   String _getInitials() =>
       _normalize(employee.lastName[0]) + _normalize(employee.firstName[0]);
 
-  String _normalize(String string) {
+  String _normalize(String char) {
     final Map<String, String> pairs = {
       'Ά': 'Α',
       'Έ': 'Ε',
@@ -33,10 +33,8 @@ class EmployeeListTile extends StatelessWidget {
       'Ϋ': 'Υ',
       'ΰ': 'Υ',
     };
-    final upper = string.toUpperCase();
+    final upper = char.toUpperCase();
     return pairs.containsKey(upper) ? pairs[upper] : upper;
-    // if (pairs.containsKey(upper)) return pairs[upper];
-    // return upper;
   }
 
   final RegExp exp = RegExp(r'[^{0-9}]');

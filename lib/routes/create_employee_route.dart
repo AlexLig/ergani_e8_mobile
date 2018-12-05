@@ -137,13 +137,13 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(top: 14.0),
+                padding: const EdgeInsets.only(top: 25.0),
                 child: ListView(
                   physics: BouncingScrollPhysics(),
                   children: <Widget>[
                     _buildNamesListTile(),
-                    ListTile(title: _buildFirstName()),
-                    ListTile(title: _buildLastName()),
+                    // ListTile(title: _buildFirstName()),
+                    // ListTile(title: _buildLastName()),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 0.0),
                       child: _buildAfmField(),
@@ -187,7 +187,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         else
           FocusScope.of(context).requestFocus(lastNameFocus);
       },
-      autofocus: true,
+      // autofocus: true,
       autovalidate: _shouldValidateOnChangeFirstName,
       focusNode: firstNameFocus,
       decoration: InputDecoration(
@@ -220,8 +220,8 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       decoration: InputDecoration(
         labelText: 'Επίθετο',
         // border: OutlineInputBorder(),
-        suffixIcon: Icon(Icons.contacts),
-        prefixIcon: Icon(Icons.perm_contact_calendar),
+        prefixIcon: Icon(Icons.contacts),
+        // prefixIcon: Icon(Icons.perm_contact_calendar),
       ),
       validator: (value) {
         if (value.isEmpty) return 'Προσθέστε επίθετο';
@@ -249,7 +249,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
             return 'Προσθέστε ΑΦΜ';
           } else if (afm.length != length) {
             return 'Εισάγετε $length αριθμούς';
-          } else if (!afm.split('').every(isNotNullInt)) {
+          } else if (!afm.split('').every(isInt)) {
             return 'Ο ΑΦΜ αποτελείται μόνο απο αριθμούς';
           }
           if (_afmExist) {
@@ -271,32 +271,35 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   }
 
   _buildWorkHours() {
-    return ListTile(
-      title: DecoratedBox(
-        decoration: BoxDecoration(
-          // color: Colors.grey[100],
-          border: Border.all(color: Colors.grey[300]),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              ListTile(
-                title: Text(
-                  'Ωράριο Εργασίας',
-                  textAlign: TextAlign.center,
+    return Padding(
+      padding: const EdgeInsets.only(top: 30.0),
+      child: ListTile(
+        title: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(vertical: 0.0),
+                  title: Text(
+                    'Ωράριο Εργασίας',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              TimePickerTile(
-                isReset: false,
-                workStart: _workStart,
-                workFinish: _workFinish,
-                onSelectStartTime: () => _selectWorkStart(context),
-                onSelectFinishTime: () => _selectWorkFinish(context),
-              ),
-            ],
+                TimePickerTile(
+                  isReset: false,
+                  workStart: _workStart,
+                  workFinish: _workFinish,
+                  onSelectStartTime: () => _selectWorkStart(context),
+                  onSelectFinishTime: () => _selectWorkFinish(context),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -313,7 +316,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       setState(() {
         _workStart = startTime;
         if (!_isWorkFinishTouched)
-          _workFinish = minutesToTime(timeToMinutes(startTime) + 8 * 60);
+          _workFinish = addToTimeOfDay(_workStart, hour: 8);
       });
   }
 

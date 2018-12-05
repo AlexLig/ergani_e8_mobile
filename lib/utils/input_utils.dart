@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
 int getIntLength(int number) => number.abs().toString().length;
-bool isNotNullInt(String val) => int.tryParse(val) != null;
+bool isInt(String val) => int.tryParse(val) != null;
+bool hasOnlyInt(String val) => val.split('').every(isInt);
 
 validateNumericInput(
-    {@required String numValue, @required String label, @required int length}) {
-  if (numValue.isEmpty) {
+    {@required String input, @required String label, @required int length}) {
+  if (input.isEmpty) {
     return 'Προσθέστε $label';
-  } else if (numValue.length != length) {
+  } else if (input.length != length) {
     return 'Προσθέστε $length αριθμούς';
-  } else if (!numValue.split('').every(isNotNullInt)) {
+  } else if (!hasOnlyInt(input)) {
     return 'Ο $label αποτελείται μόνο απο αριθμούς';
   }
 }

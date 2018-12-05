@@ -124,7 +124,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Εταιρικό Προφίλ'),
+        title: Text('Ρυθμίσεις'),
       ),
       body: Center(
         child: Form(
@@ -133,6 +133,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
             children: [
               Expanded(
                 child: ListView(
+                  padding: EdgeInsets.only(top: 20.0),
                   physics: BouncingScrollPhysics(),
                   children: <Widget>[
                     _buildNameField(),
@@ -166,7 +167,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
         autovalidate: _shouldValidateOnChangeName,
-        autofocus: true,
+        autofocus: false,
         focusNode: _nameFocus,
         controller: _nameController,
         onFieldSubmitted: (value) {
@@ -193,7 +194,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
           prefixIcon: Icon(Icons.work),
         ),
         validator: (afm) =>
-            validateNumericInput(numValue: afm, length: length, label: 'ΑΦΜ'),
+            validateNumericInput(input: afm, length: length, label: 'ΑΦΜ'),
         autovalidate: _shouldValidateOnChangeAfm,
         maxLength: length,
         onFieldSubmitted: (value) {
@@ -234,7 +235,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
       validator: (ame) {
         if (_hasAme)
           return validateNumericInput(
-              numValue: ame, length: length, label: 'ΑΜΕ');
+              input: ame, length: length, label: 'ΑΜΕ');
       },
       autovalidate: _shouldValidateOnChangeAme, //
       onFieldSubmitted: (value) {
@@ -283,7 +284,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
                   validator: (number) {
                     if (number.isEmpty)
                       return 'Προσθέστε αριθμό παραλήπτη';
-                    else if (int.tryParse(number) == null)
+                    else if (!hasOnlyInt(number))
                       return 'Εισάγετε μόνο αριθμούς';
                   },
                 ),

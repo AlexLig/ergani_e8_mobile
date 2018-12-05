@@ -123,9 +123,6 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Εταιρικό Προφίλ'),
-      ),
       body: Center(
         child: Form(
           key: _formKey,
@@ -193,7 +190,7 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
           prefixIcon: Icon(Icons.work),
         ),
         validator: (afm) =>
-            validateNumericInput(numValue: afm, length: length, label: 'ΑΦΜ'),
+            validateNumericInput(input: afm, length: length, label: 'ΑΦΜ'),
         autovalidate: _shouldValidateOnChangeAfm,
         maxLength: length,
         onFieldSubmitted: (value) {
@@ -233,8 +230,7 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
       keyboardType: TextInputType.number, //
       validator: (ame) {
         if (_hasAme)
-          return validateNumericInput(
-              numValue: ame, length: length, label: 'ΑΜΕ');
+          return validateNumericInput(input: ame, length: length, label: 'ΑΜΕ');
       },
       autovalidate: _shouldValidateOnChangeAme, //
       onFieldSubmitted: (value) {
@@ -283,7 +279,7 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
                   validator: (number) {
                     if (number.isEmpty)
                       return 'Προσθέστε αριθμό παραλήπτη';
-                    else if (int.tryParse(number) == null)
+                    else if (!hasOnlyInt(number))
                       return 'Εισάγετε μόνο αριθμούς';
                   },
                 ),

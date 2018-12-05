@@ -75,6 +75,12 @@ class CreateNewEmployerState extends State<CreateNewEmployer> {
 
   void submit(context) async {
     if (this._formKey.currentState.validate()) {
+      setState(() {
+        _shouldValidateOnChangeName = false;
+        _shouldValidateOnChangeAfm = false;
+        _shouldValidateOnChangeAme = false;
+        _shouldValidateOnChangeSmsNumber = false;
+      });
       SystemChannels.textInput.invokeMethod('TextInput.hide');
 
       _formKey.currentState.save();
@@ -116,7 +122,7 @@ class CreateNewEmployerState extends State<CreateNewEmployer> {
       setState(() {
         _shouldValidateOnChangeName = true;
         _shouldValidateOnChangeAfm = true;
-        _shouldValidateOnChangeAme = true;
+        _shouldValidateOnChangeAme = _hasAme ? true : false;
         _shouldValidateOnChangeSmsNumber = true;
       });
   }
@@ -341,10 +347,8 @@ class CreateNewEmployerState extends State<CreateNewEmployer> {
     }
   }
 
-  _buildInfoTile() {
-    return InfoTile(
+  _buildInfoTile() => InfoTile(
       text:
           'Για την υποβολή Ε8 με SMS, η αποστολή μηνύματος γίνεται στον αριθμό 54001.',
     );
-  }
 }

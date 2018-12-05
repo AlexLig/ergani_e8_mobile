@@ -123,7 +123,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
       setState(() {
         _shouldValidateOnChangeName = true;
         _shouldValidateOnChangeAfm = true;
-        _shouldValidateOnChangeAme = true;
+        _shouldValidateOnChangeAme = _hasAme ? true : false;
         _shouldValidateOnChangeSmsNumber = true;
       });
   }
@@ -239,12 +239,12 @@ class UpdateEmployerState extends State<UpdateEmployer> {
   _buildAmeField() {
     final length = 10;
     return TextFormField(
-      keyboardType: TextInputType.number, //
+      keyboardType: TextInputType.number,
       validator: (ame) {
         if (_hasAme)
           return validateNumericInput(input: ame, length: length, label: 'ΑΜΕ');
       },
-      autovalidate: _shouldValidateOnChangeAme, //
+      autovalidate: _shouldValidateOnChangeAme,
       onFieldSubmitted: (value) {
         if (isNotValidInt(value, length))
           setState(() => _shouldValidateOnChangeAme = true);
@@ -349,10 +349,8 @@ class UpdateEmployerState extends State<UpdateEmployer> {
     }
   }
 
-  _buildInfoTile() {
-    return InfoTile(
-      text:
-          'Για την υποβολή Ε8 με SMS, η αποστολή μηνύματος γίνεται στον αριθμό 54001.',
-    );
-  }
+  _buildInfoTile() => InfoTile(
+        text:
+            'Για την υποβολή Ε8 με SMS, η αποστολή μηνύματος γίνεται στον αριθμό 54001.',
+      );
 }

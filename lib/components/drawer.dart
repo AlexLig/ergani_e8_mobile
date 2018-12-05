@@ -1,6 +1,6 @@
 import 'package:ergani_e8/components/drawer_info_routes/contact.dart';
 import 'package:ergani_e8/components/drawer_info_routes/disclaimer.dart';
-import 'package:ergani_e8/components/e8Instructions.dart';
+import 'package:ergani_e8/components/drawer_info_routes/e8Instructions.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/settings_route.dart';
 import 'package:flutter/material.dart';

@@ -12,9 +12,9 @@ class E8Instructions extends StatelessWidget {
   final String requirementThree =
       'Ο εργαζόμενος να είναι στην τρέχουσα κατάσταση (μενού [Μητρώα] - [Στοιχεία Προσωπικού] και επιλογή πεδίου [Τρέχουσα Κατάσταση]).';
   final String infoParagraphOne =
-      'Το γραπτό μήνυμα αναφέρεται στο χρονικό διάστημα των 24 ωρών που ακολουθεί την υποβολή.Καταχώρηση αριθμών κινητών τηλεφώνων ';
+      'Το γραπτό μήνυμα αναφέρεται στο χρονικό διάστημα των 24 ωρών που ακολουθεί την υποβολή.';
   final String infoParagraphTwo =
-      'Απαραίτητη προϋπόθεση για την υποβολή νέου-Ε8 με γραπτό μήνυμα (SMS) είναι να έχουν καταχωρηθεί και να είναι ενεργοί στο ΠΣ ΕΡΓΑΝΗ οι αριθμοί των κινητών τηλεφώνων, από τα οποία πρόκειται να πραγματοποιηθούν υποβολές. Καταχωρώντας τιμές στα πεδία [Ημερομηνία Από] και [Ημερομηνία Έως], ο χρήστης επιλέγει για ποιο χρονικό διάστημα θα είναι ενεργός ο κάθε τηλεφωνικός αριθμός.';
+      'Καταχώρηση αριθμών κινητών τηλεφώνων: Απαραίτητη προϋπόθεση για την υποβολή νέου-Ε8 με γραπτό μήνυμα (SMS) είναι να έχουν καταχωρηθεί και να είναι ενεργοί στο ΠΣ ΕΡΓΑΝΗ οι αριθμοί των κινητών τηλεφώνων, από τα οποία πρόκειται να πραγματοποιηθούν υποβολές. Καταχωρώντας τιμές στα πεδία [Ημερομηνία Από] και [Ημερομηνία Έως], ο χρήστης επιλέγει για ποιο χρονικό διάστημα θα είναι ενεργός ο κάθε τηλεφωνικός αριθμός.';
   final String infoParagraphThree =
       'Δεν υπάρχει δυνατότητα διαγραφής των εισαχθέντων τηλεφωνικών αριθμών, παρά μόνο απενεργοποίησης τους, επιλέγοντας τιμές για τα πεδία [Ημερομηνία Από] και [Ημερομηνία Έως] προγενέστερες από την τρέχουσα ημερομηνία.';
   final String infoSourceLabel = 'Πηγή: Taxheaven © ';
@@ -27,15 +27,15 @@ class E8Instructions extends StatelessWidget {
       appBar: AppBar(
         title: Text('Πληροφορίες για το έντυπο Ε8'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(4, 24, 4, 4),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: ListView(children: _buildTextList()),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
+              children: _buildTextList(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -53,7 +53,10 @@ class E8Instructions extends StatelessWidget {
     List<Widget> instructionList = list.map((item) {
       return Padding(
         padding: EdgeInsets.all(8.0),
-        child: Text(item,softWrap: true,),
+        child: Text(
+          item,
+          softWrap: true,
+        ),
       );
     }).toList();
     instructionList.add(_buildSourceLink());

@@ -25,7 +25,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   // FocusNode employeeFocusNode;
   Employee _employee;
   TimeOfDay _workStart, _workFinish;
-
+  BuildContext _scaffoldContext;
   var _firstNameController = TextEditingController();
   var _lastNameController = TextEditingController();
   var _afmController = TextEditingController();
@@ -129,39 +129,42 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         title:
             Text('${_employee == null ? 'Προσθήκη' : 'Επεξεργασία'} υπαλλήλου'),
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 25.0),
-                child: ListView(
-                  physics: BouncingScrollPhysics(),
-                  children: <Widget>[
-                    _buildNamesListTile(),
-                    // ListTile(title: _buildFirstName()),
-                    // ListTile(title: _buildLastName()),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 0.0),
-                      child: _buildAfmField(),
-                    ),
-                    _buildWorkHours(),
-                  ],
+      body: Builder(builder: (context) {
+        _scaffoldContext = context;
+        return Form(
+          key: _formKey,
+          child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 25.0),
+                  child: ListView(
+                    physics: BouncingScrollPhysics(),
+                    children: <Widget>[
+                      _buildNamesListTile(),
+                      // ListTile(title: _buildFirstName()),
+                      // ListTile(title: _buildLastName()),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 0.0),
+                        child: _buildAfmField(),
+                      ),
+                      _buildWorkHours(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Column(
-              children: [
-                SubmitButtonMaxWidth(onSubmit: () => _submit(context)),
-                CancelButtonMaxWidth(),
-              ],
-            )
-          ],
-        ),
-      ),
+              Column(
+                children: [
+                  SubmitButtonMaxWidth(onSubmit: () => _submit(context)),
+                  CancelButtonMaxWidth(),
+                ],
+              )
+            ],
+          ),
+        );
+      }),
     );
   }
 
@@ -326,10 +329,33 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       initialTime: _workFinish,
     );
 
-    if (finishTime is TimeOfDay)
-      setState(() {
-        _isWorkFinishTouched = true;
-        _workFinish = finishTime;
-      });
+    if (finishTime != null && finishTime != _workStart) {
+      if (!isLater(finishTime, _workStart)) {
+        Scaffold.of(_scaffoldContext).showSnackBar(
+          SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Icon(Icons.warning),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text('Η ώρα λήξης δεν μπορεί να είναι'),
+                    Text('πριν την ώρα έναρξης.'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      } else
+        setState(() {
+          _isWorkFinishTouched = true;
+          _workFinish = finishTime;
+        });
+    }
   }
 }

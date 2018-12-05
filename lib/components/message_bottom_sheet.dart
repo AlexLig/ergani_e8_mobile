@@ -4,7 +4,7 @@ class MessageBottomSheet extends StatelessWidget {
   final Function onSend;
   final TextEditingController smsNumberController, senderController;
   final String message;
-  bool isLoading;
+  final bool isLoading;
 
   MessageBottomSheet({
     Key key,

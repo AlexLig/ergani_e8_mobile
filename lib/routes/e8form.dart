@@ -280,24 +280,22 @@ class E8formState extends State<E8form> {
       String address = _employer.smsNumber;
       SmsMessage message = SmsMessage(address, _erganiCode);
       message.onStateChanged.listen((state) {
-        if (state == SmsMessageState.Sent) {
-          setState(() => _isLoading = true);
-          _sendingSmsSnackBar(scaffoldContext, 'Αποστολή μηνύματος...');
-        } else if (state == SmsMessageState.Delivered) {
-          setState(() => _isLoading = false);
+        if (state == SmsMessageState.Delivered) {
           _sucessSmsSnackBar(
               scaffoldContext, 'Το μήνυμα παραδόθηκε με επιτυχία');
+          setState(() => _isLoading = false);
           print('DELIVERY SUCESS');
         } else if (state == SmsMessageState.Fail) {
-          setState(() => _isLoading = false);
           _warningSmsSnackBar(scaffoldContext, 'Αποτυχία αποστολής μηνύματος');
+          setState(() => _isLoading = false);
         }
       });
       sender.sendSms(message);
+      setState(() => _isLoading = true);
     } else {
-      setState(() => _isLoading = false);
       _warningSmsSnackBar(
           scaffoldContext, 'Κάτι δεν πήγε καλά. Ξαναπροσπαθήστε');
+      setState(() => _isLoading = false);
     }
   }
 

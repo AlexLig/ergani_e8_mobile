@@ -13,10 +13,10 @@ class CreateNewEmployer extends StatefulWidget {
   const CreateNewEmployer({BuildContext context, Key key, this.employer})
       : super(key: key);
   @override
-  State<StatefulWidget> createState() => UpdateEmployerState();
+  State<StatefulWidget> createState() => CreateNewEmployerState();
 }
 
-class UpdateEmployerState extends State<CreateNewEmployer> {
+class CreateNewEmployerState extends State<CreateNewEmployer> {
   final _formKey = GlobalKey<FormState>();
   ErganiDatabase _erganiDatabase = ErganiDatabase();
 
@@ -124,7 +124,7 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: SafeArea(
         child: Form(
           key: _formKey,
           child: Column(
@@ -133,6 +133,11 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
                 child: ListView(
                   physics: BouncingScrollPhysics(),
                   children: <Widget>[
+                    Container(
+                      color: Colors.grey[300],
+                      height: 150.0,
+                      child: Center(child: Text('LOGO', style: TextStyle(color: Colors.white))),
+                    ),
                     _buildNameField(),
                     _buildAfmField(),
                     // SizedBox(height: 20.0,),
@@ -164,7 +169,6 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
         textCapitalization: TextCapitalization.words,
         textInputAction: TextInputAction.next,
         autovalidate: _shouldValidateOnChangeName,
-        autofocus: true,
         focusNode: _nameFocus,
         controller: _nameController,
         onFieldSubmitted: (value) {
@@ -268,7 +272,7 @@ class UpdateEmployerState extends State<CreateNewEmployer> {
         children: [
           Row(
             children: <Widget>[
-              SizedBox(width: 90.0),
+              SizedBox(width: 70.0),
               Expanded(
                 child: TextFormField(
                   style: TextStyle(fontSize: 18.0, color: Colors.grey[900]),

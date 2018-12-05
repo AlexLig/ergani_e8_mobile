@@ -233,6 +233,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
   _buildAmeField() {
     final length = 10;
     return TextFormField(
+
       keyboardType: TextInputType.number, //
       validator: (ame) {
         if (_hasAme)
@@ -249,7 +250,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
         hasFloatingPlaceholder: false,
         contentPadding: EdgeInsets.only(bottom: 5.0, top: 20.0),
       ),
-      style: TextStyle(color: _hasAme ? Colors.grey[900] : Colors.grey[300]),
+      style: TextStyle(color: _hasAme ? Colors.grey[900] : Colors.grey[300], fontSize: 16.0),
       enabled: _hasAme,
       textInputAction:
           _canEditSmsNumber ? TextInputAction.next : TextInputAction.done,
@@ -273,7 +274,7 @@ class UpdateEmployerState extends State<UpdateEmployer> {
         children: [
           Row(
             children: <Widget>[
-              SizedBox(width: 90.0),
+              SizedBox(width: 70.0),
               Expanded(
                 child: TextFormField(
                   style: TextStyle(fontSize: 18.0, color: Colors.grey[900]),

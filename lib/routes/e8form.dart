@@ -30,6 +30,8 @@ class E8formState extends State<E8form> {
   TextEditingController _smsNumberController = TextEditingController();
   TextEditingController _senderController = TextEditingController();
 
+  BuildContext _scaffoldContext;
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +40,222 @@ class E8formState extends State<E8form> {
     _sliderValue = 0.5;
     _smsNumberController.text = _employer.smsNumber;
     _senderController.text = _employer.name;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isFirstBuild && !_isReset) {
+      // _overtimeStart = _employee.workFinish ?? TimeOfDay(hour: 16, minute: 00);
+      final remainder = TimeOfDay.now().minute.remainder(10);
+      _overtimeStart = addToTimeOfDay(
+        TimeOfDay.now(),
+        minute: remainder == 0
+            ? 5
+            : 10 - remainder < 5
+                ? 10 - remainder + 5
+                : 10 - remainder, // Add 5 up to 9 mins.
+      );
+      _overtimeFinish =
+          addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
+
+      _isFirstBuild = false;
+    }
+    _erganiCode = e8Parser(
+      employer: _employer,
+      employee: _employee,
+      start: _isReset ? TimeOfDay(hour: 00, minute: 00) : _overtimeStart,
+      finish: _isReset ? TimeOfDay(hour: 00, minute: 00) : _overtimeFinish,
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Έντυπο Ε8'),
+      ),
+      body: Builder(
+        builder: (context) {
+          _scaffoldContext = context;
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                child: ListView(
+                  physics: BouncingScrollPhysics(),
+                  children: <Widget>[_buildCard()],
+                ),
+              ),
+              Column(
+                children: [
+                  MessageBottomSheet(
+                    handleSend: () => _handleSend(context),
+                    message: _erganiCode,
+                    senderController: _senderController,
+                    smsNumberController: _smsNumberController,
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+      backgroundColor: Theme.of(context).canvasColor,
+    );
+  }
+
+  _buildCard() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: Card(
+        // color: Colors.grey[200],
+        elevation: 0.3,
+        child: Column(
+          children: [
+            EmployeeListTile(employee: _employee),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Divider(),
+            ),
+            SwitchListTile(
+              onChanged: (bool newValue) => setState(() => _isReset = newValue),
+              value: _isReset,
+              // secondary: const Icon(Icons.cancel),
+              title: Text(
+                'Ακύρωση Προηγούμενης Υποβολής',
+                style: TextStyle(
+                  color: _isReset ? Colors.grey[900] : Colors.grey[400],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            TimePickerTile(
+              workStart: _overtimeStart,
+              workFinish: _overtimeFinish,
+              onSelectStartTime: () => _selectStartTime(context),
+              onSelectFinishTime: () => _selectFinishTime(context),
+              isReset: _isReset,
+            ),
+            _buildActiveSlider()
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<Null> _selectStartTime(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: _overtimeStart,
+    );
+    if (picked != null && picked != _overtimeStart) {
+      if (isLater(TimeOfDay.now(), picked)) {
+        Scaffold.of(_scaffoldContext).showSnackBar(
+          SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Icon(Icons.warning),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text('Η δήλωση υπερωρίας γίνεται μόνο '),
+                    Text('πριν την έναρξη της.'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      } else
+        setState(() {
+          _overtimeStart = picked;
+          _overtimeFinish = addToTimeOfDay(
+            _overtimeStart,
+            minute: (_sliderValue * 60).toInt(),
+          );
+        });
+    }
+  }
+
+  Future<Null> _selectFinishTime(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: _overtimeFinish,
+    );
+    if (picked != null && picked != _overtimeFinish) {
+      if (!isLater(picked, _overtimeStart)) {
+        Scaffold.of(_scaffoldContext).showSnackBar(
+          SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Icon(Icons.warning),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text('Η λήξη υπερωρίας δεν μπορεί να είναι'),
+                    Text('πριν την έναρξή της.'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      } else
+        setState(() => _overtimeFinish = picked);
+    }
+  }
+
+  // TODO : set context to always use 24hr. Non intl.
+  // TODO: Prevent from choosing overtime later than Time.now()
+  _buildActiveSlider() {
+    var value = (_sliderValue * 2) % 2;
+    var sliderValue = value == 0 ? _sliderValue.round() : _sliderValue;
+
+    return Column(
+      children: <Widget>[
+        ListTile(
+          title: Text(
+            'Ώρες Υπερωρίας',
+            style: TextStyle(
+              fontSize: 18.0,
+              // color: _isReset ? Colors.blueGrey[100] : Colors.grey[900],
+              color: _isReset ? Colors.grey[400] : Colors.grey[900],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: ListTile(
+            title: Slider(
+              divisions: 5,
+              min: 0.5,
+              max: 3.0,
+              label: _sliderValue == 1 || _sliderValue == 1.5
+                  ? '$sliderValue ώρα'
+                  : '$sliderValue ώρες',
+              value: _sliderValue,
+              onChanged:
+                  _isReset ? null : (value) => _handleSliderChange(value),
+              // inactiveColor: Colors.grey[200],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  void _handleSliderChange(newSliderValue) {
+    setState(() {
+      _sliderValue = newSliderValue;
+      _overtimeFinish =
+          addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
+    });
   }
 
   // TODO: Implement send SMS. Remove Dialog.
@@ -120,248 +338,6 @@ class E8formState extends State<E8form> {
           ],
         ),
       ),
-    );
-  }
-
-  Future<Null> _selectStartTime(BuildContext context) async {
-    final TimeOfDay picked = await showTimePicker(
-      context: context,
-      initialTime: _overtimeStart,
-    );
-    if (picked != null && picked != _overtimeStart) {
-      if (isLater(TimeOfDay.now(), picked)) {
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(Icons.warning),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text('Η δήλωση υπερωρίας γίνεται μόνο '),
-                    Text('πριν την έναρξη της.'),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      } else
-        setState(() {
-          _overtimeStart = picked;
-          _overtimeFinish = addToTimeOfDay(
-            _overtimeStart,
-            minute: (_sliderValue * 60).toInt(),
-          );
-        });
-    }
-  }
-
-  Future<Null> _selectFinishTime(BuildContext context) async {
-    final TimeOfDay picked = await showTimePicker(
-      context: context,
-      initialTime: _overtimeFinish,
-    );
-    if (picked != null && picked != _overtimeFinish) {
-      if (!isLater(picked, _overtimeStart)) {
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(Icons.warning),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text('Η ώρα λήξης δεν μπορεί να είναι'),
-                    Text('πριν την ώρα έναρξης'),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      } else
-        setState(() => _overtimeFinish = picked);
-    }
-  }
-
-  void _handleSliderChange(newSliderValue) {
-    setState(() {
-      _sliderValue = newSliderValue;
-      _overtimeFinish =
-          addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_isFirstBuild && !_isReset) {
-      // _overtimeStart = _employee.workFinish ?? TimeOfDay(hour: 16, minute: 00);
-      final remainder = TimeOfDay.now().minute.remainder(10);
-      _overtimeStart = addToTimeOfDay(
-        TimeOfDay.now(),
-        minute: remainder == 0
-            ? 5
-            : 10 - remainder < 5
-                ? 10 - remainder + 5
-                : 10 - remainder, // Add 5 up to 9 mins.
-      );
-      _overtimeFinish =
-          addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
-
-      _isFirstBuild = false;
-    }
-    _erganiCode = e8Parser(
-      employer: _employer,
-      employee: _employee,
-      start: _isReset ? TimeOfDay(hour: 00, minute: 00) : _overtimeStart,
-      finish: _isReset ? TimeOfDay(hour: 00, minute: 00) : _overtimeFinish,
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Έντυπο Ε8'),
-      ),
-      body: Builder(
-        builder: (context) {
-          return DecoratedBox(
-            decoration: BoxDecoration(
-              // color: Theme.of(context).accentColor,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  // Theme.of(context).primaryColor,
-                  // Theme.of(context).accentColor,
-                  Theme.of(context).canvasColor,
-                  Theme.of(context).canvasColor,
-                  // Colors.white,
-                  // Colors.white,
-                  // Theme.of(context).primaryColorLight,
-                  // Theme.of(context).primaryColorLight,
-                  //Colors.teal[50],
-                  // Colors.grey[150],
-                  // Colors.grey[150],
-                  // Theme.of(context).accentColor,
-                  // Theme.of(context).primaryColorDark,
-                ],
-                tileMode: TileMode.mirror,
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: ListView(
-                    physics: BouncingScrollPhysics(),
-                    children: <Widget>[
-                      _buildCard(),
-                    ],
-                  ),
-                ),
-                Column(
-                  children: [
-                    MessageBottomSheet(
-                      handleSend: () => _handleSend(context),
-                      message: _erganiCode,
-                      senderController: _senderController,
-                      smsNumberController: _smsNumberController,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-      backgroundColor: Theme.of(context).canvasColor,
-    );
-  }
-
-  _buildCard() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: Card(
-        // color: Colors.grey[200],
-        elevation: 0.3,
-        child: Column(
-          children: [
-            EmployeeListTile(employee: _employee),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Divider(),
-            ),
-            SwitchListTile(
-              onChanged: (bool newValue) => setState(() => _isReset = newValue),
-              value: _isReset,
-              // secondary: const Icon(Icons.cancel),
-              title: Text(
-                'Ακύρωση προηγούμενης υποβολής',
-                style: TextStyle(
-                  color: _isReset ? Colors.grey[900] : Colors.grey[400],
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            TimePickerTile(
-              workStart: _overtimeStart,
-              workFinish: _overtimeFinish,
-              onSelectStartTime: () => _selectStartTime(context),
-              onSelectFinishTime: () => _selectFinishTime(context),
-              isReset: _isReset,
-            ),
-            _buildActiveSlider()
-          ],
-        ),
-      ),
-    );
-  }
-
-  // TODO : set context to always use 24hr. Non intl.
-  // TODO: Prevent from choosing overtime later than Time.now()
-  _buildActiveSlider() {
-    var value = (_sliderValue * 2) % 2;
-    var sliderValue = value == 0 ? _sliderValue.round() : _sliderValue;
-
-    return Column(
-      children: <Widget>[
-        ListTile(
-          title: Text(
-            'Ώρες Υπερωρίας',
-            style: TextStyle(
-              fontSize: 18.0,
-              // color: _isReset ? Colors.blueGrey[100] : Colors.grey[900],
-              color: _isReset ? Colors.grey[400] : Colors.grey[900],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: ListTile(
-            title: Slider(
-              divisions: 5,
-              min: 0.5,
-              max: 3.0,
-              label: _sliderValue == 1 || _sliderValue == 1.5
-                  ? '$sliderValue ώρα'
-                  : '$sliderValue ώρες',
-              value: _sliderValue,
-              onChanged:
-                  _isReset ? null : (value) => _handleSliderChange(value),
-              // inactiveColor: Colors.grey[200],
-            ),
-          ),
-        )
-      ],
     );
   }
 }

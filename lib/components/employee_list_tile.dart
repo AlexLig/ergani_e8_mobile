@@ -16,9 +16,27 @@ class EmployeeListTile extends StatelessWidget {
     this.onTap,
   }) : super(key: key);
 
-  String _getInitials() {
-    return this.employee.lastName[0].toUpperCase() +
-        this.employee.firstName[0].toUpperCase();
+  String _getInitials() =>
+      _normalize(employee.lastName[0]) + _normalize(employee.firstName[0]);
+
+  String _normalize(String string) {
+    final Map<String, String> pairs = {
+      'Ά': 'Α',
+      'Έ': 'Ε',
+      'Ή': 'Η',
+      'Ί': 'Ι',
+      'Ό': 'Ο',
+      'Ύ': 'Υ',
+      'Ώ': 'Ω',
+      'Ϊ': 'Ι',
+      'ΐ': 'I',
+      'Ϋ': 'Υ',
+      'ΰ': 'Υ',
+    };
+    final upper = string.toUpperCase();
+    return pairs.containsKey(upper) ? pairs[upper] : upper;
+    // if (pairs.containsKey(upper)) return pairs[upper];
+    // return upper;
   }
 
   final RegExp exp = RegExp(r'[^{0-9}]');

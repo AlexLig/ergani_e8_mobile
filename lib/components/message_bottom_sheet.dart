@@ -17,10 +17,11 @@ class MessageBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PhysicalModel(
-      borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+    return Card(
+      // borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+      // borderRadius: BorderRadius.circular(4),
       color: Colors.white,
-      elevation: 7.0,
+      elevation: 2.0,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: Column(

@@ -1,6 +1,7 @@
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/utilFunctions.dart';
+import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -174,14 +175,12 @@ class ErganiDatabase {
 
 //TODO: validations b4 writing into db. 1) upper limit for work time 2) afm lenght
   bool _validateEmployee(Employee employee) {
-    return int.tryParse(employee.afm) != null &&
-        int.tryParse(employee.afm).abs().toString().length == 9 &&
+    return hasOnlyInt(employee.afm) &&
+        employee.afm.length == 9 &&
         employee.firstName.length < 200 &&
         employee.lastName.length < 200 &&
         employee.workFinish is TimeOfDay &&
-        employee.workStart is TimeOfDay &&
-        timeToMinutes(employee.workFinish) < 1440 &&
-        isLater(employee.workFinish, employee.workStart);
+        employee.workStart is TimeOfDay;
   }
 
   // Employer Table operations
@@ -206,7 +205,8 @@ class ErganiDatabase {
     return result;
   }
 
-  Future<List<Map<String, dynamic>>> getEmployersMapListByAfm(String afm) async {
+  Future<List<Map<String, dynamic>>> getEmployersMapListByAfm(
+      String afm) async {
     Database db = await this.db;
     var result = db
         .rawQuery('SELECT * FROM $employerTable WHERE $colEmployerAfm = $afm');

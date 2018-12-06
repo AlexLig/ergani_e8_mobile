@@ -299,28 +299,27 @@ class E8formState extends State<E8form> {
     });
   }
 
-  // TODO: Implement send SMS. Remove Dialog.
   _handleSend(scaffoldContext) async {
     if (_employer != null) {
       SmsSender sender = SmsSender();
       String address = _employer.smsNumber;
       SmsMessage message = SmsMessage(address, _erganiCode);
       message.onStateChanged.listen((state) {
-        if (state == SmsMessageState.Delivered) {
-          _sucessSmsSnackBar(
-              scaffoldContext, 'Το μήνυμα παραδόθηκε με επιτυχία');
+        if (state == SmsMessageState.Sending) {
+          setState(() => _isLoading = true);
+        } else if (state == SmsMessageState.Sent) {
+          _sucessSmsSnackBar(scaffoldContext, 'Το μήνυμα εστάλη με επιτυχία');
           setState(() => _isLoading = false);
-          print('DELIVERY SUCESS');
         } else if (state == SmsMessageState.Fail) {
           _warningSmsSnackBar(scaffoldContext, 'Αποτυχία αποστολής μηνύματος');
           setState(() => _isLoading = false);
         }
       });
-      sender.sendSms(message);
-      setState(() => _isLoading = true);
+
+      await sender.sendSms(message);
     } else {
-      _warningSmsSnackBar(
-          scaffoldContext, 'Κάτι δεν πήγε καλά. Ξαναπροσπαθήστε');
+      _warningSmsSnackBar(scaffoldContext,
+          'Σφάλμα αποστολής. Ελέγξτε τα στοιχεία της εταιρίας.');
       setState(() => _isLoading = false);
     }
   }

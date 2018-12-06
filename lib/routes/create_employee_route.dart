@@ -107,14 +107,34 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       if (_employee == null && !_afmExist) {
         result = await _erganiDatabase.createEmployee(employeeToSubmit);
       } else if (_employee is Employee && !_afmExist) {
-        await _erganiDatabase.deleteEmployee(_employee);
-        result = await _erganiDatabase.createEmployee(employeeToSubmit);
+        result = await _erganiDatabase.deleteEmployee(_employee);
+        if (result != 0)
+          result = await _erganiDatabase.createEmployee(employeeToSubmit);
       }
 
       if (result != 0)
         Navigator.pop(context, employeeToSubmit);
       else
-        Navigator.pop(context);
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            duration: Duration(seconds: 1),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Icon(Icons.warning),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text('Υπήρξε σφάλμα κατά την αποθήκευση. Προσπαθήστε ξανά.'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
 
       _firstNameController.clear();
       _lastNameController.clear();
@@ -197,13 +217,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         else
           FocusScope.of(context).requestFocus(lastNameFocus);
       },
-      // autofocus: true,
       autovalidate: _shouldValidateOnChangeFirstName,
       focusNode: firstNameFocus,
       decoration: InputDecoration(
         labelText: 'Όνομα',
-        // border: OutlineInputBorder(
-        //     borderSide: BorderSide(color: Theme.of(context).accentColor)),
         prefixIcon: Icon(Icons.person),
       ),
       validator: (value) {
@@ -229,10 +246,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       focusNode: lastNameFocus,
       decoration: InputDecoration(
         labelText: 'Επίθετο',
-        // border: OutlineInputBorder(),
         prefixIcon: Icon(Icons.contacts),
-        // prefixIcon: Icon(Icons.perm_contact_calendar),
-        // prefixIcon: Icon(Icons.person_outline),
       ),
       validator: (value) {
         if (value.isEmpty) return 'Προσθέστε επίθετο';
@@ -250,9 +264,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         focusNode: afmFocus,
         textInputAction: TextInputAction.done,
         decoration: InputDecoration(
-          //DONE
           labelText: 'ΑΦΜ',
-          // border: OutlineInputBorder(), //
           prefixIcon: Icon(Icons.work),
         ),
         validator: (afm) {
@@ -266,8 +278,6 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
           if (_afmExist) {
             return 'Ο ΑΦΜ χρησιμοποιείται ήδη';
           }
-          // else
-          //   return validateNumericInput(numValue: afm, label: 'ΑΦΜ', length: length);
           _isValidAfm = true;
         },
         autovalidate: _shouldValidateOnChangeAfm,
@@ -330,7 +340,6 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       setState(() {
         _workStart = startTime;
         if (!_isWorkFinishTouched) {
-          print(difference);
           _workFinish = addToTimeOfDay(_workStart, minute: difference);
         }
       });
@@ -343,33 +352,10 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       initialTime: _workFinish,
     );
 
-    if (finishTime != null && finishTime != _workStart) {
-      if (!isLater(finishTime, _workStart)) {
-        Scaffold.of(_scaffoldContext).showSnackBar(
-          SnackBar(
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(Icons.warning),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text('Η ώρα λήξης δεν μπορεί να είναι'),
-                    Text('πριν την ώρα έναρξης.'),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      } else
-        setState(() {
-          _isWorkFinishTouched = true;
-          _workFinish = finishTime;
-        });
-    }
+    if (finishTime != null)
+      setState(() {
+        _isWorkFinishTouched = true;
+        _workFinish = finishTime;
+      });
   }
 }

@@ -122,32 +122,60 @@ class E8formState extends State<E8form> {
       padding: const EdgeInsets.only(top: 10.0),
       child: Card(
         // color: Colors.grey[200],
-        elevation: 0.3,
+        elevation: 0,
+        color: Colors.transparent,
         child: Column(
           children: [
             EmployeeListTile(employee: _employee),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Divider(),
             ),
             SwitchListTile(
               onChanged: (bool newValue) => setState(() => _isReset = newValue),
               value: _isReset,
-              // secondary: const Icon(Icons.cancel),
+              dense: true,
+              subtitle: Text(
+                'Μηδενικές ώρες υπερωρίας',
+                style: TextStyle(
+                  color: _isReset ? Colors.grey[700] : Colors.grey[400],
+                  fontSize: 14.0,
+                ),
+                textAlign: TextAlign.start,
+              ),
               title: Text(
                 'Ακύρωση Προηγούμενης Υποβολής',
                 style: TextStyle(
                   color: _isReset ? Colors.grey[900] : Colors.grey[400],
+                  fontSize: 16.0,
+                ),
+                textAlign: TextAlign.start,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Divider(),
+            ),
+            ListTile(
+              title: Text(
+                'Ώρες Υπερωρίας',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: _isReset ? Colors.grey[400] : Colors.grey[900],
                 ),
                 textAlign: TextAlign.center,
               ),
             ),
-            TimePickerTile(
-              workStart: _overtimeStart,
-              workFinish: _overtimeFinish,
-              onSelectStartTime: () => _selectStartTime(context),
-              onSelectFinishTime: () => _selectFinishTime(context),
-              isReset: _isReset,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: TimePickerTile(
+                workStart: _overtimeStart,
+                workFinish: _overtimeFinish,
+                onSelectStartTime: () => _selectStartTime(context),
+                onSelectFinishTime: () => _selectFinishTime(context),
+                isReset: _isReset,
+                outlined: true,
+              ),
             ),
             _buildActiveSlider()
           ],
@@ -234,18 +262,8 @@ class E8formState extends State<E8form> {
 
     return Column(
       children: <Widget>[
-        ListTile(
-          title: Text(
-            'Ώρες Υπερωρίας',
-            style: TextStyle(
-              fontSize: 18.0,
-              color: _isReset ? Colors.grey[400] : Colors.grey[900],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          padding: const EdgeInsets.only(top: 10.0),
           child: ListTile(
             title: Slider(
               divisions: 5,

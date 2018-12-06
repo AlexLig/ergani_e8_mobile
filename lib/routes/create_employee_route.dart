@@ -132,7 +132,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     return Scaffold(
       appBar: AppBar(
         title:
-            Text('${_employee == null ? 'Προσθήκη' : 'Επεξεργασία'} υπαλλήλου'),
+            Text('${_employee == null ? 'Προσθήκη' : 'Επεξεργασία'} Υπαλλήλου'),
       ),
       body: Builder(builder: (context) {
         _scaffoldContext = context;
@@ -153,7 +153,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                         // ListTile(title: _buildFirstName()),
                         // ListTile(title: _buildLastName()),
                         Padding(
-                          padding: EdgeInsets.symmetric(vertical: 0.0),
+                          padding: EdgeInsets.only(top: 8.0),
                           child: _buildAfmField(),
                         ),
                         _buildWorkHours(),
@@ -232,6 +232,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         // border: OutlineInputBorder(),
         prefixIcon: Icon(Icons.contacts),
         // prefixIcon: Icon(Icons.perm_contact_calendar),
+        // prefixIcon: Icon(Icons.person_outline),
       ),
       validator: (value) {
         if (value.isEmpty) return 'Προσθέστε επίθετο';
@@ -282,12 +283,12 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   _buildWorkHours() {
     return Padding(
-      padding: const EdgeInsets.only(top: 30.0),
+      padding: const EdgeInsets.only(top: 0),
       child: ListTile(
         title: DecoratedBox(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[300]),
-            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: Colors.transparent),
+            borderRadius: BorderRadius.circular(10),
           ),
           child: Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
@@ -295,14 +296,15 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 ListTile(
-                  contentPadding: EdgeInsets.symmetric(vertical: 0.0),
                   title: Text(
                     'Ωράριο Εργασίας',
                     textAlign: TextAlign.center,
+                    style: TextStyle(color: Theme.of(context).primaryColorDark),
                   ),
                 ),
                 TimePickerTile(
                   isReset: false,
+                  outlined: false,
                   workStart: _workStart,
                   workFinish: _workFinish,
                   onSelectStartTime: () => _selectWorkStart(context),

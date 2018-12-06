@@ -18,7 +18,7 @@ class MessageBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PhysicalModel(
-      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+      borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
       color: Colors.white,
       elevation: 7.0,
       child: Padding(
@@ -32,7 +32,6 @@ class MessageBottomSheet extends StatelessWidget {
               title: TextField(
                 enabled: false,
                 controller: senderController,
-                // decoration: InputDecoration(prefixText: 'ΑΠΟ      '),
               ),
             ),
             ListTile(
@@ -40,12 +39,15 @@ class MessageBottomSheet extends StatelessWidget {
               title: TextField(
                 enabled: false,
                 controller: smsNumberController,
-                // decoration: InputDecoration(prefixText: 'ΠΡΟΣ    '),
               ),
             ),
             ListTile(
               title: Text(message),
-              leading: Icon(Icons.message),
+              // leading: Icon(Icons.message),
+              // leading: Icon(Icons.textsms),
+              leading: Icon(Icons.chat),
+              // leading: Icon(Icons.chat_bubble),
+              // leading: Icon(Icons.chat_bubble_outline),
             ),
             ListTile(
               trailing: RaisedButton(

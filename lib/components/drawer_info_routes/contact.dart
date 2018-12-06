@@ -42,7 +42,7 @@ class Contact extends StatelessWidget {
   }
 
   _sendMail(BuildContext context, String address) async {
-    final email = 'mailto:$address?subject=Σχετικά%20με%20την%20εφαρμογή%20Ε8';
+    final email = 'mailto:$address?subject=Σχετικά%20με%20την%20εφαρμογή%20Subito%20Ε8';
     if (await canLaunch(email))
       await launch(email);
     else

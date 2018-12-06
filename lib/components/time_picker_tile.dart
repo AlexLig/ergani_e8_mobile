@@ -52,19 +52,19 @@ class TimePickerTile extends StatelessWidget {
     bool outlined,
   }) {
     return outlined
-        ? _buildRoundedButton(
+        ? _buildUnderlinedButton(
             context,
             onPressed: onPressed,
-            content: _buildButtonContent(workHour: workHour),
+            content: _buildButtonContent(context, workHour: workHour),
           )
         : _buildUnderlinedButton(
             context,
             onPressed: onPressed,
-            content: _buildButtonContent(workHour: workHour),
+            content: _buildButtonContent(context, workHour: workHour),
           );
   }
 
-  _buildButtonContent({@required TimeOfDay workHour}) {
+  _buildButtonContent(context, {@required TimeOfDay workHour}) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -77,7 +77,10 @@ class TimePickerTile extends StatelessWidget {
           padding: const EdgeInsets.only(left: 16.0),
           // child: Icon(CupertinoIcons.time,
           child: Icon(Icons.access_time,
-              color: isReset ? Colors.grey[400] : Colors.grey[600]),
+              // color: isReset ? Colors.grey[300] : Colors.grey[700]),
+              color: isReset
+                  ? Colors.grey[300]
+                  : Theme.of(context).primaryColorDark),
         ),
       ],
     );
@@ -93,10 +96,10 @@ class TimePickerTile extends StatelessWidget {
         child: content,
       ),
       borderSide: BorderSide(
-        color: Colors.grey[400],
+        color: Theme.of(context).primaryColor,
       ),
       onPressed: onPressed,
-      color: Colors.grey[100],
+      // color: Colors.grey[200],
       highlightedBorderColor: Theme.of(context).accentColor,
     );
   }
@@ -104,7 +107,12 @@ class TimePickerTile extends StatelessWidget {
   _buildUnderlinedButton(context, {@required onPressed, @required content}) {
     return FlatButton(
       shape: UnderlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).primaryColor)),
+        borderSide: BorderSide(
+            color: isReset
+                // ? Theme.of(context).primaryColorLight
+                ? Colors.grey[300]
+                : Theme.of(context).primaryColor),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: content,

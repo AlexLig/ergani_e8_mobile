@@ -55,6 +55,7 @@ class MyAppState extends State<MyApp> {
           } else
             return Container(
               color: Theme.of(context).canvasColor,
+              // color: Color(0xFF37474f),
             );
         },
       ),

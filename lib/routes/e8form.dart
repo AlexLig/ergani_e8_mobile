@@ -43,19 +43,27 @@ class E8formState extends State<E8form> {
     _senderController.text = _employer.name;
   }
 
+  TimeOfDay _roundedTimeOfDayNow() {
+    final remainder = TimeOfDay.now().minute.remainder(10);
+    return addToTimeOfDay(
+      TimeOfDay.now(),
+      minute: remainder == 0
+          ? 5
+          : 10 - remainder < 5
+              ? 10 - remainder + 5
+              : 10 - remainder, // Add 5 up to 9 mins.
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isFirstBuild && !_isReset) {
-      // _overtimeStart = _employee.workFinish ?? TimeOfDay(hour: 16, minute: 00);
-      final remainder = TimeOfDay.now().minute.remainder(10);
-      _overtimeStart = addToTimeOfDay(
-        TimeOfDay.now(),
-        minute: remainder == 0
-            ? 5
-            : 10 - remainder < 5
-                ? 10 - remainder + 5
-                : 10 - remainder, // Add 5 up to 9 mins.
-      );
+      if (_employee.workFinish == null ||
+          isLater(TimeOfDay.now(), _employee.workFinish))
+        _overtimeStart = _roundedTimeOfDayNow();
+      else
+        _overtimeStart = _employee.workFinish;
+
       _overtimeFinish =
           addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
 

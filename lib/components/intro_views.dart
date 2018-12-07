@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intro_views_flutter/Models/page_view_model.dart';
 import 'package:intro_views_flutter/intro_views_flutter.dart';
 
-// pageColor: Color(0xff666c83)
-// pageColor: Color(0xff4b5a6a)
-// pageColor: Color(0xff37474f)
+
 
 class IntroViews extends StatelessWidget {
   final pages = [
@@ -14,13 +12,18 @@ class IntroViews extends StatelessWidget {
       // pageColor: Color(0xff3b7f89),
       // pageColor: Color(0xff586971),
       bubble: Icon(Icons.save, color: Colors.white),
-      body: Text('Τα στοιχεία που εισάγετε διαμορφώνουν το έντυπο Ε8.', style: TextStyle(fontSize: 20.0),textAlign: TextAlign.center,),
-      title: Text('Εταιρικό προφίλ', style: TextStyle(fontSize: 30.0),),
-      mainImage: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Icon(Icons.account_box),
-        ],
+      body: Text(
+        'Τα στοιχεία της εταιρείας σας διαμορφώνουν το έντυπο Ε8.',
+        style: TextStyle(fontSize: 20.0),
+        textAlign: TextAlign.center,
+      ),
+      title: Text(
+        'Εταιρικό προφίλ',
+        style: TextStyle(fontSize: 30.0),
+      ),
+      mainImage: Image.asset(
+        'assets/new_employer.png',
+        alignment: Alignment.center,
       ),
 
       // textStyle: TextStyle(fontFamily: 'roboto', color: Colors.white),
@@ -29,19 +32,38 @@ class IntroViews extends StatelessWidget {
       pageColor: Color(0xffcc7f2a),
 
       bubble: Icon(Icons.person_add, color: Colors.white),
-      body: Text('Τα δεδομένα αποθηκεύονται αποκλειστικά στη συσκεή.', style: TextStyle(fontSize: 20.0),),
-      title: Text('Συλλογή υπαλλήλων', style: TextStyle(fontSize: 30.0),),
-      mainImage: Icon(Icons.account_box),
+      body: Text(
+        'Τα δεδομένα αποθηκεύονται αποκλειστικά στη συσκεή.',
+        style: TextStyle(fontSize: 20.0),
+      ),
+      title: Text(
+        'Συλλογή υπαλλήλων',
+        style: TextStyle(fontSize: 30.0),
+      ),
+      mainImage: Image.asset(
+        'assets/employee_list.png',
+        alignment: Alignment.center,
+      ),
       // textStyle: TextStyle(fontSize: 14.0),
     ),
+
     PageViewModel(
       // pageColor: Color(0xff523f50),
-      pageColor: Colors.green,
+      pageColor: Colors.teal[600],
 
       bubble: Icon(Icons.send, color: Colors.white),
-      body: Text('Επιλέξτε τον χρόνο υπερωρίας και στείλτε άμεσα το έντυπο Ε8 με SMS.', style: TextStyle(fontSize: 20.0),),
-      title: Text('Αποστολή μηνύματος', style: TextStyle(fontSize: 30.0),),
-      mainImage: Icon(Icons.account_box),
+      body: Text(
+        'Επιλέξτε τον χρόνο υπερωρίας και στείλτε άμεσα το έντυπο Ε8 με SMS.',
+        style: TextStyle(fontSize: 20.0),
+      ),
+      title: Text(
+        'Αποστολή μηνύματος',
+        style: TextStyle(fontSize: 30.0),
+      ),
+      mainImage: Image.asset(
+        'assets/e8form.png',
+        alignment: Alignment.center,
+      ),
       // textStyle: TextStyle(fontSize: 14.0),
     ),
   ];
@@ -58,11 +80,11 @@ class IntroViews extends StatelessWidget {
             );
           },
           pageButtonTextStyles: TextStyle(
-            // color: Colors.white,
-            // fontSize: 14.0,
-          ),
+              // color: Colors.white,
+              // fontSize: 14.0,
+              ),
           skipText: Text('ΠΑΡΑΛΕΙΨΗ', style: TextStyle(fontSize: 14.0)),
-          doneText: Text('ΕΓΙΝΕ'),
+          doneText: Text('ΕΓΙΝΕ', style: TextStyle(fontSize: 14.0,color: Colors.white)),
         );
       },
     );

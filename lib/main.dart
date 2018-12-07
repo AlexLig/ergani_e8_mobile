@@ -1,4 +1,5 @@
 import 'package:ergani_e8/components/drawer.dart';
+import 'package:ergani_e8/components/intro_views.dart';
 import 'package:ergani_e8/routes/contacts_route.dart';
 
 import 'package:ergani_e8/routes/new_employer_route.dart';
@@ -35,11 +36,8 @@ class MyAppState extends State<MyApp> {
         buttonColor: Colors.teal[500],
         primaryColor: Colors.blueGrey[700],
         primaryColorLight: Colors.blueGrey[100],
-        // primaryTextTheme: Typography.blackMountainView,
-        // secondaryText
         dividerColor: Colors.grey[500],
         cursorColor: Colors.blueGrey[700],
-        // backgroundColor: Colors.
       ),
       routes: <String, WidgetBuilder>{
         '/contacts': (BuildContext context) => ContactsRoute(),
@@ -51,7 +49,8 @@ class MyAppState extends State<MyApp> {
             if (snapshot.data > 0)
               return ContactsRoute();
             else
-              return CreateNewEmployer();
+              return IntroViews();
+              // return CreateNewEmployer();
           } else
             return Container(
               color: Theme.of(context).canvasColor,

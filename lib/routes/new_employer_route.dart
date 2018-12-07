@@ -106,7 +106,7 @@ class CreateNewEmployerState extends State<CreateNewEmployer> {
       }
 
       if (result != 0) {
-        Navigator.pushReplacementNamed(context, '/contacts');
+        Navigator.pushNamedAndRemoveUntil(context, '/contacts', (route) => false );
       } else
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text('Σφάλμα αποθήκευσης'),

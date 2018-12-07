@@ -290,7 +290,7 @@ class CreateNewEmployerState extends State<CreateNewEmployer> {
                   autovalidate: _shouldValidateOnChangeSmsNumber,
                   validator: (number) {
                     if (number.isEmpty)
-                      return 'Προσθέστε αριθμό παραλήπτη';
+                      return 'Προσθέστε αριθμό';
                     else if (!hasOnlyInt(number))
                       return 'Εισάγετε μόνο αριθμούς';
                   },

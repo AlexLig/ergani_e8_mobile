@@ -12,7 +12,7 @@ TimeOfDay minutesToTime(int minutes) =>
 int timeToMinutes(TimeOfDay time) => time.hour * 60 + time.minute;
 int hoursMinsToMinutes(int hours, int minutes) => hours * 60 + minutes;
 
-// checks if timeA is later that timeB
+/// checks if timeA is later that timeB
 bool isLater(TimeOfDay timeA, TimeOfDay timeB) =>
     timeToMinutes(timeA) > timeToMinutes(timeB);
 

@@ -58,11 +58,11 @@ class E8formState extends State<E8form> {
   @override
   Widget build(BuildContext context) {
     if (_isFirstBuild && !_isReset) {
-      if (_employee.workFinish == null ||
-          isLater(TimeOfDay.now(), _employee.workFinish))
-        _overtimeStart = _roundedTimeOfDayNow();
-      else
-        _overtimeStart = _employee.workFinish;
+      // if (_employee.workFinish == null ||
+      //     isLater(TimeOfDay.now(), _employee.workFinish))
+      //   _overtimeStart = _roundedTimeOfDayNow();
+      // else
+      _overtimeStart = _employee.workFinish;
 
       _overtimeFinish =
           addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
@@ -175,7 +175,7 @@ class E8formState extends State<E8form> {
             child: TimePickerTile(
               workStart: _overtimeStart,
               workFinish: _overtimeFinish,
-              onSelectStartTime: () => _selectStartTime(context),
+              onSelectStartTime: null,
               onSelectFinishTime: () => _selectFinishTime(context),
               isReset: _isReset,
               outlined: true,

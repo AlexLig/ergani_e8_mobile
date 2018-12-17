@@ -18,14 +18,11 @@ class MessageBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      // borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-      // borderRadius: BorderRadius.circular(4),
       color: Colors.white,
       elevation: 2.0,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
@@ -44,11 +41,7 @@ class MessageBottomSheet extends StatelessWidget {
             ),
             ListTile(
               title: Text(message),
-              // leading: Icon(Icons.message),
-              // leading: Icon(Icons.textsms),
               leading: Icon(Icons.chat),
-              // leading: Icon(Icons.chat_bubble),
-              // leading: Icon(Icons.chat_bubble_outline),
             ),
             ListTile(
               trailing: RaisedButton(
@@ -77,8 +70,8 @@ class MessageBottomSheet extends StatelessWidget {
                     ),
                     isLoading
                         ? Container(
-                            height: 30,
-                            width: 30,
+                            height: 25,
+                            width: 25,
                             child: CircularProgressIndicator(),
                           )
                         : null,
@@ -86,7 +79,17 @@ class MessageBottomSheet extends StatelessWidget {
                 ),
               ),
             ),
-          ],
+            onSend == null
+                ? ListTile(
+                    leading: Icon(Icons.warning, color: Colors.deepOrange),
+                    title: Text(
+                      'Η δήλωση υπερωρίας γίνεται μόνο πριν την έναρξή της.',
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(color: Colors.deepOrange),
+                    ),
+                  )
+                : null,
+          ].where((val) => val != null).toList(),
         ),
       ),
     );

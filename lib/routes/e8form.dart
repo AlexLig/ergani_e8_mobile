@@ -30,6 +30,7 @@ class E8formState extends State<E8form> {
   TextEditingController _smsNumberController = TextEditingController();
   TextEditingController _senderController = TextEditingController();
 
+  bool _canSendSms;
   bool _isLoading = false;
   BuildContext _scaffoldContext;
 
@@ -41,6 +42,7 @@ class E8formState extends State<E8form> {
     _sliderValue = 0.5;
     _smsNumberController.text = _employer.smsNumber;
     _senderController.text = _employer.name;
+    _canSendSms = !isLater(TimeOfDay.now(), _employee.workFinish);
   }
 
   TimeOfDay _roundedTimeOfDayNow() {
@@ -107,14 +109,17 @@ class E8formState extends State<E8form> {
                     //     ),
                     //   ],
                     // ),
-                    MessageBottomSheet(
-                      onSend: () => _handleSend(context),
-                      message: _erganiCode,
-                      senderController: _senderController,
-                      smsNumberController: _smsNumberController,
-                      isLoading: _isLoading,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: MessageBottomSheet(
+                        onSend: _canSendSms ? () => _handleSend(context) : null,
+                        message: _erganiCode,
+                        senderController: _senderController,
+                        smsNumberController: _smsNumberController,
+                        isLoading: _isLoading,
+                      ),
                     ),
-                  ],
+                  ].where((val) => val != null).toList(),
                 ),
               ],
             ),

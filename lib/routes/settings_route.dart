@@ -277,41 +277,35 @@ class UpdateEmployerState extends State<UpdateEmployer> {
           style: TextStyle(fontSize: 16.0),
         ),
       ),
-      title: Stack(
-        alignment: Alignment(1.1, 1.0),
-        children: [
-          Row(
-            children: <Widget>[
-              SizedBox(width: 70.0),
-              Expanded(
-                child: TextFormField(
-                  style: TextStyle(fontSize: 18.0, color: Colors.grey[900]),
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.done,
-                  enabled: _canEditSmsNumber,
-                  focusNode: _smsNumberFocus,
-                  controller: _smsNumberController,
-                  autovalidate: _shouldValidateOnChangeSmsNumber,
-                  validator: (number) {
-                    if (number.isEmpty)
-                      return 'Προσθέστε αριθμό';
-                    else if (!hasOnlyInt(number))
-                      return 'Εισάγετε μόνο αριθμούς';
-                  },
+      title: Row(
+        children: <Widget>[
+          Expanded(
+            child: InkWell(
+              onTap: !_canEditSmsNumber
+                  ? () => _handleEditSmsNumber(context)
+                  : null,
+              child: TextFormField(
+                style: TextStyle(fontSize: 18.0, color: Colors.grey[900]),
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                enabled: _canEditSmsNumber,
+                focusNode: _smsNumberFocus,
+                controller: _smsNumberController,
+                autovalidate: _shouldValidateOnChangeSmsNumber,
+                validator: (number) {
+                  if (number.isEmpty)
+                    return 'Προσθέστε αριθμό';
+                  else if (!hasOnlyInt(number)) return 'Εισάγετε μόνο αριθμούς';
+                },
+                decoration: InputDecoration(
+                  suffixIcon: !_canEditSmsNumber
+                      ? Icon(Icons.edit, color: Colors.grey[900])
+                      : null,
                 ),
               ),
-            ],
+            ),
           ),
-          !_canEditSmsNumber
-              ? IconButton(
-                  icon: Icon(Icons.edit, color: Colors.grey[900]),
-                  onPressed: () => _handleEditSmsNumber(context)
-                  // onPressed: () => _employer?.smsNumber == '54001'
-                  //     ? _handleEditSmsNumber(context)
-                  //     : setState(() => _isReceiverEditable = true),
-                  )
-              : null,
-        ].where((val) => val != null).toList(),
+        ],
       ),
     );
   }

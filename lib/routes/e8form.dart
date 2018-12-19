@@ -7,6 +7,8 @@ import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:sms/sms.dart';
 
+import '../components/showSnackbar.dart';
+
 class E8form extends StatefulWidget {
   final Employee employee;
   final Employer employer;
@@ -206,18 +208,19 @@ class E8formState extends State<E8form> {
     );
     if (picked != null && picked != _overtimeStart) {
       if (isLater(TimeOfDay.now(), picked))
-        _showWarningSnackbar(
-          messages: [
-            Text('Η δήλωση υπερωρίας γίνεται μόνο '),
-            Text('πριν την έναρξη της.'),
-          ],
+        showSnackbar(
+          scaffoldContext: _scaffoldContext,
+          type: SnackbarType.Warning,
+          message: 'Η δήλωση υπερωρίας γίνεται μόνο πριν την έναρξη της.',
         );
       else if (isLater(
         addToTimeOfDay(picked, minute: sliderValue),
         addToTimeOfDay(_employee.workFinish, hour: 3),
       ))
-        _showWarningSnackbar(
-          messages: [Text('Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.')],
+        showSnackbar(
+          scaffoldContext: _scaffoldContext,
+          type: SnackbarType.Warning,
+          message: 'Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.',
         );
       else {
         setState(() {
@@ -235,42 +238,23 @@ class E8formState extends State<E8form> {
     );
     if (picked != null && picked != _overtimeFinish) {
       if (!isLater(picked, _overtimeStart))
-        _showWarningSnackbar(
-          messages: [
-            Text('Η λήξη υπερωρίας δεν μπορεί να είναι'),
-            Text('πριν την έναρξή της.'),
-          ],
+        showSnackbar(
+          scaffoldContext: _scaffoldContext,
+          type: SnackbarType.Warning,
+          message:
+              'Η λήξη της υπερωρίας δεν μπορεί να είναι πριν από την ώρα έναρξης.',
         );
       else if (isLater(
         picked,
         addToTimeOfDay(_employee.workFinish, hour: 3),
       ))
-        _showWarningSnackbar(
-          messages: [Text('Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.')],
-        );
+        showSnackbar(
+            scaffoldContext: _scaffoldContext,
+            message: 'Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.',
+            type: SnackbarType.Warning);
       else
         setState(() => _overtimeFinish = picked);
     }
-  }
-
-  _showWarningSnackbar({List<Widget> messages}) {
-    Scaffold.of(_scaffoldContext).showSnackBar(
-      SnackBar(
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Icon(Icons.warning),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: messages,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   _buildActiveSlider() {
@@ -308,6 +292,7 @@ class E8formState extends State<E8form> {
     });
   }
 
+// TODO: Still works?
   _handleSend(scaffoldContext) async {
     if (_employer != null) {
       SmsSender sender = SmsSender();
@@ -317,79 +302,34 @@ class E8formState extends State<E8form> {
         if (state == SmsMessageState.Sending) {
           setState(() => _isLoading = true);
         } else if (state == SmsMessageState.Sent) {
-          _sucessSmsSnackBar(scaffoldContext, 'Το μήνυμα εστάλη με επιτυχία');
+          showSnackbar(
+            scaffoldContext: scaffoldContext,
+            type: SnackbarType.Success,
+            message: 'Το μήνυμα εστάλη με επιτυχία',
+          );
+          // _sucessSmsSnackBar(scaffoldContext, 'Το μήνυμα εστάλη με επιτυχία');
           setState(() => _isLoading = false);
         } else if (state == SmsMessageState.Fail) {
-          _warningSmsSnackBar(scaffoldContext, 'Αποτυχία αποστολής μηνύματος');
+          showSnackbar(
+            scaffoldContext: scaffoldContext,
+            type: SnackbarType.Warning,
+            message: 'Αποτυχία αποστολής μηνύματος',
+          );
+          // _warningSmsSnackBar(scaffoldContext, 'Αποτυχία αποστολής μηνύματος');
           setState(() => _isLoading = false);
         }
       });
 
       await sender.sendSms(message);
     } else {
-      _warningSmsSnackBar(scaffoldContext,
-          'Σφάλμα αποστολής. Ελέγξτε τα στοιχεία της εταιρίας.');
+      showSnackbar(
+        scaffoldContext: scaffoldContext,
+        type: SnackbarType.Warning,
+        message: 'Σφάλμα αποστολής. Ελέγξτε τα στοιχεία της εταιρίας.',
+      );
+      // _warningSmsSnackBar(scaffoldContext,
+      //     'Σφάλμα αποστολής. Ελέγξτε τα στοιχεία της εταιρίας.');
       setState(() => _isLoading = false);
     }
-  }
-
-  void _sendingSmsSnackBar(scaffoldContext, String message) {
-    Scaffold.of(scaffoldContext).showSnackBar(
-      SnackBar(
-        duration: Duration(seconds: 1),
-        content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text(message),
-            ]),
-      ),
-    );
-  }
-
-  void _sucessSmsSnackBar(scaffoldContext, String message) {
-    Scaffold.of(scaffoldContext).showSnackBar(
-      SnackBar(
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.green,
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Icon(Icons.check),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(message),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _warningSmsSnackBar(scaffoldContext, String message) {
-    Scaffold.of(scaffoldContext).showSnackBar(
-      SnackBar(
-        duration: Duration(seconds: 1),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Icon(Icons.warning),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(message),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

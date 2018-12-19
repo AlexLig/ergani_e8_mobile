@@ -2,7 +2,7 @@ import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 
-enum ContactActions { edit, delete }
+enum ContactActions { Edit, Delete }
 
 class EmployeeListTile extends StatelessWidget {
   final Employee employee;
@@ -88,10 +88,10 @@ class EmployeeListTile extends StatelessWidget {
               tooltip: 'Επιλογές',
               onSelected: (ContactActions selection) {
                 switch (selection) {
-                  case ContactActions.edit:
+                  case ContactActions.Edit:
                     this.onEdit();
                     break;
-                  case ContactActions.delete:
+                  case ContactActions.Delete:
                     this.onDelete();
                     break;
                   default:
@@ -101,11 +101,11 @@ class EmployeeListTile extends StatelessWidget {
               itemBuilder: (BuildContext context) =>
                   <PopupMenuEntry<ContactActions>>[
                     PopupMenuItem<ContactActions>(
-                      value: ContactActions.edit,
+                      value: ContactActions.Edit,
                       child: Text('Επεξεργασία'),
                     ),
                     PopupMenuItem<ContactActions>(
-                      value: ContactActions.delete,
+                      value: ContactActions.Delete,
                       child: Text('Διαγραφή'),
                     )
                   ],

@@ -8,6 +8,8 @@ import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../components/showSnackbar.dart';
+
 class CreateEmployeeRoute extends StatefulWidget {
   final Employee employee;
   CreateEmployeeRoute({BuildContext context, this.employee});
@@ -115,26 +117,12 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       if (result != 0)
         Navigator.pop(context, employeeToSubmit);
       else
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            duration: Duration(seconds: 1),
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(Icons.warning),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text('Υπήρξε σφάλμα κατά την αποθήκευση. Προσπαθήστε ξανά.'),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        showSnackbar(
+          scaffoldContext: context,
+          type: SnackbarType.Warning,
+          message: 'Υπήρξε σφάλμα κατά την αποθήκευση. Προσπαθήστε ξανά.',
         );
+  
 
       _firstNameController.clear();
       _lastNameController.clear();

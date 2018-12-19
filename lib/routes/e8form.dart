@@ -42,7 +42,8 @@ class E8formState extends State<E8form> {
     _sliderValue = 0.5;
     _smsNumberController.text = _employer.smsNumber;
     _senderController.text = _employer.name;
-    _canSendSms = !isLater(TimeOfDay.now(), _employee.workFinish);
+    _canSendSms = !isLater(
+        TimeOfDay.now(), addToTimeOfDay(_employee.workFinish, hour: 3));
   }
 
   TimeOfDay _roundedTimeOfDayNow() {
@@ -60,11 +61,15 @@ class E8formState extends State<E8form> {
   @override
   Widget build(BuildContext context) {
     if (_isFirstBuild && !_isReset) {
-      // if (_employee.workFinish == null ||
-      //     isLater(TimeOfDay.now(), _employee.workFinish))
-      //   _overtimeStart = _roundedTimeOfDayNow();
-      // else
-      _overtimeStart = _employee.workFinish;
+      if (_employee.workFinish == null ||
+          isLater(TimeOfDay.now(), _employee.workFinish) &&
+              !isLater(
+                TimeOfDay.now(),
+                addToTimeOfDay(_employee.workFinish, hour: 3),
+              ))
+        _overtimeStart = _roundedTimeOfDayNow();
+      else
+        _overtimeStart = _employee.workFinish;
 
       _overtimeFinish =
           addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
@@ -180,7 +185,8 @@ class E8formState extends State<E8form> {
             child: TimePickerTile(
               workStart: _overtimeStart,
               workFinish: _overtimeFinish,
-              onSelectStartTime: null,
+              onSelectStartTime:
+                  _canSendSms ? () => _selectStartTime(context) : null,
               onSelectFinishTime: () => _selectFinishTime(context),
               isReset: _isReset,
               outlined: true,
@@ -193,40 +199,32 @@ class E8formState extends State<E8form> {
   }
 
   Future<Null> _selectStartTime(BuildContext context) async {
+    final sliderValue = (_sliderValue * 60).toInt();
     final TimeOfDay picked = await showTimePicker(
       context: context,
       initialTime: _overtimeStart,
     );
     if (picked != null && picked != _overtimeStart) {
-      if (isLater(TimeOfDay.now(), picked)) {
-        Scaffold.of(_scaffoldContext).showSnackBar(
-          SnackBar(
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(Icons.warning),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text('Η δήλωση υπερωρίας γίνεται μόνο '),
-                    Text('πριν την έναρξη της.'),
-                  ],
-                ),
-              ],
-            ),
-          ),
+      if (isLater(TimeOfDay.now(), picked))
+        _showWarningSnackbar(
+          messages: [
+            Text('Η δήλωση υπερωρίας γίνεται μόνο '),
+            Text('πριν την έναρξη της.'),
+          ],
         );
-      } else
+      else if (isLater(
+        addToTimeOfDay(picked, minute: sliderValue),
+        addToTimeOfDay(_employee.workFinish, hour: 3),
+      ))
+        _showWarningSnackbar(
+          messages: [Text('Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.')],
+        );
+      else {
         setState(() {
           _overtimeStart = picked;
-          _overtimeFinish = addToTimeOfDay(
-            _overtimeStart,
-            minute: (_sliderValue * 60).toInt(),
-          );
+          _overtimeFinish = addToTimeOfDay(_overtimeStart, minute: sliderValue);
         });
+      }
     }
   }
 
@@ -236,34 +234,45 @@ class E8formState extends State<E8form> {
       initialTime: _overtimeFinish,
     );
     if (picked != null && picked != _overtimeFinish) {
-      if (!isLater(picked, _overtimeStart)) {
-        Scaffold.of(_scaffoldContext).showSnackBar(
-          SnackBar(
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(Icons.warning),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text('Η λήξη υπερωρίας δεν μπορεί να είναι'),
-                    Text('πριν την έναρξή της.'),
-                  ],
-                ),
-              ],
-            ),
-          ),
+      if (!isLater(picked, _overtimeStart))
+        _showWarningSnackbar(
+          messages: [
+            Text('Η λήξη υπερωρίας δεν μπορεί να είναι'),
+            Text('πριν την έναρξή της.'),
+          ],
         );
-      } else
+      else if (isLater(
+        picked,
+        addToTimeOfDay(_employee.workFinish, hour: 3),
+      ))
+        _showWarningSnackbar(
+          messages: [Text('Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.')],
+        );
+      else
         setState(() => _overtimeFinish = picked);
     }
   }
 
-  // TODO : set context to always use 24hr. Non intl.
-  // TODO: Prevent from choosing overtime later than Time.now()
+  _showWarningSnackbar({List<Widget> messages}) {
+    Scaffold.of(_scaffoldContext).showSnackBar(
+      SnackBar(
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Icon(Icons.warning),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: messages,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   _buildActiveSlider() {
     var value = (_sliderValue * 2) % 2;
     var sliderValue = value == 0 ? _sliderValue.round() : _sliderValue;

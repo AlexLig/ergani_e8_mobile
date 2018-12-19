@@ -276,7 +276,6 @@ class E8formState extends State<E8form> {
               value: _sliderValue,
               onChanged:
                   _isReset ? null : (value) => _handleSliderChange(value),
-              // inactiveColor: Colors.grey[200],
             ),
           ),
         )
@@ -307,7 +306,6 @@ class E8formState extends State<E8form> {
             type: SnackbarType.Success,
             message: 'Το μήνυμα εστάλη με επιτυχία',
           );
-          // _sucessSmsSnackBar(scaffoldContext, 'Το μήνυμα εστάλη με επιτυχία');
           setState(() => _isLoading = false);
         } else if (state == SmsMessageState.Fail) {
           showSnackbar(
@@ -315,7 +313,6 @@ class E8formState extends State<E8form> {
             type: SnackbarType.Warning,
             message: 'Αποτυχία αποστολής μηνύματος',
           );
-          // _warningSmsSnackBar(scaffoldContext, 'Αποτυχία αποστολής μηνύματος');
           setState(() => _isLoading = false);
         }
       });
@@ -327,8 +324,7 @@ class E8formState extends State<E8form> {
         type: SnackbarType.Warning,
         message: 'Σφάλμα αποστολής. Ελέγξτε τα στοιχεία της εταιρίας.',
       );
-      // _warningSmsSnackBar(scaffoldContext,
-      //     'Σφάλμα αποστολής. Ελέγξτε τα στοιχεία της εταιρίας.');
+
       setState(() => _isLoading = false);
     }
   }

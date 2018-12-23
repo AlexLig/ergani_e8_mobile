@@ -25,6 +25,7 @@ class EmployerListTile extends StatelessWidget {
       onTap: onTap,
       child: ListTile(
         leading: Container(
+          // alignment: Alignment.topLeft,
           height: 60.0,
           width: 60.0,
           decoration: BoxDecoration(
@@ -48,12 +49,14 @@ class EmployerListTile extends StatelessWidget {
           ),
         ),
         subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
               'ΑΦΜ: ${employer.afm}',
               style: TextStyle(color: Colors.white),
             ),
-            employer.ame != null
+            employer.ame.length > 0
                 ? Text(
                     'ΑΜΕ: ${employer.ame}',
                     style: TextStyle(color: Colors.white),
@@ -61,7 +64,7 @@ class EmployerListTile extends StatelessWidget {
                 : null
           ].where((val) => val != null).toList(),
         ),
-        isThreeLine: employer.ame != null,
+        isThreeLine: employer.ame.length > 0,
         trailing: Icon(
           Icons.arrow_drop_down,
           color: Colors.white,

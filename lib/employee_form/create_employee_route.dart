@@ -1,6 +1,7 @@
 import 'package:ergani_e8/components/buttons/cancel_max_width.dart';
 import 'package:ergani_e8/components/buttons/submit_max_width.dart';
 import 'package:ergani_e8/components/time_picker_tile.dart';
+import 'package:ergani_e8/employee_form/employee_provider.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
@@ -122,7 +123,6 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
           type: SnackbarType.Warning,
           message: 'Υπήρξε σφάλμα κατά την αποθήκευση. Προσπαθήστε ξανά.',
         );
-  
 
       _firstNameController.clear();
       _lastNameController.clear();
@@ -137,6 +137,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   @override
   Widget build(BuildContext context) {
+    final _employeeBloc = EmployeeProvider.of(context);
     return Scaffold(
       appBar: AppBar(
         title:

@@ -2,10 +2,11 @@ import 'package:ergani_e8/components/drawer.dart';
 import 'package:ergani_e8/components/empty_contacts_indicator.dart';
 import 'package:ergani_e8/components/delete_dialog.dart';
 import 'package:ergani_e8/components/employee_list_tile.dart';
+import 'package:ergani_e8/employee_form/create_employee_route.dart';
+import 'package:ergani_e8/employee_form/employee_provider.dart';
 import 'package:ergani_e8/routes/e8form.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
-import 'package:ergani_e8/routes/create_employee_route.dart';
 
 import 'package:ergani_e8/utils/database_helper.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +59,7 @@ class ContactsRouteState extends State<ContactsRoute> {
       context,
       MaterialPageRoute(
         builder: (context) => CreateEmployeeRoute(employee: employee),
+        // builder: (context) => EmployeeProvider(),
       ),
     );
     if (newEmployee is Employee) {
@@ -149,8 +151,8 @@ class ContactsRouteState extends State<ContactsRoute> {
           scaffoldContext: context,
           message: 'Ο υπάλληλος διαγράφηκε.',
           type: SnackbarType.Info,
-          action:
-              SnackBarAction(label: 'ΑΝΑΙΡΕΣΗ', onPressed: this._undoDeleteEmployee),
+          action: SnackBarAction(
+              label: 'ΑΝΑΙΡΕΣΗ', onPressed: this._undoDeleteEmployee),
         );
         _updateListView();
       }

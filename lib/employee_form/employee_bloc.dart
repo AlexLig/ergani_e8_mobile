@@ -11,11 +11,13 @@ class EmployeeBloc extends Object with Validator {
   final _workFinishSubject = BehaviorSubject<TimeOfDay>();
 
   // First name
-  Observable<String> get firstName => _firstNameSubject.stream;
+  Observable<String> get firstName =>
+      _firstNameSubject.stream.transform(validateIsEmpty);
   Function(String) get updateFirstName => _firstNameSubject.sink.add;
 
   // Last name
-  Observable<String> get lastName => _lastNameSubject.stream;
+  Observable<String> get lastName =>
+      _lastNameSubject.stream.transform(validateIsEmpty);
   Function(String) get updateLastName => _lastNameSubject.sink.add;
 
   // Afm

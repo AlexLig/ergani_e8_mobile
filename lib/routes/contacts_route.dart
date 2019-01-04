@@ -58,8 +58,8 @@ class ContactsRouteState extends State<ContactsRoute> {
     final newEmployee = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CreateEmployeeRoute(employee: employee),
-        // builder: (context) => EmployeeProvider(),
+        // builder: (context) => CreateEmployeeRoute(employee: employee),
+        builder: (context) => EmployeeProvider(child: CreateEmployeeRoute(),),
       ),
     );
     if (newEmployee is Employee) {

@@ -2,6 +2,7 @@ import 'package:ergani_e8/components/buttons/cancel_max_width.dart';
 import 'package:ergani_e8/components/buttons/submit_max_width.dart';
 import 'package:ergani_e8/components/time_picker_tile.dart';
 import 'package:ergani_e8/employee_form/employee_provider.dart';
+import 'package:ergani_e8/employee_form/stream_text_field.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
@@ -196,88 +197,118 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
   }
 
   _buildFirstName() {
-    return TextFormField(
-      keyboardType: TextInputType.text,
-      textCapitalization: TextCapitalization.sentences,
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (value) {
-        if (value.isEmpty)
-          setState(() => _shouldValidateOnChangeFirstName = true);
-        else
-          FocusScope.of(context).requestFocus(lastNameFocus);
-      },
-      autovalidate: _shouldValidateOnChangeFirstName,
+    return StreamTextField(
+      stream: EmployeeProvider.of(context).firstName,
+      onChanged: EmployeeProvider.of(context).updateFirstName,
       focusNode: firstNameFocus,
-      decoration: InputDecoration(
-        labelText: 'Όνομα',
-        prefixIcon: Icon(Icons.person),
-      ),
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Προσθέστε όνομα';
-        }
-      },
-      controller: _firstNameController,
+      giveFocusTo: lastNameFocus,
+      labelText: 'Όνομα',
+      prefixIcon: Icon(Icons.person),
     );
+    // return StreamBuilder(
+    //   // initialData: EmployeeProvider.of(context).stream.,
+    //   stream: EmployeeProvider.of(context).firstName,
+    //   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+    //     return TextField(
+    //       onChanged: EmployeeProvider.of(context).updateFirstName,
+    //       keyboardType: TextInputType.text,
+    //       textCapitalization: TextCapitalization.sentences,
+    //       textInputAction: TextInputAction.next,
+    //       onEditingComplete: () => !snapshot.hasError
+    //           ? FocusScope.of(context).requestFocus(lastNameFocus)
+    //           : null,
+
+    //       focusNode: firstNameFocus,
+    //       decoration: InputDecoration(
+    //         labelText: 'Όνομα',
+    //         prefixIcon: Icon(Icons.person),
+    //         errorText: snapshot.error,
+    //       ),
+    //       controller: _firstNameController,
+    //       // controller: TextEditingController(
+    //       //   text: snapshot.hasData ? snapshot.data : '',
+    //       // ),
+    //     );
+    //   },
+    // );
   }
 
   _buildLastName() {
-    return TextFormField(
-      keyboardType: TextInputType.text,
-      textCapitalization: TextCapitalization.sentences,
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (value) {
-        if (value.isEmpty)
-          setState(() => _shouldValidateOnChangeLastName = true);
-        else
-          FocusScope.of(context).requestFocus(afmFocus);
-      },
+    return StreamTextField(
+      stream: EmployeeProvider.of(context).lastName,
+      onChanged: EmployeeProvider.of(context).updateLastName,
       focusNode: lastNameFocus,
-      decoration: InputDecoration(
-        labelText: 'Επίθετο',
-        prefixIcon: Icon(Icons.contacts),
-      ),
-      validator: (value) {
-        if (value.isEmpty) return 'Προσθέστε επίθετο';
-      },
-      autovalidate: _shouldValidateOnChangeLastName,
-      controller: _lastNameController,
+      giveFocusTo: afmFocus,
+      labelText: 'Επίθετο',
+      prefixIcon: Icon(Icons.contacts),
     );
+    // return TextFormField(
+    //   keyboardType: TextInputType.text,
+    //   textCapitalization: TextCapitalization.sentences,
+    //   textInputAction: TextInputAction.next,
+    //   onFieldSubmitted: (value) {
+    //     if (value.isEmpty)
+    //       setState(() => _shouldValidateOnChangeLastName = true);
+    //     else
+    //       FocusScope.of(context).requestFocus(afmFocus);
+    //   },
+    //   focusNode: lastNameFocus,
+    //   decoration: InputDecoration(
+    //     labelText: 'Επίθετο',
+    //     prefixIcon: Icon(Icons.contacts),
+    //   ),
+    //   validator: (value) {
+    //     if (value.isEmpty) return 'Προσθέστε επίθετο';
+    //   },
+    //   autovalidate: _shouldValidateOnChangeLastName,
+    //   controller: _lastNameController,
+    // );
   }
 
   _buildAfmField() {
-    final length = 9;
     return ListTile(
-      title: TextFormField(
-        keyboardType: TextInputType.number,
+      title: StreamTextField(
+        stream: EmployeeProvider.of(context).afm,
+        onChanged: EmployeeProvider.of(context).updateAfm,
         focusNode: afmFocus,
-        textInputAction: TextInputAction.done,
-        decoration: InputDecoration(
-          labelText: 'ΑΦΜ',
-          prefixIcon: Icon(Icons.work),
-        ),
-        validator: (afm) {
-          if (afm.isEmpty) {
-            return 'Προσθέστε ΑΦΜ';
-          } else if (afm.length != length) {
-            return 'Εισάγετε $length αριθμούς';
-          } else if (!afm.split('').every(isInt)) {
-            return 'Ο ΑΦΜ αποτελείται μόνο απο αριθμούς';
-          }
-          if (_afmExist) {
-            return 'Ο ΑΦΜ χρησιμοποιείται ήδη';
-          }
-          _isValidAfm = true;
-        },
-        autovalidate: _shouldValidateOnChangeAfm,
-        maxLength: length,
-        onFieldSubmitted: (value) {
-          if (isNotValidInt(value, length))
-            setState(() => _shouldValidateOnChangeAfm = true); //
-        },
-        controller: _afmController,
+        labelText: 'ΑΦΜ',
+        prefixIcon: Icon(Icons.work),
+        keyboardType: TextInputType.number,
+        maxLength: 9,
       ),
     );
+    // final length = 9;
+    // return ListTile(
+    //   title: TextFormField(
+    //     keyboardType: TextInputType.number,
+    //     focusNode: afmFocus,
+    //     textInputAction: TextInputAction.done,
+    //     decoration: InputDecoration(
+    //       labelText: 'ΑΦΜ',
+    //       prefixIcon: Icon(Icons.work),
+    //     ),
+    //     validator: (afm) {
+    //       if (afm.isEmpty) {
+    //         return 'Προσθέστε ΑΦΜ';
+    //       } else if (afm.length != length) {
+    //         return 'Εισάγετε $length αριθμούς';
+    //       } else if (!afm.split('').every(isInt)) {
+    //         return 'Ο ΑΦΜ αποτελείται μόνο απο αριθμούς';
+    //       }
+    //       if (_afmExist) {
+    //         return 'Ο ΑΦΜ χρησιμοποιείται ήδη';
+    //       }
+    //       _isValidAfm = true;
+    //     },
+    //     autovalidate: _shouldValidateOnChangeAfm,
+    //     maxLength: length,
+    //     onFieldSubmitted: (value) {
+    //       if (isNotValidInt(value, length))
+    //         setState(() => _shouldValidateOnChangeAfm = true); //
+    //     },
+    //     controller: _afmController,
+    //   ),
+    // );
   }
 
   _buildWorkHours() {

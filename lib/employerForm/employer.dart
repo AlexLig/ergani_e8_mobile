@@ -1,10 +1,7 @@
-import 'package:ergani_e8/components/buttons/cancel_max_width.dart';
-import 'package:ergani_e8/components/buttons/submit_max_width.dart';
 import 'package:ergani_e8/components/info_tile.dart';
 import 'package:ergani_e8/employerForm/employer_bloc.dart';
-import 'package:ergani_e8/models/employer.dart';
-import 'package:ergani_e8/utils/database_helper.dart';
-import 'package:ergani_e8/utils/input_utils.dart';
+import 'package:ergani_e8/employerForm/name_field.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,10 +18,10 @@ class EmployerForm extends StatelessWidget {
                 child: ListView(
                   physics: BouncingScrollPhysics(),
                   children: <Widget>[
-                    nameField(),
+                    NameField(),
                     afmField(),
-                    // _buildAmeTile(),
-                    smsReceiverField(context),
+                    buildAmeTile(),
+                    smsReceiverField(),
                     infoTile(),
                   ].where((val) => val != null).toList(),
                 ),
@@ -37,29 +34,12 @@ class EmployerForm extends StatelessWidget {
     );
   }
 
-  nameField() {
-    return StreamBuilder(
-      stream: employerBloc.nameStream,
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        ListTile(
-          title: TextField(
-            onChanged: employerBloc.updateName,
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-                labelText: 'Όνομα Εργοδότη',
-                prefixIcon: Icon(Icons.person),
-                errorText: snapshot.error),
-          ),
-        );
-      },
-    );
-  }
-
+  
   afmField() {
     return StreamBuilder(
       stream: employerBloc.afmStream,
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        ListTile(
+        return ListTile(
           title: TextField(
             onChanged: employerBloc.updateAfm,
             keyboardType: TextInputType.text,
@@ -73,62 +53,45 @@ class EmployerForm extends StatelessWidget {
     );
   }
 
-  // _buildAmeTile() {
-
-  //   return ListTile(
-  //       leading: Row(
-  //         mainAxisSize: MainAxisSize.min,
-  //         children: <Widget>[
-  //           Checkbox(
-  //             value: _hasAme,
-  //             onChanged: (val) {
-  //               setState(() => _hasAme = val);
-  //               if (!_hasAme) _ameController.clear();
-  //             },
-  //           ),
-  //           Text('AME',
-  //               style: TextStyle(
-  //                   fontSize: 16.0,
-  //                   color: _hasAme ? Colors.grey[900] : Colors.grey))
-  //         ],
-  //       ),
-  //       title: _buildAmeField());
-  // }
-
-  // _buildAmeField() {
-  //   final length = 10;
-  //   return TextFormField(
-  //     keyboardType: TextInputType.number, //
-  //     validator: (ame) {
-  //       if (_hasAme)
-  //         return validateNumericInput(input: ame, length: length, label: 'ΑΜΕ');
-  //     },
-  //     autovalidate: _shouldValidateOnChangeAme, //
-  //     onFieldSubmitted: (value) {
-  //       if (isNotValidInt(value, length))
-  //         setState(() => _shouldValidateOnChangeAme = true);
-  //       else if (_canEditSmsNumber)
-  //         FocusScope.of(context).requestFocus(_smsNumberFocus);
-  //     },
-  //     decoration: InputDecoration(
-  //       hasFloatingPlaceholder: false,
-  //       contentPadding: EdgeInsets.only(bottom: 5.0, top: 20.0),
-  //     ),
-  //     style: TextStyle(color: _hasAme ? Colors.grey[900] : Colors.grey[300]),
-  //     enabled: _hasAme,
-  //     textInputAction:
-  //         _canEditSmsNumber ? TextInputAction.next : TextInputAction.done,
-  //     focusNode: _ameFocus,
-  //     controller: _ameController,
-  //     maxLength: length,
-  //   );
-  // }
-
-  smsReceiverField(BuildContext context) {
+  buildAmeTile() {
     return StreamBuilder(
+      initialData: [true, '666'],
+      stream: employerBloc.ameCombined,
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        return ListTile(
+          leading: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Checkbox(
+                  value: snapshot.data[0],
+                  onChanged: employerBloc.updateHasAme),
+              Text('AME',
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      color: snapshot.data[0] ? Colors.grey[900] : Colors.grey))
+            ],
+          ),
+          title: TextFormField(
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              hasFloatingPlaceholder: false,
+              contentPadding: EdgeInsets.only(bottom: 5.0, top: 20.0),
+            ),
+            style: TextStyle(
+                color: snapshot.data[0] ? Colors.grey[900] : Colors.grey[300]),
+            enabled: snapshot.data[0],
+          ),
+        );
+      },
+    );
+  }
+
+  smsReceiverField() {
+    return StreamBuilder(
+      initialData: '54002',
       stream: employerBloc.smsReceiverStream,
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        ListTile(
+        return ListTile(
           leading: Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: Text(
@@ -141,17 +104,20 @@ class EmployerForm extends StatelessWidget {
               Expanded(
                 child: InkWell(
                   onTap: null,
-                  child: TextFormField(
+                  child: TextField(
                     style: TextStyle(fontSize: 18.0, color: Colors.grey[900]),
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.done,
+                    onChanged: employerBloc.updateSmsReceiver,
+                    // initialValue: snapshot.data,
+
                     // enabled: _canEditSmsNumber,
                     // focusNode: _smsNumberFocus,
-                    decoration: InputDecoration(
-                        // suffixIcon: !_canEditSmsNumber
-                        //     ? Icon(Icons.edit, color: Colors.grey[900])
-                        //     : null,
-                        ),
+                    // decoration: InputDecoration(
+                    // suffixIcon: !_canEditSmsNumber
+                    //     ? Icon(Icons.edit, color: Colors.grey[900])
+                    //     : null,
+                    // ),
                   ),
                 ),
               ),

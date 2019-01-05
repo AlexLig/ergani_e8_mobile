@@ -160,11 +160,18 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                       physics: BouncingScrollPhysics(),
                       children: <Widget>[
                         _buildNamesListTile(),
-                        // ListTile(title: _buildFirstName()),
-                        // ListTile(title: _buildLastName()),
+                        ListTile(
+                          title: Row(
+                            children: <Widget>[
+                              Expanded(child: _firstName()),
+                              SizedBox(width: 8.0),
+                              Expanded(child: _lastName()),
+                            ],
+                          ),
+                        ),
                         Padding(
                           padding: EdgeInsets.only(top: 8.0),
-                          child: _buildAfmField(),
+                          child: ListTile(title: _afmField()),
                         ),
                         _buildWorkHours(),
                       ],
@@ -189,14 +196,14 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     return ListTile(
         title: Row(
       children: <Widget>[
-        Expanded(child: _buildFirstName()),
+        Expanded(child: _firstName()),
         SizedBox(width: 8.0),
-        Expanded(child: _buildLastName()),
+        Expanded(child: _lastName()),
       ],
     ));
   }
 
-  _buildFirstName() {
+  _firstName() {
     return StreamTextField(
       stream: EmployeeProvider.of(context).firstName,
       onChanged: EmployeeProvider.of(context).updateFirstName,
@@ -205,35 +212,9 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       labelText: 'Όνομα',
       prefixIcon: Icon(Icons.person),
     );
-    // return StreamBuilder(
-    //   // initialData: EmployeeProvider.of(context).stream.,
-    //   stream: EmployeeProvider.of(context).firstName,
-    //   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-    //     return TextField(
-    //       onChanged: EmployeeProvider.of(context).updateFirstName,
-    //       keyboardType: TextInputType.text,
-    //       textCapitalization: TextCapitalization.sentences,
-    //       textInputAction: TextInputAction.next,
-    //       onEditingComplete: () => !snapshot.hasError
-    //           ? FocusScope.of(context).requestFocus(lastNameFocus)
-    //           : null,
-
-    //       focusNode: firstNameFocus,
-    //       decoration: InputDecoration(
-    //         labelText: 'Όνομα',
-    //         prefixIcon: Icon(Icons.person),
-    //         errorText: snapshot.error,
-    //       ),
-    //       controller: _firstNameController,
-    //       // controller: TextEditingController(
-    //       //   text: snapshot.hasData ? snapshot.data : '',
-    //       // ),
-    //     );
-    //   },
-    // );
   }
 
-  _buildLastName() {
+  _lastName() {
     return StreamTextField(
       stream: EmployeeProvider.of(context).lastName,
       onChanged: EmployeeProvider.of(context).updateLastName,
@@ -242,51 +223,20 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
       labelText: 'Επίθετο',
       prefixIcon: Icon(Icons.contacts),
     );
-    // return TextFormField(
-    //   keyboardType: TextInputType.text,
-    //   textCapitalization: TextCapitalization.sentences,
-    //   textInputAction: TextInputAction.next,
-    //   onFieldSubmitted: (value) {
-    //     if (value.isEmpty)
-    //       setState(() => _shouldValidateOnChangeLastName = true);
-    //     else
-    //       FocusScope.of(context).requestFocus(afmFocus);
-    //   },
-    //   focusNode: lastNameFocus,
-    //   decoration: InputDecoration(
-    //     labelText: 'Επίθετο',
-    //     prefixIcon: Icon(Icons.contacts),
-    //   ),
-    //   validator: (value) {
-    //     if (value.isEmpty) return 'Προσθέστε επίθετο';
-    //   },
-    //   autovalidate: _shouldValidateOnChangeLastName,
-    //   controller: _lastNameController,
-    // );
   }
 
-  _buildAfmField() {
-    return ListTile(
-      title: StreamTextField(
-        stream: EmployeeProvider.of(context).afm,
-        onChanged: EmployeeProvider.of(context).updateAfm,
-        focusNode: afmFocus,
-        labelText: 'ΑΦΜ',
-        prefixIcon: Icon(Icons.work),
-        keyboardType: TextInputType.number,
-        maxLength: 9,
-      ),
+  _afmField() {
+    return StreamTextField(
+      stream: EmployeeProvider.of(context).afm,
+      onChanged: EmployeeProvider.of(context).updateAfm,
+      focusNode: afmFocus,
+      labelText: 'ΑΦΜ',
+      prefixIcon: Icon(Icons.work),
+      keyboardType: TextInputType.number,
+      maxLength: 9,
     );
+    // Validation logic reminder
     // final length = 9;
-    // return ListTile(
-    //   title: TextFormField(
-    //     keyboardType: TextInputType.number,
-    //     focusNode: afmFocus,
-    //     textInputAction: TextInputAction.done,
-    //     decoration: InputDecoration(
-    //       labelText: 'ΑΦΜ',
-    //       prefixIcon: Icon(Icons.work),
-    //     ),
     //     validator: (afm) {
     //       if (afm.isEmpty) {
     //         return 'Προσθέστε ΑΦΜ';
@@ -300,15 +250,6 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     //       }
     //       _isValidAfm = true;
     //     },
-    //     autovalidate: _shouldValidateOnChangeAfm,
-    //     maxLength: length,
-    //     onFieldSubmitted: (value) {
-    //       if (isNotValidInt(value, length))
-    //         setState(() => _shouldValidateOnChangeAfm = true); //
-    //     },
-    //     controller: _afmController,
-    //   ),
-    // );
   }
 
   _buildWorkHours() {

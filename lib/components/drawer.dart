@@ -1,6 +1,7 @@
 import 'package:ergani_e8/components/drawer_info_routes/contact.dart';
 import 'package:ergani_e8/components/drawer_info_routes/disclaimer.dart';
 import 'package:ergani_e8/components/drawer_info_routes/e8Instructions.dart';
+import 'package:ergani_e8/components/employer_list_tile.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/settings_route.dart';
 import 'package:flutter/material.dart';
@@ -17,29 +18,31 @@ class ContactsDrawer extends StatelessWidget {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+              padding: EdgeInsets.only(bottom: 8.0),
               child: Container(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      employer.name ?? 'Όνομα Εταιρείας',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      ),
-                    ),
-                    Text(
-                      'ΑΦΜ: ${employer.afm ?? ''} ',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    Text(
-                      employer.ame != null && employer.ame.isNotEmpty
-                          ? 'ΑΜΕ: ${employer.ame}'
-                          : '',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    // Text(
+                    //   employer.name ?? 'Όνομα Εταιρείας',
+                    //   style: TextStyle(
+                    //     color: Colors.white,
+                    //     fontWeight: FontWeight.bold,
+                    //     fontSize: 24,
+                    //   ),
+                    // ),
+                    // Text(
+                    //   'ΑΦΜ: ${employer.afm ?? ''} ',
+                    //   style: TextStyle(color: Colors.white),
+                    // ),
+                    // Text(
+                    //   employer.ame != null && employer.ame.isNotEmpty
+                    //       ? 'ΑΜΕ: ${employer.ame}'
+                    //       : '',
+                    //   style: TextStyle(color: Colors.white),
+                    // ),
+                    EmployerListTile(employer: employer)
                   ],
                 ),
               ),

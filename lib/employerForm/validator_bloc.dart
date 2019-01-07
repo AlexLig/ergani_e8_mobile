@@ -4,6 +4,7 @@ import 'package:ergani_e8/utils/input_utils.dart';
 
 var nanErrorMsg = 'Προσθέστε μόνο αριθμούς';
 var emailErrorMsg = 'Προσθέστε έγκυρο email';
+var emptyFieldErrorMsg = 'Το πεδίο αυτό είναι υποχρεωτικό';
 
 var emailValidationRule =
     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -19,4 +20,9 @@ class ValidatorBloc {
         ? sink.add(email)
         : sink.addError(emailErrorMsg),
   );
+
+  final validateIsEmpty = StreamTransformer<String, String>.fromHandlers(
+      handleData: (value, sink) => value.length > 0
+          ? sink.add(value)
+          : sink.addError(emptyFieldErrorMsg));
 }

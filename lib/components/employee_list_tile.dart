@@ -4,6 +4,24 @@ import 'package:flutter/material.dart';
 
 enum ContactActions { Edit, Delete }
 
+String normalize(String char) {
+  final pairs = {
+    'Ά': 'Α',
+    'Έ': 'Ε',
+    'Ή': 'Η',
+    'Ί': 'Ι',
+    'Ό': 'Ο',
+    'Ύ': 'Υ',
+    'Ώ': 'Ω',
+    'Ϊ': 'Ι',
+    'ΐ': 'I',
+    'Ϋ': 'Υ',
+    'ΰ': 'Υ',
+  };
+  final upper = char.toUpperCase();
+  return pairs.containsKey(upper) ? pairs[upper] : upper;
+}
+
 class EmployeeListTile extends StatelessWidget {
   final Employee employee;
   final Function onDelete, onEdit, onTap;
@@ -17,25 +35,7 @@ class EmployeeListTile extends StatelessWidget {
   }) : super(key: key);
 
   String _getInitials() =>
-      _normalize(employee.lastName[0]) + _normalize(employee.firstName[0]);
-
-  String _normalize(String char) {
-    final Map<String, String> pairs = {
-      'Ά': 'Α',
-      'Έ': 'Ε',
-      'Ή': 'Η',
-      'Ί': 'Ι',
-      'Ό': 'Ο',
-      'Ύ': 'Υ',
-      'Ώ': 'Ω',
-      'Ϊ': 'Ι',
-      'ΐ': 'I',
-      'Ϋ': 'Υ',
-      'ΰ': 'Υ',
-    };
-    final upper = char.toUpperCase();
-    return pairs.containsKey(upper) ? pairs[upper] : upper;
-  }
+      normalize(employee.lastName[0]) + normalize(employee.firstName[0]);
 
   final RegExp exp = RegExp(r'[^{0-9}]');
 
@@ -81,35 +81,35 @@ class EmployeeListTile extends StatelessWidget {
         ),
         trailing: onDelete != null && onEdit != null
             ? PopupMenuButton<ContactActions>(
-              icon: Icon(
-                Icons.more_vert,
-                size: 28.0,
-              ),
-              tooltip: 'Επιλογές',
-              onSelected: (ContactActions selection) {
-                switch (selection) {
-                  case ContactActions.Edit:
-                    this.onEdit();
-                    break;
-                  case ContactActions.Delete:
-                    this.onDelete();
-                    break;
-                  default:
-                    print(selection);
-                }
-              },
-              itemBuilder: (BuildContext context) =>
-                  <PopupMenuEntry<ContactActions>>[
-                    PopupMenuItem<ContactActions>(
-                      value: ContactActions.Edit,
-                      child: Text('Επεξεργασία'),
-                    ),
-                    PopupMenuItem<ContactActions>(
-                      value: ContactActions.Delete,
-                      child: Text('Διαγραφή'),
-                    )
-                  ],
-            )
+                icon: Icon(
+                  Icons.more_vert,
+                  size: 28.0,
+                ),
+                tooltip: 'Επιλογές',
+                onSelected: (ContactActions selection) {
+                  switch (selection) {
+                    case ContactActions.Edit:
+                      this.onEdit();
+                      break;
+                    case ContactActions.Delete:
+                      this.onDelete();
+                      break;
+                    default:
+                      print(selection);
+                  }
+                },
+                itemBuilder: (BuildContext context) =>
+                    <PopupMenuEntry<ContactActions>>[
+                      PopupMenuItem<ContactActions>(
+                        value: ContactActions.Edit,
+                        child: Text('Επεξεργασία'),
+                      ),
+                      PopupMenuItem<ContactActions>(
+                        value: ContactActions.Delete,
+                        child: Text('Διαγραφή'),
+                      )
+                    ],
+              )
             : null,
       ),
     );

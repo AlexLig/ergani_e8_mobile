@@ -1,6 +1,8 @@
 import 'package:ergani_e8/components/buttons/cancel_max_width.dart';
 import 'package:ergani_e8/components/buttons/submit_max_width.dart';
 import 'package:ergani_e8/components/time_picker_tile.dart';
+import 'package:ergani_e8/employee_form/employee_provider.dart';
+import 'package:ergani_e8/employee_form/stream_text_field.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/database_helper.dart';
@@ -122,7 +124,6 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
           type: SnackbarType.Warning,
           message: 'Υπήρξε σφάλμα κατά την αποθήκευση. Προσπαθήστε ξανά.',
         );
-  
 
       _firstNameController.clear();
       _lastNameController.clear();
@@ -137,6 +138,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   @override
   Widget build(BuildContext context) {
+    final _employeeBloc = EmployeeProvider.of(context);
     return Scaffold(
       appBar: AppBar(
         title:
@@ -158,11 +160,18 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
                       physics: BouncingScrollPhysics(),
                       children: <Widget>[
                         _buildNamesListTile(),
-                        // ListTile(title: _buildFirstName()),
-                        // ListTile(title: _buildLastName()),
+                        ListTile(
+                          title: Row(
+                            children: <Widget>[
+                              Expanded(child: _firstName()),
+                              SizedBox(width: 8.0),
+                              Expanded(child: _lastName()),
+                            ],
+                          ),
+                        ),
                         Padding(
                           padding: EdgeInsets.only(top: 8.0),
-                          child: _buildAfmField(),
+                          child: ListTile(title: _afmField()),
                         ),
                         _buildWorkHours(),
                       ],
@@ -187,96 +196,60 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
     return ListTile(
         title: Row(
       children: <Widget>[
-        Expanded(child: _buildFirstName()),
+        Expanded(child: _firstName()),
         SizedBox(width: 8.0),
-        Expanded(child: _buildLastName()),
+        Expanded(child: _lastName()),
       ],
     ));
   }
 
-  _buildFirstName() {
-    return TextFormField(
-      keyboardType: TextInputType.text,
-      textCapitalization: TextCapitalization.sentences,
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (value) {
-        if (value.isEmpty)
-          setState(() => _shouldValidateOnChangeFirstName = true);
-        else
-          FocusScope.of(context).requestFocus(lastNameFocus);
-      },
-      autovalidate: _shouldValidateOnChangeFirstName,
+  _firstName() {
+    return StreamTextField(
+      subjectStream: EmployeeProvider.of(context).firstName,
+      subjectSink: EmployeeProvider.of(context).updateFirstName,
       focusNode: firstNameFocus,
-      decoration: InputDecoration(
-        labelText: 'Όνομα',
-        prefixIcon: Icon(Icons.person),
-      ),
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Προσθέστε όνομα';
-        }
-      },
-      controller: _firstNameController,
+      giveFocusTo: lastNameFocus,
+      labelText: 'Όνομα',
+      prefixIcon: Icon(Icons.person),
     );
   }
 
-  _buildLastName() {
-    return TextFormField(
-      keyboardType: TextInputType.text,
-      textCapitalization: TextCapitalization.sentences,
-      textInputAction: TextInputAction.next,
-      onFieldSubmitted: (value) {
-        if (value.isEmpty)
-          setState(() => _shouldValidateOnChangeLastName = true);
-        else
-          FocusScope.of(context).requestFocus(afmFocus);
-      },
+  _lastName() {
+    return StreamTextField(
+      subjectStream: EmployeeProvider.of(context).lastName,
+      subjectSink: EmployeeProvider.of(context).updateLastName,
       focusNode: lastNameFocus,
-      decoration: InputDecoration(
-        labelText: 'Επίθετο',
-        prefixIcon: Icon(Icons.contacts),
-      ),
-      validator: (value) {
-        if (value.isEmpty) return 'Προσθέστε επίθετο';
-      },
-      autovalidate: _shouldValidateOnChangeLastName,
-      controller: _lastNameController,
+      giveFocusTo: afmFocus,
+      labelText: 'Επίθετο',
+      prefixIcon: Icon(Icons.contacts),
     );
   }
 
-  _buildAfmField() {
-    final length = 9;
-    return ListTile(
-      title: TextFormField(
-        keyboardType: TextInputType.number,
-        focusNode: afmFocus,
-        textInputAction: TextInputAction.done,
-        decoration: InputDecoration(
-          labelText: 'ΑΦΜ',
-          prefixIcon: Icon(Icons.work),
-        ),
-        validator: (afm) {
-          if (afm.isEmpty) {
-            return 'Προσθέστε ΑΦΜ';
-          } else if (afm.length != length) {
-            return 'Εισάγετε $length αριθμούς';
-          } else if (!afm.split('').every(isInt)) {
-            return 'Ο ΑΦΜ αποτελείται μόνο απο αριθμούς';
-          }
-          if (_afmExist) {
-            return 'Ο ΑΦΜ χρησιμοποιείται ήδη';
-          }
-          _isValidAfm = true;
-        },
-        autovalidate: _shouldValidateOnChangeAfm,
-        maxLength: length,
-        onFieldSubmitted: (value) {
-          if (isNotValidInt(value, length))
-            setState(() => _shouldValidateOnChangeAfm = true); //
-        },
-        controller: _afmController,
-      ),
+  _afmField() {
+    return StreamTextField(
+      subjectStream: EmployeeProvider.of(context).afm,
+      subjectSink: EmployeeProvider.of(context).updateAfm,
+      focusNode: afmFocus,
+      labelText: 'ΑΦΜ',
+      prefixIcon: Icon(Icons.work),
+      keyboardType: TextInputType.number,
+      maxLength: 9,
     );
+    // Validation logic reminder
+    // final length = 9;
+    //     validator: (afm) {
+    //       if (afm.isEmpty) {
+    //         return 'Προσθέστε ΑΦΜ';
+    //       } else if (afm.length != length) {
+    //         return 'Εισάγετε $length αριθμούς';
+    //       } else if (!afm.split('').every(isInt)) {
+    //         return 'Ο ΑΦΜ αποτελείται μόνο απο αριθμούς';
+    //       }
+    //       if (_afmExist) {
+    //         return 'Ο ΑΦΜ χρησιμοποιείται ήδη';
+    //       }
+    //       _isValidAfm = true;
+    //     },
   }
 
   _buildWorkHours() {

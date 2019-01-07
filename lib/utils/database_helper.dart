@@ -1,6 +1,5 @@
 import 'package:ergani_e8/models/employee.dart';
 import 'package:ergani_e8/models/employer.dart';
-import 'package:ergani_e8/utilFunctions.dart';
 import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -127,25 +126,14 @@ class ErganiDatabase {
       return result = 0;
   }
 
-  /// Update opration. Modifiy an Employee in the database.
-  // Future<int> updateEmployee(Employee employee) async {
-  //   Database db = await this.db;
-  //   Map<String, dynamic> map = employee.toMap();
-  //   var result = await db.rawInsert(
-  //       'INSERT OR REPLACE INTO'
-  //       '$employeeTable($colId,$colFirstName, $colLastName, $colAfm, $colWorkStart, $colWorkFinish)'
-  //       ' VALUES(?, ?, ?, ?, ?, ?)',
-  //       [
-  //         map['id'],
-  //         map['first_name'],
-  //         map['last_name'],
-  //         map['afm'],
-  //         map['work_start'],
-  //         map['work_finish']
-  //       ]);
-
-  //   return result;
-  // }
+  Future<int> updateEmployee(Employee employee) async {
+    Database db = await this.db;
+    var result =  await db.update(employeeTable, employee.toMap(),
+        where: '$colId = ?', whereArgs: [employee.id]);
+    print(result);
+    print(this._getEmployeeMapList());
+    return result;
+  }
 
   /// Delete operation. Delete an Employee from the database.
   Future<int> deleteEmployee(Employee employee) async {

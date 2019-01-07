@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 class StreamTextField extends StatefulWidget {
   final String labelText;
-  final Stream stream;
-  final Function(String) onChanged;
+  final Stream subjectStream;
+  final Function(String) subjectSink;
   final Icon prefixIcon;
   final FocusNode focusNode, giveFocusTo;
   final TextInputType keyboardType;
@@ -13,8 +13,8 @@ class StreamTextField extends StatefulWidget {
 
   StreamTextField({
     BuildContext context,
-    @required this.stream,
-    @required this.onChanged,
+    @required this.subjectStream,
+    @required this.subjectSink,
     @required this.focusNode,
     this.giveFocusTo,
     this.labelText,
@@ -41,7 +41,7 @@ class _StreamTextFieldState extends State<StreamTextField> {
   Widget build(BuildContext context) {
     return StreamBuilder(
       // initialData: widget.stream.first,
-      stream: widget.stream,
+      stream: widget.subjectStream,
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (isFirstRender) {
           if (snapshot.hasData) textFieldController.text = snapshot.data;
@@ -49,7 +49,7 @@ class _StreamTextFieldState extends State<StreamTextField> {
         }
 
         return TextField(
-          onChanged: widget.onChanged,
+          onChanged: widget.subjectSink,
           keyboardType: TextInputType.text,
           textCapitalization: TextCapitalization.sentences,
           textInputAction: widget.giveFocusTo != null

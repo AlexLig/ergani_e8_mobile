@@ -205,8 +205,8 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   _firstName() {
     return StreamTextField(
-      stream: EmployeeProvider.of(context).firstName,
-      onChanged: EmployeeProvider.of(context).updateFirstName,
+      subjectStream: EmployeeProvider.of(context).firstName,
+      subjectSink: EmployeeProvider.of(context).updateFirstName,
       focusNode: firstNameFocus,
       giveFocusTo: lastNameFocus,
       labelText: 'Όνομα',
@@ -216,8 +216,8 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   _lastName() {
     return StreamTextField(
-      stream: EmployeeProvider.of(context).lastName,
-      onChanged: EmployeeProvider.of(context).updateLastName,
+      subjectStream: EmployeeProvider.of(context).lastName,
+      subjectSink: EmployeeProvider.of(context).updateLastName,
       focusNode: lastNameFocus,
       giveFocusTo: afmFocus,
       labelText: 'Επίθετο',
@@ -227,8 +227,8 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   _afmField() {
     return StreamTextField(
-      stream: EmployeeProvider.of(context).afm,
-      onChanged: EmployeeProvider.of(context).updateAfm,
+      subjectStream: EmployeeProvider.of(context).afm,
+      subjectSink: EmployeeProvider.of(context).updateAfm,
       focusNode: afmFocus,
       labelText: 'ΑΦΜ',
       prefixIcon: Icon(Icons.work),

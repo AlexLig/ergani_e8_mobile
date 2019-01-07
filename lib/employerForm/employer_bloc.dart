@@ -1,4 +1,4 @@
-import 'package:ergani_e8/employerForm/validator_bloc.dart';
+import 'package:ergani_e8/utils/validator_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 class EmployerBloc extends Object with ValidatorBloc {

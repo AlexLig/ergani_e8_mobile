@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:ergani_e8/bloc/validator.dart';
+import 'package:ergani_e8/utils/validator_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-class EmployeeBloc extends Object with Validator {
+class EmployeeBloc extends Object with ValidatorBloc {
   final _firstNameSubject = BehaviorSubject<String>();
   final _lastNameSubject = BehaviorSubject<String>();
   final _afmSubject = BehaviorSubject<String>();

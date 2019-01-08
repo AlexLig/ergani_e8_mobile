@@ -21,7 +21,10 @@ class EmployeeBloc extends Object with ValidatorBloc {
   Function(String) get updateLastName => _lastNameSubject.sink.add;
 
   // Afm
-  Observable<String> get afm => _afmSubject.stream.transform(validateNumeric);
+  Observable<String> get afm => _afmSubject.stream
+      .transform(validateNumeric)
+      .debounce(Duration(milliseconds: 500))
+      .transform(validateLength((length) => length == 9));
   Function(String) get updateAfm => _afmSubject.sink.add;
 
   // Work start

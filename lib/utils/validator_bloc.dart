@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:ergani_e8/utils/input_utils.dart';
 
+typedef bool EqualityTest(int length);
 var nanErrorMsg = 'Προσθέστε μόνο αριθμούς';
 var emailErrorMsg = 'Προσθέστε έγκυρο email';
 var emptyFieldErrorMsg = 'Το πεδίο αυτό είναι υποχρεωτικό';
+var invalidLengthMsg = 'Ελέγξτε των αριθμό των χαρακτήρων';
 
 var emailValidationRule =
     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -25,4 +27,11 @@ class ValidatorBloc {
       handleData: (value, sink) => value.length > 0
           ? sink.add(value)
           : sink.addError(emptyFieldErrorMsg));
+
+  final validateLength = (EqualityTest tester, [String errorMessage]) =>
+      StreamTransformer<String, String>.fromHandlers(
+        handleData: (value, sink) => tester(value.length)
+            ? sink.add(value)
+            : sink.addError(errorMessage ?? invalidLengthMsg),
+      );
 }

@@ -50,8 +50,7 @@ class MyAppState extends State<MyApp> {
             if (snapshot.data > 0)
               return ContactsRoute();
             else
-              return EmployerForm(); 
-              // IntroViews();
+              return IntroViews();
               // return CreateNewEmployer();
           } else
             return Container(

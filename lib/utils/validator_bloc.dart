@@ -25,10 +25,10 @@ class ValidatorBloc {
           ? sink.add(value)
           : sink.addError(emptyFieldErrorMsg));
 
-  final validateLength = (EqualityTest tester,
+  final validateLength = (EqualityTest check,
           [String errorMessage = invalidLengthMsg]) =>
       StreamTransformer<String, String>.fromHandlers(
-        handleData: (value, sink) => tester(value.length)
+        handleData: (value, sink) => check(value.length)
             ? sink.add(value)
             : sink.addError(errorMessage),
       );

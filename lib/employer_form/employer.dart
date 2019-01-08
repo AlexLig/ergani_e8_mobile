@@ -1,8 +1,6 @@
 import 'package:ergani_e8/components/info_tile.dart';
 import 'package:ergani_e8/employee_form/stream_text_field.dart';
 import 'package:ergani_e8/employer_form/employer_bloc.dart';
-import 'package:ergani_e8/employer_form/name_field.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

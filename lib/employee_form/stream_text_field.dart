@@ -1,21 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 class StreamTextField extends StatefulWidget {
   final String labelText;
   final Stream subjectStream;
   final Function(String) subjectSink;
+  final Stream<bool> toggleStream;
   final Icon prefixIcon;
   final FocusNode focusNode, giveFocusTo;
   final TextInputType keyboardType;
   final int maxLength;
+
+  
 
   StreamTextField({
     BuildContext context,
     @required this.subjectStream,
     @required this.subjectSink,
     @required this.focusNode,
+    this.toggleStream,
     this.giveFocusTo,
     this.labelText,
     this.prefixIcon,
@@ -40,7 +45,7 @@ class _StreamTextFieldState extends State<StreamTextField> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      // initialData: widget.stream.first,
+      initialData: ,
       stream: widget.subjectStream,
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (isFirstRender) {

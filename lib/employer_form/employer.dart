@@ -1,6 +1,7 @@
 import 'package:ergani_e8/components/info_tile.dart';
-import 'package:ergani_e8/employerForm/employer_bloc.dart';
-import 'package:ergani_e8/employerForm/name_field.dart';
+import 'package:ergani_e8/employee_form/stream_text_field.dart';
+import 'package:ergani_e8/employer_form/employer_bloc.dart';
+import 'package:ergani_e8/employer_form/name_field.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +19,6 @@ class EmployerForm extends StatelessWidget {
                 child: ListView(
                   physics: BouncingScrollPhysics(),
                   children: <Widget>[
-                    NameField(),
                     afmField(),
                     buildAmeTile(),
                     smsReceiverField(),
@@ -34,7 +34,6 @@ class EmployerForm extends StatelessWidget {
     );
   }
 
-  
   afmField() {
     return StreamBuilder(
       stream: employerBloc.afmStream,
@@ -86,47 +85,55 @@ class EmployerForm extends StatelessWidget {
     );
   }
 
-  smsReceiverField() {
-    return StreamBuilder(
-      initialData: '54002',
-      stream: employerBloc.smsReceiverStream,
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        return ListTile(
-          leading: Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Text(
-              'Παραλήπτης SMS:',
-              style: TextStyle(fontSize: 16.0),
-            ),
-          ),
-          title: Row(
-            children: <Widget>[
-              Expanded(
-                child: InkWell(
-                  onTap: null,
-                  child: TextField(
-                    style: TextStyle(fontSize: 18.0, color: Colors.grey[900]),
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.done,
-                    onChanged: employerBloc.updateSmsReceiver,
-                    // initialValue: snapshot.data,
-
-                    // enabled: _canEditSmsNumber,
-                    // focusNode: _smsNumberFocus,
-                    // decoration: InputDecoration(
-                    // suffixIcon: !_canEditSmsNumber
-                    //     ? Icon(Icons.edit, color: Colors.grey[900])
-                    //     : null,
-                    // ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+  Widget smsReceiverField() {
+    return StreamTextField(
+      subjectStream: employerBloc.smsReceiverStream,
+      subjectSink: employerBloc.updateSmsReceiver,
+      labelText: 'Αριθμός αποστολής μηνύματος',
     );
   }
+
+  // smsReceiverField() {
+  //   return StreamBuilder(
+  //     initialData: '54002',
+  //     stream: employerBloc.smsReceiverStream,
+  //     builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+  //       return ListTile(
+  //         leading: Padding(
+  //           padding: const EdgeInsets.only(right: 8.0),
+  //           child: Text(
+  //             'Παραλήπτης SMS:',
+  //             style: TextStyle(fontSize: 16.0),
+  //           ),
+  //         ),
+  //         title: Row(
+  //           children: <Widget>[
+  //             Expanded(
+  //               child: InkWell(
+  //                 onTap: null,
+  //                 child: TextField(
+  //                   style: TextStyle(fontSize: 18.0, color: Colors.grey[900]),
+  //                   keyboardType: TextInputType.number,
+  //                   textInputAction: TextInputAction.done,
+  //                   onChanged: employerBloc.updateSmsReceiver,
+  //                   // initialValue: snapshot.data,
+
+  //                   // enabled: _canEditSmsNumber,
+  //                   // focusNode: _smsNumberFocus,
+  //                   // decoration: InputDecoration(
+  //                   // suffixIcon: !_canEditSmsNumber
+  //                   //     ? Icon(Icons.edit, color: Colors.grey[900])
+  //                   //     : null,
+  //                   // ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   // _handleEditSmsNumber(BuildContext context) async {
   //   final bool allowEdit = await showDialog(

@@ -1,4 +1,4 @@
-import 'package:ergani_e8/employerForm/employer_bloc.dart';
+import 'package:ergani_e8/employer_form/employer_bloc.dart';
 import 'package:flutter/material.dart';
 
 class EmployerBlocProvider extends InheritedWidget {

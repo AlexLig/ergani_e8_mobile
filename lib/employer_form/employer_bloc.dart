@@ -16,8 +16,8 @@ class EmployerBloc extends Object with ValidatorBloc {
   Stream<String> get ameStream =>
       _ameController.stream.transform(validateNumeric);
   Stream<bool> get hasAmeStream => _hasAmeController.stream;
-  Stream get ameCombined => Observable.combineLatest2(
-      hasAmeStream, ameStream, (bool h, String a) => [h, a]);
+  Stream get ameCombined => Observable.combineLatest2(hasAmeStream, ameStream,
+      (bool h, String a) =>  {'isActive': h, 'value': a});
 
   Stream<String> get nameStream => _nameController.stream;
   Stream<String> get afmStream =>
@@ -32,6 +32,7 @@ class EmployerBloc extends Object with ValidatorBloc {
   // Stream input
   Function(String) get updateName => _nameController.sink.add;
   Function(String) get updateAfm => _afmController.sink.add;
+  Function(String) get updateAme => _ameController.sink.add;
   Function(String) get updateSmsReceiver => _smsReceiverController.sink.add;
   Function(bool) get updateHasAme => _hasAmeController.sink.add;
   Function(bool) get updateCanEdidSmsReiveiver => _hasAmeController.sink.add;

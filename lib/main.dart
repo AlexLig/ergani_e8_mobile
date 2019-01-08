@@ -1,6 +1,6 @@
 import 'package:ergani_e8/components/drawer.dart';
 import 'package:ergani_e8/components/intro_views.dart';
-import 'package:ergani_e8/employerForm/employer.dart';
+import 'package:ergani_e8/employer_form/employer.dart';
 import 'package:ergani_e8/routes/contacts_route.dart';
 
 import 'package:ergani_e8/routes/new_employer_route.dart';

@@ -90,8 +90,16 @@ class E8formState extends State<E8form> {
         title: Text('Έντυπο Ε8'),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.send),
+        icon: _isLoading
+            ? Container(
+                height: 25,
+                width: 25,
+                child: CircularProgressIndicator(),
+              )
+            : Icon(Icons.send),
         label: Text("ΑΠΟΣΤΟΛΗ"),
+        onPressed: _isLoading || !_canSendSms ? null : _handleSend,
+        backgroundColor: _isLoading || !_canSendSms ? Colors.grey[300] : null,
       ),
       body: Builder(
         builder: (context) {
@@ -103,7 +111,9 @@ class E8formState extends State<E8form> {
                 Expanded(
                   child: ListView(
                     physics: BouncingScrollPhysics(),
-                    children: <Widget>[_buildE8Settings()],
+                    children: <Widget>[
+                      _buildE8Settings(),
+                    ],
                   ),
                 ),
                 // Column(
@@ -191,18 +201,28 @@ class E8formState extends State<E8form> {
             child: TimePickerTile(
               workStart: _overtimeStart,
               workFinish: _overtimeFinish,
-              onSelectStartTime:
-                   () => _selectStartTime(context) ,
+              onSelectStartTime: () => _selectStartTime(context),
               onSelectFinishTime: () => _selectFinishTime(context),
               isReset: _isReset,
               outlined: true,
             ),
           ),
           _buildActiveSlider(),
-           ListTile(
-              title: Text(_erganiCode),
-              leading: Icon(Icons.chat),
-            ),
+          _canSendSms
+              ? ListTile(
+                  title: Text(_erganiCode),
+                  leading: Icon(Icons.chat),
+                )
+              : ListTile(
+                  leading: Icon(Icons.warning, color: Colors.deepOrange),
+                  title: Text(
+                    'Η δήλωση υπερωρίας γίνεται μόνο πριν την έναρξή της.',
+                    style: TextStyle(color: Colors.deepOrange),
+                  ),
+                ),
+          Container(
+            height: 80,
+          )
         ],
       ),
     );
@@ -300,7 +320,7 @@ class E8formState extends State<E8form> {
   }
 
 // TODO: Still works?
-  _handleSend(scaffoldContext) async {
+  _handleSend() async {
     if (_employer != null) {
       SmsSender sender = SmsSender();
       String address = _employer.smsNumber;
@@ -310,14 +330,14 @@ class E8formState extends State<E8form> {
           setState(() => _isLoading = true);
         } else if (state == SmsMessageState.Sent) {
           showSnackbar(
-            scaffoldContext: scaffoldContext,
+            scaffoldContext: _scaffoldContext,
             type: SnackbarType.Success,
             message: 'Το μήνυμα εστάλη με επιτυχία',
           );
           setState(() => _isLoading = false);
         } else if (state == SmsMessageState.Fail) {
           showSnackbar(
-            scaffoldContext: scaffoldContext,
+            scaffoldContext: _scaffoldContext,
             type: SnackbarType.Warning,
             message: 'Αποτυχία αποστολής μηνύματος',
           );
@@ -328,7 +348,7 @@ class E8formState extends State<E8form> {
       await sender.sendSms(message);
     } else {
       showSnackbar(
-        scaffoldContext: scaffoldContext,
+        scaffoldContext: _scaffoldContext,
         type: SnackbarType.Warning,
         message: 'Σφάλμα αποστολής. Ελέγξτε τα στοιχεία της εταιρίας.',
       );

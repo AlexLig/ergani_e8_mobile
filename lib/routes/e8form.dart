@@ -89,6 +89,10 @@ class E8formState extends State<E8form> {
       appBar: AppBar(
         title: Text('Έντυπο Ε8'),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: Icon(Icons.send),
+        label: Text("ΑΠΟΣΤΟΛΗ"),
+      ),
       body: Builder(
         builder: (context) {
           _scaffoldContext = context;
@@ -102,32 +106,32 @@ class E8formState extends State<E8form> {
                     children: <Widget>[_buildE8Settings()],
                   ),
                 ),
-                Column(
-                  children: [
-                    // Row(
-                    //   children: <Widget>[
-                    //     FlatButton(
-                    //       child: Text('LOAD'),
-                    //       onPressed: () => setState(() => _isLoading = true),
-                    //     ),
-                    //     FlatButton(
-                    //       child: Text('DONT LOAD'),
-                    //       onPressed: () => setState(() => _isLoading = false),
-                    //     ),
-                    //   ],
-                    // ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 2.0),
-                      child: MessageBottomSheet(
-                        onSend: _canSendSms ? () => _handleSend(context) : null,
-                        message: _erganiCode,
-                        senderController: _senderController,
-                        smsNumberController: _smsNumberController,
-                        isLoading: _isLoading,
-                      ),
-                    ),
-                  ].where((val) => val != null).toList(),
-                ),
+                // Column(
+                //   children: [
+                //     // Row(
+                //     //   children: <Widget>[
+                //     //     FlatButton(
+                //     //       child: Text('LOAD'),
+                //     //       onPressed: () => setState(() => _isLoading = true),
+                //     //     ),
+                //     //     FlatButton(
+                //     //       child: Text('DONT LOAD'),
+                //     //       onPressed: () => setState(() => _isLoading = false),
+                //     //     ),
+                //     //   ],
+                //     // ),
+                //     Padding(
+                //       padding: const EdgeInsets.only(bottom: 2.0),
+                //       child: MessageBottomSheet(
+                //         onSend: _canSendSms ? () => _handleSend(context) : null,
+                //         message: _erganiCode,
+                //         senderController: _senderController,
+                //         smsNumberController: _smsNumberController,
+                //         isLoading: _isLoading,
+                //       ),
+                //     ),
+                //   ].where((val) => val != null).toList(),
+                // ),
               ],
             ),
           );
@@ -188,13 +192,17 @@ class E8formState extends State<E8form> {
               workStart: _overtimeStart,
               workFinish: _overtimeFinish,
               onSelectStartTime:
-                  _canSendSms ? () => _selectStartTime(context) : null,
+                   () => _selectStartTime(context) ,
               onSelectFinishTime: () => _selectFinishTime(context),
               isReset: _isReset,
               outlined: true,
             ),
           ),
-          _buildActiveSlider()
+          _buildActiveSlider(),
+           ListTile(
+              title: Text(_erganiCode),
+              leading: Icon(Icons.chat),
+            ),
         ],
       ),
     );

@@ -36,6 +36,8 @@ class E8formState extends State<E8form> {
   bool _isLoading = false;
   BuildContext _scaffoldContext;
 
+  bool _triggered = false;
+
   @override
   void initState() {
     super.initState();
@@ -191,18 +193,17 @@ class E8formState extends State<E8form> {
             child: TimePickerTile(
               workStart: _overtimeStart,
               workFinish: _overtimeFinish,
-              onSelectStartTime:
-                   () => _selectStartTime(context) ,
+              onSelectStartTime: () => _selectStartTime(context),
               onSelectFinishTime: () => _selectFinishTime(context),
               isReset: _isReset,
               outlined: true,
             ),
           ),
           _buildActiveSlider(),
-           ListTile(
-              title: Text(_erganiCode),
-              leading: Icon(Icons.chat),
-            ),
+          ListTile(
+            title: Text(_erganiCode),
+            leading: Icon(Icons.chat),
+          ),
         ],
       ),
     );
@@ -252,15 +253,23 @@ class E8formState extends State<E8form> {
           message:
               'Η λήξη της υπερωρίας δεν μπορεί να είναι πριν από την ώρα έναρξης.',
         );
-      else if (isLater(
+    /*   else if ((timeToMinutes(picked) - timeToMinutes(_overtimeStart)) % 30 !=
+          0) {
+        showSnackbar(
+          scaffoldContext: _scaffoldContext,
+          message: 'Η υπερωρία δηλώνεται σε διαστήματα των 30 λεπτών.',
+          type: SnackbarType.Warning,
+        );
+      } */ else if (isLater(
         picked,
         addToTimeOfDay(_employee.workFinish, hour: 3),
-      ))
+      )) {
         showSnackbar(
-            scaffoldContext: _scaffoldContext,
-            message: 'Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.',
-            type: SnackbarType.Warning);
-      else
+          scaffoldContext: _scaffoldContext,
+          message: 'Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.',
+          type: SnackbarType.Warning,
+        );
+      } else
         setState(() => _overtimeFinish = picked);
     }
   }
@@ -292,11 +301,24 @@ class E8formState extends State<E8form> {
   }
 
   void _handleSliderChange(newSliderValue) {
-    setState(() {
-      _sliderValue = newSliderValue;
-      _overtimeFinish =
-          addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
-    });
+    var minutes = (newSliderValue * 60).toInt();
+    if (isLater(
+      addToTimeOfDay(_overtimeStart, minute: minutes),
+      addToTimeOfDay(_employee.workFinish, hour: 3),
+    )) {
+      if (!_triggered)
+        showSnackbar(
+          scaffoldContext: _scaffoldContext,
+          message: 'Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.',
+          type: SnackbarType.Warning,
+        );
+      setState(() => _triggered = true);
+    } else {
+      setState(() {
+        _sliderValue = newSliderValue;
+        _overtimeFinish = addToTimeOfDay(_overtimeStart, minute: minutes);
+      });
+    }
   }
 
 // TODO: Still works?

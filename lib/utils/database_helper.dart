@@ -130,15 +130,17 @@ class ErganiDatabase {
   // Update opration. Modifiy an Employee in the database.
   Future<int> updateEmployee(Employee employee) async {
     Database db = await this.db;
+    Map<String, dynamic> map = employee.toMap();
     var result = await db.rawUpdate(
         'UPDATE $employeeTable set $colFirstName = ?, $colLastName = ?, $colAfm = ?, $colWorkStart = ?, $colWorkFinish = ? where $colId = ?',        
-        [        
-          employee.firstName,
-          employee.lastName,
-          employee.afm,
-          employee.workStart,
-          employee.workFinish,
-          employee.id
+        [     
+          map['first_name'],
+          map['last_name'],
+          map['afm'],
+          map['work_start'],
+          map['work_finish'],   
+          map['id']   
+          
         ]);
 
     return result;

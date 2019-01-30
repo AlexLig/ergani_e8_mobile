@@ -7,6 +7,8 @@ import 'package:ergani_e8/utilFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:sms/sms.dart';
 
+import '../components/showSnackbar.dart';
+
 class E8form extends StatefulWidget {
   final Employee employee;
   final Employer employer;
@@ -34,6 +36,8 @@ class E8formState extends State<E8form> {
   bool _isLoading = false;
   BuildContext _scaffoldContext;
 
+  bool _triggered = false;
+
   @override
   void initState() {
     super.initState();
@@ -42,7 +46,8 @@ class E8formState extends State<E8form> {
     _sliderValue = 0.5;
     _smsNumberController.text = _employer.smsNumber;
     _senderController.text = _employer.name;
-    _canSendSms = !isLater(TimeOfDay.now(), _employee.workFinish);
+    _canSendSms = !isLater(
+        TimeOfDay.now(), addToTimeOfDay(_employee.workFinish, hour: 3));
   }
 
   TimeOfDay _roundedTimeOfDayNow() {
@@ -60,11 +65,15 @@ class E8formState extends State<E8form> {
   @override
   Widget build(BuildContext context) {
     if (_isFirstBuild && !_isReset) {
-      // if (_employee.workFinish == null ||
-      //     isLater(TimeOfDay.now(), _employee.workFinish))
-      //   _overtimeStart = _roundedTimeOfDayNow();
-      // else
-      _overtimeStart = _employee.workFinish;
+      if (_employee.workFinish == null ||
+          isLater(TimeOfDay.now(), _employee.workFinish) &&
+              !isLater(
+                TimeOfDay.now(),
+                addToTimeOfDay(_employee.workFinish, hour: 3),
+              ))
+        _overtimeStart = _roundedTimeOfDayNow();
+      else
+        _overtimeStart = _employee.workFinish;
 
       _overtimeFinish =
           addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
@@ -82,6 +91,18 @@ class E8formState extends State<E8form> {
       appBar: AppBar(
         title: Text('Έντυπο Ε8'),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: _isLoading
+            ? Container(
+                height: 25,
+                width: 25,
+                child: CircularProgressIndicator(),
+              )
+            : Icon(Icons.send),
+        label: Text("ΑΠΟΣΤΟΛΗ"),
+        onPressed: _isLoading || !_canSendSms ? null : _handleSend,
+        backgroundColor: _isLoading || !_canSendSms ? Colors.grey[300] : null,
+      ),
       body: Builder(
         builder: (context) {
           _scaffoldContext = context;
@@ -92,35 +113,37 @@ class E8formState extends State<E8form> {
                 Expanded(
                   child: ListView(
                     physics: BouncingScrollPhysics(),
-                    children: <Widget>[_buildE8Settings()],
+                    children: <Widget>[
+                      _buildE8Settings(),
+                    ],
                   ),
                 ),
-                Column(
-                  children: [
-                    // Row(
-                    //   children: <Widget>[
-                    //     FlatButton(
-                    //       child: Text('LOAD'),
-                    //       onPressed: () => setState(() => _isLoading = true),
-                    //     ),
-                    //     FlatButton(
-                    //       child: Text('DONT LOAD'),
-                    //       onPressed: () => setState(() => _isLoading = false),
-                    //     ),
-                    //   ],
-                    // ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 2.0),
-                      child: MessageBottomSheet(
-                        onSend: _canSendSms ? () => _handleSend(context) : null,
-                        message: _erganiCode,
-                        senderController: _senderController,
-                        smsNumberController: _smsNumberController,
-                        isLoading: _isLoading,
-                      ),
-                    ),
-                  ].where((val) => val != null).toList(),
-                ),
+                // Column(
+                //   children: [
+                //     // Row(
+                //     //   children: <Widget>[
+                //     //     FlatButton(
+                //     //       child: Text('LOAD'),
+                //     //       onPressed: () => setState(() => _isLoading = true),
+                //     //     ),
+                //     //     FlatButton(
+                //     //       child: Text('DONT LOAD'),
+                //     //       onPressed: () => setState(() => _isLoading = false),
+                //     //     ),
+                //     //   ],
+                //     // ),
+                //     Padding(
+                //       padding: const EdgeInsets.only(bottom: 2.0),
+                //       child: MessageBottomSheet(
+                //         onSend: _canSendSms ? () => _handleSend(context) : null,
+                //         message: _erganiCode,
+                //         senderController: _senderController,
+                //         smsNumberController: _smsNumberController,
+                //         isLoading: _isLoading,
+                //       ),
+                //     ),
+                //   ].where((val) => val != null).toList(),
+                // ),
               ],
             ),
           );
@@ -180,53 +203,61 @@ class E8formState extends State<E8form> {
             child: TimePickerTile(
               workStart: _overtimeStart,
               workFinish: _overtimeFinish,
-              onSelectStartTime: null,
+              onSelectStartTime: () => _selectStartTime(context),
               onSelectFinishTime: () => _selectFinishTime(context),
               isReset: _isReset,
               outlined: true,
             ),
           ),
-          _buildActiveSlider()
+          _buildActiveSlider(),
+          _canSendSms
+              ? ListTile(
+                  title: Text(_erganiCode),
+                  leading: Icon(Icons.chat),
+                )
+              : ListTile(
+                  leading: Icon(Icons.warning, color: Colors.deepOrange),
+                  title: Text(
+                    'Η δήλωση υπερωρίας γίνεται μόνο πριν την έναρξή της.',
+                    style: TextStyle(color: Colors.deepOrange),
+                  ),
+                ),
+          Container(
+            height: 80,
+          )
         ],
       ),
     );
   }
 
   Future<Null> _selectStartTime(BuildContext context) async {
+    final sliderValue = (_sliderValue * 60).toInt();
     final TimeOfDay picked = await showTimePicker(
       context: context,
       initialTime: _overtimeStart,
     );
     if (picked != null && picked != _overtimeStart) {
-      if (isLater(TimeOfDay.now(), picked)) {
-        Scaffold.of(_scaffoldContext).showSnackBar(
-          SnackBar(
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(Icons.warning),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text('Η δήλωση υπερωρίας γίνεται μόνο '),
-                    Text('πριν την έναρξη της.'),
-                  ],
-                ),
-              ],
-            ),
-          ),
+      if (isLater(TimeOfDay.now(), picked))
+        showSnackbar(
+          scaffoldContext: _scaffoldContext,
+          type: SnackbarType.Warning,
+          message: 'Η δήλωση υπερωρίας γίνεται μόνο πριν την έναρξη της.',
         );
-      } else
+      else if (isLater(
+        addToTimeOfDay(picked, minute: sliderValue),
+        addToTimeOfDay(_employee.workFinish, hour: 3),
+      ))
+        showSnackbar(
+          scaffoldContext: _scaffoldContext,
+          type: SnackbarType.Warning,
+          message: 'Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.',
+        );
+      else {
         setState(() {
           _overtimeStart = picked;
-          _overtimeFinish = addToTimeOfDay(
-            _overtimeStart,
-            minute: (_sliderValue * 60).toInt(),
-          );
+          _overtimeFinish = addToTimeOfDay(_overtimeStart, minute: sliderValue);
         });
+      }
     }
   }
 
@@ -236,34 +267,37 @@ class E8formState extends State<E8form> {
       initialTime: _overtimeFinish,
     );
     if (picked != null && picked != _overtimeFinish) {
-      if (!isLater(picked, _overtimeStart)) {
-        Scaffold.of(_scaffoldContext).showSnackBar(
-          SnackBar(
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(Icons.warning),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text('Η λήξη υπερωρίας δεν μπορεί να είναι'),
-                    Text('πριν την έναρξή της.'),
-                  ],
-                ),
-              ],
-            ),
-          ),
+      if (!isLater(picked, _overtimeStart))
+        showSnackbar(
+          scaffoldContext: _scaffoldContext,
+          type: SnackbarType.Warning,
+          message:
+              'Η λήξη της υπερωρίας δεν μπορεί να είναι πριν από την ώρα έναρξης.',
+        );
+    /*   else if ((timeToMinutes(picked) - timeToMinutes(_overtimeStart)) % 30 !=
+          0) {
+        showSnackbar(
+          scaffoldContext: _scaffoldContext,
+          message: 'Η υπερωρία δηλώνεται σε διαστήματα των 30 λεπτών.',
+          type: SnackbarType.Warning,
+        );
+      } */ else if (isLater(
+        picked,
+        addToTimeOfDay(_employee.workFinish, hour: 3),
+      )) {
+        showSnackbar(
+          scaffoldContext: _scaffoldContext,
+          message: 'Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.',
+          type: SnackbarType.Warning,
         );
       } else
-        setState(() => _overtimeFinish = picked);
+        setState(() {
+          _overtimeFinish = picked;
+          _sliderValue = 0.5;
+        });
     }
   }
 
-  // TODO : set context to always use 24hr. Non intl.
-  // TODO: Prevent from choosing overtime later than Time.now()
   _buildActiveSlider() {
     var value = (_sliderValue * 2) % 2;
     var sliderValue = value == 0 ? _sliderValue.round() : _sliderValue;
@@ -283,7 +317,6 @@ class E8formState extends State<E8form> {
               value: _sliderValue,
               onChanged:
                   _isReset ? null : (value) => _handleSliderChange(value),
-              // inactiveColor: Colors.grey[200],
             ),
           ),
         )
@@ -292,14 +325,28 @@ class E8formState extends State<E8form> {
   }
 
   void _handleSliderChange(newSliderValue) {
-    setState(() {
-      _sliderValue = newSliderValue;
-      _overtimeFinish =
-          addToTimeOfDay(_overtimeStart, minute: (_sliderValue * 60).toInt());
-    });
+    var minutes = (newSliderValue * 60).toInt();
+    if (isLater(
+      addToTimeOfDay(_overtimeStart, minute: minutes),
+      addToTimeOfDay(_employee.workFinish, hour: 3),
+    )) {
+      if (!_triggered)
+        showSnackbar(
+          scaffoldContext: _scaffoldContext,
+          message: 'Η νόμιμη διάρκεια υπερωρίας είναι 3 ώρες.',
+          type: SnackbarType.Warning,
+        );
+      setState(() => _triggered = true);
+    } else {
+      setState(() {
+        _sliderValue = newSliderValue;
+        _overtimeFinish = addToTimeOfDay(_overtimeStart, minute: minutes);
+      });
+    }
   }
 
-  _handleSend(scaffoldContext) async {
+// TODO: Still works?
+  _handleSend() async {
     if (_employer != null) {
       SmsSender sender = SmsSender();
       String address = _employer.smsNumber;
@@ -308,79 +355,28 @@ class E8formState extends State<E8form> {
         if (state == SmsMessageState.Sending) {
           setState(() => _isLoading = true);
         } else if (state == SmsMessageState.Sent) {
-          _sucessSmsSnackBar(scaffoldContext, 'Το μήνυμα εστάλη με επιτυχία');
+          
           setState(() => _isLoading = false);
+          Navigator.pop(context,true);
         } else if (state == SmsMessageState.Fail) {
-          _warningSmsSnackBar(scaffoldContext, 'Αποτυχία αποστολής μηνύματος');
+          showSnackbar(
+            scaffoldContext: _scaffoldContext,
+            type: SnackbarType.Warning,
+            message: 'Αποτυχία αποστολής μηνύματος',
+          );
           setState(() => _isLoading = false);
         }
       });
 
       await sender.sendSms(message);
     } else {
-      _warningSmsSnackBar(scaffoldContext,
-          'Σφάλμα αποστολής. Ελέγξτε τα στοιχεία της εταιρίας.');
+      showSnackbar(
+        scaffoldContext: _scaffoldContext,
+        type: SnackbarType.Warning,
+        message: 'Σφάλμα αποστολής. Ελέγξτε τα στοιχεία της εταιρίας.',
+      );
+
       setState(() => _isLoading = false);
     }
-  }
-
-  void _sendingSmsSnackBar(scaffoldContext, String message) {
-    Scaffold.of(scaffoldContext).showSnackBar(
-      SnackBar(
-        duration: Duration(seconds: 1),
-        content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text(message),
-            ]),
-      ),
-    );
-  }
-
-  void _sucessSmsSnackBar(scaffoldContext, String message) {
-    Scaffold.of(scaffoldContext).showSnackBar(
-      SnackBar(
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.green,
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Icon(Icons.check),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(message),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _warningSmsSnackBar(scaffoldContext, String message) {
-    Scaffold.of(scaffoldContext).showSnackBar(
-      SnackBar(
-        duration: Duration(seconds: 1),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Icon(Icons.warning),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(message),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

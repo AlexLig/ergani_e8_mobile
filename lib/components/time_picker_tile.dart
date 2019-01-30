@@ -53,8 +53,11 @@ class TimePickerTile extends StatelessWidget {
     );
   }
 
-  _buildUnderlinedButton(context,
-      {@required onPressed, @required TimeOfDay workHour}) {
+  _buildUnderlinedButton(
+    context, {
+    @required onPressed,
+    @required TimeOfDay workHour,
+  }) {
     return FlatButton(
       shape: UnderlineInputBorder(
         borderSide: BorderSide(

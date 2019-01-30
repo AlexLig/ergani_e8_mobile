@@ -8,6 +8,8 @@ import 'package:ergani_e8/utils/input_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../components/showSnackbar.dart';
+
 class CreateEmployeeRoute extends StatefulWidget {
   final Employee employee;
   CreateEmployeeRoute({BuildContext context, this.employee});
@@ -58,7 +60,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   void checkIfAfmExist() async {
     // For async validation
-    if ((_isValidAfm || int.tryParse(_afmController.text) != null) &&
+    if ((_isValidAfm || (int.tryParse(_afmController.text) != null)) &&
         int.tryParse(_afmController.text).abs().toString().length == 9 &&
         _employee?.afm != _afmController.text) {
       var employeeList =
@@ -110,31 +112,18 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         result = await _erganiDatabase.deleteEmployee(_employee);
         if (result != 0)
           result = await _erganiDatabase.createEmployee(employeeToSubmit);
+        // result = await _erganiDatabase.updateEmployee(employeeToSubmit);
       }
 
       if (result != 0)
         Navigator.pop(context, employeeToSubmit);
       else
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            duration: Duration(seconds: 1),
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(Icons.warning),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text('Υπήρξε σφάλμα κατά την αποθήκευση. Προσπαθήστε ξανά.'),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        showSnackbar(
+          scaffoldContext: context,
+          type: SnackbarType.Warning,
+          message: 'Υπήρξε σφάλμα κατά την αποθήκευση. Προσπαθήστε ξανά.',
         );
+  
 
       _firstNameController.clear();
       _lastNameController.clear();
@@ -249,7 +238,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         prefixIcon: Icon(Icons.contacts),
       ),
       validator: (value) {
-        if (value.isEmpty) return 'Προσθέστε επίθετο';
+        if (value.isEmpty) return 'Προσθέστε επίθετο.';
       },
       autovalidate: _shouldValidateOnChangeLastName,
       controller: _lastNameController,
@@ -269,14 +258,14 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         ),
         validator: (afm) {
           if (afm.isEmpty) {
-            return 'Προσθέστε ΑΦΜ';
+            return 'Προσθέστε ΑΦΜ.';
           } else if (afm.length != length) {
-            return 'Εισάγετε $length αριθμούς';
+            return 'Εισάγετε $length αριθμούς.';
           } else if (!afm.split('').every(isInt)) {
-            return 'Ο ΑΦΜ αποτελείται μόνο απο αριθμούς';
+            return 'Ο ΑΦΜ αποτελείται μόνο απο αριθμούς.';
           }
           if (_afmExist) {
-            return 'Ο ΑΦΜ χρησιμοποιείται ήδη';
+            return 'Ο ΑΦΜ χρησιμοποιείται ήδη.';
           }
           _isValidAfm = true;
         },

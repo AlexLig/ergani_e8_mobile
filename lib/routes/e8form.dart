@@ -270,7 +270,10 @@ class E8formState extends State<E8form> {
           type: SnackbarType.Warning,
         );
       } else
-        setState(() => _overtimeFinish = picked);
+        setState(() {
+          _overtimeFinish = picked;
+          _sliderValue = ((timeToMinutes(_overtimeFinish) - timeToMinutes(_overtimeStart)) ~/ 30) * 0.5;
+        });
     }
   }
 

@@ -60,7 +60,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
 
   void checkIfAfmExist() async {
     // For async validation
-    if ((_isValidAfm || int.tryParse(_afmController.text) != null) &&
+    if ((_isValidAfm || (int.tryParse(_afmController.text) != null)) &&
         int.tryParse(_afmController.text).abs().toString().length == 9 &&
         _employee?.afm != _afmController.text) {
       var employeeList =
@@ -112,6 +112,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         result = await _erganiDatabase.deleteEmployee(_employee);
         if (result != 0)
           result = await _erganiDatabase.createEmployee(employeeToSubmit);
+        // result = await _erganiDatabase.updateEmployee(employeeToSubmit);
       }
 
       if (result != 0)
@@ -237,7 +238,7 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         prefixIcon: Icon(Icons.contacts),
       ),
       validator: (value) {
-        if (value.isEmpty) return 'Προσθέστε επίθετο';
+        if (value.isEmpty) return 'Προσθέστε επίθετο.';
       },
       autovalidate: _shouldValidateOnChangeLastName,
       controller: _lastNameController,
@@ -257,14 +258,14 @@ class CreateEmployeeRouteState extends State<CreateEmployeeRoute> {
         ),
         validator: (afm) {
           if (afm.isEmpty) {
-            return 'Προσθέστε ΑΦΜ';
+            return 'Προσθέστε ΑΦΜ.';
           } else if (afm.length != length) {
-            return 'Εισάγετε $length αριθμούς';
+            return 'Εισάγετε $length αριθμούς.';
           } else if (!afm.split('').every(isInt)) {
-            return 'Ο ΑΦΜ αποτελείται μόνο απο αριθμούς';
+            return 'Ο ΑΦΜ αποτελείται μόνο απο αριθμούς.';
           }
           if (_afmExist) {
-            return 'Ο ΑΦΜ χρησιμοποιείται ήδη';
+            return 'Ο ΑΦΜ χρησιμοποιείται ήδη.';
           }
           _isValidAfm = true;
         },

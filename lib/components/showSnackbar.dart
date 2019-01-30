@@ -30,10 +30,10 @@ void showSnackbar({
   );
 }
 
-MaterialColor _pickColor(SnackbarType type) {
+ Color _pickColor(SnackbarType type) {
   switch (type) {
     case SnackbarType.Success:
-      return Colors.green;
+      return Colors.green[700];
     case SnackbarType.Error:
       return Colors.red;
     default:

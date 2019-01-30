@@ -293,7 +293,7 @@ class E8formState extends State<E8form> {
       } else
         setState(() {
           _overtimeFinish = picked;
-          _sliderValue = ((timeToMinutes(_overtimeFinish) - timeToMinutes(_overtimeStart)) ~/ 30) * 0.5;
+          _sliderValue = 0.5;
         });
     }
   }

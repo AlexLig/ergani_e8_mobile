@@ -355,12 +355,9 @@ class E8formState extends State<E8form> {
         if (state == SmsMessageState.Sending) {
           setState(() => _isLoading = true);
         } else if (state == SmsMessageState.Sent) {
-          showSnackbar(
-            scaffoldContext: _scaffoldContext,
-            type: SnackbarType.Success,
-            message: 'Το μήνυμα εστάλη με επιτυχία',
-          );
+          
           setState(() => _isLoading = false);
+          Navigator.pop(context,true);
         } else if (state == SmsMessageState.Fail) {
           showSnackbar(
             scaffoldContext: _scaffoldContext,

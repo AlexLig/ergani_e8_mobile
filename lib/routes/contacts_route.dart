@@ -133,6 +133,12 @@ class ContactsRouteState extends State<ContactsRoute> {
         builder: (context) => E8form(employee: employee, employer: _employer),
       ),
     );
+    if (e8FormCompleted == true)
+      showSnackbar(
+        scaffoldContext: _scaffoldContext,
+        type: SnackbarType.Success,
+        message: 'Το μήνυμα εστάλη με επιτυχία',
+      );
   }
 
   void _handleDelete(context, Employee employee) async {
@@ -149,8 +155,8 @@ class ContactsRouteState extends State<ContactsRoute> {
           scaffoldContext: context,
           message: 'Ο υπάλληλος διαγράφηκε.',
           type: SnackbarType.Info,
-          action:
-              SnackBarAction(label: 'ΑΝΑΙΡΕΣΗ', onPressed: this._undoDeleteEmployee),
+          action: SnackBarAction(
+              label: 'ΑΝΑΙΡΕΣΗ', onPressed: this._undoDeleteEmployee),
         );
         _updateListView();
       }

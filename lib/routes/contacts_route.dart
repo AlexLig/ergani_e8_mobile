@@ -111,6 +111,7 @@ class ContactsRouteState extends State<ContactsRoute> {
               onTap: () => _handleTap(employee),
               onDelete: () => _handleDelete(context, employee),
               onEdit: () => _handleSubmit(context, employee),
+              isDestination: false,
             ),
             i == _employeeList.length - 1
                 ? SizedBox(height: 100.0)

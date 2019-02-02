@@ -1,3 +1,4 @@
+import 'package:ergani_e8/components/employee_list_tile.dart';
 import 'package:ergani_e8/models/employee.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,7 @@ class DeleteDialog extends StatelessWidget {
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
+            Align(alignment: Alignment.topLeft,child: EmployeeListTile(employee: employee, isDestination: true,)),
             Text(
               'Ο/Η ${this.employee.lastName} ${this.employee.firstName} θα διαγραφεί από τη συλλογή.',
             ),

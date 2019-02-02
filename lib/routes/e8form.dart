@@ -37,6 +37,7 @@ class E8formState extends State<E8form> {
   BuildContext _scaffoldContext;
 
   bool _triggered = false;
+  bool _shouldShrink = true;
 
   @override
   void initState() {
@@ -158,7 +159,11 @@ class E8formState extends State<E8form> {
       padding: const EdgeInsets.only(top: 10.0),
       child: Column(
         children: [
-          EmployeeListTile(employee: _employee),
+          EmployeeListTile(
+            employee: _employee,
+            isDestination: _shouldShrink,
+            onTap: () => setState(() => _shouldShrink = !_shouldShrink),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Divider(),
@@ -274,14 +279,15 @@ class E8formState extends State<E8form> {
           message:
               'Η λήξη της υπερωρίας δεν μπορεί να είναι πριν από την ώρα έναρξης.',
         );
-    /*   else if ((timeToMinutes(picked) - timeToMinutes(_overtimeStart)) % 30 !=
+      /*   else if ((timeToMinutes(picked) - timeToMinutes(_overtimeStart)) % 30 !=
           0) {
         showSnackbar(
           scaffoldContext: _scaffoldContext,
           message: 'Η υπερωρία δηλώνεται σε διαστήματα των 30 λεπτών.',
           type: SnackbarType.Warning,
         );
-      } */ else if (isLater(
+      } */
+      else if (isLater(
         picked,
         addToTimeOfDay(_employee.workFinish, hour: 3),
       )) {
@@ -355,9 +361,8 @@ class E8formState extends State<E8form> {
         if (state == SmsMessageState.Sending) {
           setState(() => _isLoading = true);
         } else if (state == SmsMessageState.Sent) {
-          
           setState(() => _isLoading = false);
-          Navigator.pop(context,true);
+          Navigator.pop(context, true);
         } else if (state == SmsMessageState.Fail) {
           showSnackbar(
             scaffoldContext: _scaffoldContext,

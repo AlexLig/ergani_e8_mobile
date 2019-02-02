@@ -7,15 +7,16 @@ enum ContactActions { Edit, Delete }
 class EmployeeListTile extends StatelessWidget {
   final Employee employee;
   final Function onDelete, onEdit, onTap;
-  final bool isDestination;
-
+  final bool hideSubtitles;
+  EdgeInsetsGeometry contentPadding;
   EmployeeListTile({
     Key key,
     @required this.employee,
     this.onDelete,
     this.onEdit,
     this.onTap,
-    this.isDestination,
+    this.hideSubtitles,
+    this.contentPadding,
   }) : super(key: key);
 
   String _getInitials() =>
@@ -46,24 +47,29 @@ class EmployeeListTile extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: ListTile(
+        contentPadding: contentPadding,
         leading: Hero(
           tag: 'heroEmployee${employee.id}',
           child: Material(
             color: Colors.transparent,
             child: Container(
-              height: isDestination ? 40.0 : 60.0,
-              width: isDestination ? 40.0 : 60.0,
+              height: hideSubtitles ? 40.0 : 60.0,
+              width: hideSubtitles ? 40.0 : 60.0,
               decoration: BoxDecoration(
-                color: Color.fromRGBO(244, 244, 244, 1.0),
+                // color: Color.fromRGBO(244, 244, 244, 1.0),
+                color: Colors.grey[200],
+                // color: Theme.of(context).accentColor,
+
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Text(
                   '${_getInitials()}',
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                     color: Theme.of(context).accentColor,
-                    fontSize: isDestination ? 20.0 : 30.0,
+                    // color: Colors.white,
+                    fontSize: hideSubtitles ? 20.0 : 30.0,
                   ),
                 ),
               ),
@@ -73,16 +79,18 @@ class EmployeeListTile extends StatelessWidget {
         title: Align(
           alignment: Alignment.topLeft,
           child: Hero(
-              tag: 'herotext${employee.id}',
-              child: Material(
-                  color: Colors.transparent,
-                  child: Text(
-                    '${employee.lastName} ${employee.firstName}',
-                    style: TextStyle(fontSize: 16),
-                  ))),
+            tag: 'herotext${employee.id}',
+            child: Material(
+              color: Colors.transparent,
+              child: Text(
+                '${employee.lastName} ${employee.firstName}',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
         ),
-        isThreeLine: !isDestination,
-        subtitle: !isDestination
+        isThreeLine: !hideSubtitles,
+        subtitle: !hideSubtitles
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[

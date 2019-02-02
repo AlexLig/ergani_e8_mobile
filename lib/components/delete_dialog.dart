@@ -14,9 +14,13 @@ class DeleteDialog extends StatelessWidget {
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Align(alignment: Alignment.topLeft,child: EmployeeListTile(employee: employee, isDestination: true,)),
             Text(
               'Ο/Η ${this.employee.lastName} ${this.employee.firstName} θα διαγραφεί από τη συλλογή.',
+            ),
+            EmployeeListTile(
+              employee: employee,
+              hideSubtitles: false,
+              contentPadding: EdgeInsets.only(top: 8),
             ),
           ],
         ),

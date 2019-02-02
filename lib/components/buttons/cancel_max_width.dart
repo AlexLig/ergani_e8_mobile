@@ -4,7 +4,7 @@ class CancelButtonMaxWidth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-          title: FlatButton(
+      title: FlatButton(
         child: Text(
           'ΑΚΥΡΟ',
           style: TextStyle(color: Theme.of(context).buttonColor),

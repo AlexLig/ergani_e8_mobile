@@ -111,16 +111,11 @@ class ContactsRouteState extends State<ContactsRoute> {
               onTap: () => _handleTap(employee),
               onDelete: () => _handleDelete(context, employee),
               onEdit: () => _handleSubmit(context, employee),
-              isDestination: false,
+              hideSubtitles: false,
             ),
             i == _employeeList.length - 1
                 ? SizedBox(height: 100.0)
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Divider(
-                      indent: 40.0,
-                    ),
-                  ),
+                : Divider(indent: 80.0),
           ],
         );
       },

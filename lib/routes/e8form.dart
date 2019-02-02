@@ -161,7 +161,7 @@ class E8formState extends State<E8form> {
         children: [
           EmployeeListTile(
             employee: _employee,
-            isDestination: _shouldShrink,
+            hideSubtitles: _shouldShrink,
             onTap: () => setState(() => _shouldShrink = !_shouldShrink),
           ),
           Padding(

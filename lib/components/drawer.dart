@@ -1,6 +1,7 @@
 import 'package:ergani_e8/components/drawer_info_routes/contact.dart';
 import 'package:ergani_e8/components/drawer_info_routes/disclaimer.dart';
 import 'package:ergani_e8/components/drawer_info_routes/e8Instructions.dart';
+import 'package:ergani_e8/components/white-text.dart';
 import 'package:ergani_e8/models/employer.dart';
 import 'package:ergani_e8/routes/settings_route.dart';
 import 'package:flutter/material.dart';
@@ -22,24 +23,9 @@ class ContactsDrawer extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      employer.name ?? 'Όνομα Εταιρείας',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      ),
-                    ),
-                    Text(
-                      'ΑΦΜ: ${employer.afm ?? ''} ',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    Text(
-                      employer.ame != null && employer.ame.isNotEmpty
-                          ? 'ΑΜΕ: ${employer.ame}'
-                          : '',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    WhiteText(employer.name ?? 'Όνομα Εταιρείας', heavy: true),
+                    WhiteText('ΑΦΜ: ${employer.afm} '),
+                    WhiteText('ΑΜΕ: ${employer.ame}'),
                   ],
                 ),
               ),
@@ -51,8 +37,8 @@ class ContactsDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => UpdateEmployer(
-                          employer: employer,
-                        ),
+                      employer: employer,
+                    ),
                   ),
                 );
               },

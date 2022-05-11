@@ -2,24 +2,25 @@ class Employer {
   String _name, _afm, _ame, _smsNumber;
   int _id;
 
-  Employer(this._afm, this._name, this._smsNumber, [this._ame]);
+  Employer(this._afm, this._name, this._smsNumber, [this._ame = '']);
 
   Employer.withID(this._id, this._afm, this._name, this._smsNumber,
-      [this._ame]);
+      [this._ame = '']);
 //
   Employer.fromMap(Map<String, dynamic> map) {
     this._id = map['id'];
     this._name = map['name'];
     this._afm = map['afm'];
-    this._ame = map['ame'];
+    this._ame = map['ame'] ?? '';
     this._smsNumber = map['sms_number'];
   }
 
   String get name => this._name;
-  String get afm => this._afm;
+  String get afm => this._afm ?? '';
   String get ame => this._ame;
   String get smsNumber => this._smsNumber;
   int get id => this._id;
+  bool get hasAme => this.ame.isNotEmpty;
 
   set name(String name) => this._name = name.trim();
 
